@@ -21,7 +21,7 @@
     "contao/manager-plugin": "<2.0 || >=3.0"
   },
   "autoload": {
-    "psr-0: {
+    "psr-0": {
       "EuF\\PorfolioBundle\\": "src/"
     },
     "classmap": [
