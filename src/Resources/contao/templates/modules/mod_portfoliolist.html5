@@ -1,0 +1,25 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+  <nav class="nav nav--projects block">
+  	<h4>Projektauswahl</h4>
+  	<ul class="level_1">
+  		<li>
+  			<a href="#vermieter" data-category="vermieter">Vermieter</a>
+  		</li>
+  		<li>
+  			<a href="#nutzer" data-category="nutzer">Nutzer</a>
+  		</li>
+  	</ul>
+  </nav>
+
+    <?php if (empty($this->items)): ?>
+        <p class="empty"><?php echo $this->empty; ?></p>
+    <?php else: ?>
+      <div class="projects__items">
+        <?php echo implode('', $this->items); ?>
+        <?php echo $this->pagination; ?>
+      </div>
+    <?php endif; ?>
+
+<?php $this->endblock(); ?>

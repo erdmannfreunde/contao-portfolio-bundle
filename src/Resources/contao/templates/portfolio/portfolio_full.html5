@@ -1,0 +1,5 @@
+
+<div class="layout_full block<?php echo $this->class; ?>">
+   
+    <?php echo $this->text; ?>
+</div>

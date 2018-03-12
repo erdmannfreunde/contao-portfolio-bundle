@@ -1,0 +1,342 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/portfolio/languages/en/tl_portfolio.php" source-language="en">
+    <body>
+      <trans-unit id="tl_portfolio.headline.0">
+        <source>Title</source>
+        <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.headline.1">
+        <source>Please enter the portfolio title.</source>
+        <target>Bitte geben Sie den Referenzen-Titel ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.alias.0">
+        <source>portfolio alias</source>
+        <target>Referenzenalias</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.alias.1">
+        <source>The portfolio alias is a unique reference to the article which can be called instead of its numeric ID.</source>
+        <target>Der Referenzenalias ist eine eindeutige Referenz, die anstelle der numerischen Artikel-ID aufgerufen werden kann.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.author.0">
+        <source>Author</source>
+        <target>Autor</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.author.1">
+        <source>Here you can change the author of the portfolio item.</source>
+        <target>Hier können Sie den Autor des Eintrags ändern.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.category.0">
+        <source>Category</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.category.1">
+        <source>Here you can change the category of the portfolio item.</source>
+        <target>Hier können Sie die Kategorie des Eintrags festlegen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.date.0">
+        <source>Date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.date.1">
+        <source>Please enter the date according to the global date format.</source>
+        <target>Bitte geben Sie das Datum gemäß des globalen Datumsformats ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.time.0">
+        <source>Time</source>
+        <target>Uhrzeit</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.time.1">
+        <source>Please enter the time according to the global time format.</source>
+        <target>Bitte geben Sie die Uhrzeit gemäß des globalen Zeitformats ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.subheadline.0">
+        <source>Subheadline</source>
+        <target>Unterüberschrift</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.subheadline.1">
+        <source>Here you can enter a subheadline.</source>
+        <target>Hier können Sie eine Unterüberschrift eingeben.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.teaser.0">
+        <source>portfolio teaser</source>
+        <target>Teasertext</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.teaser.1">
+        <source>The portfolio teaser can be shown in a portfolio list instead of the full article. A &quot;read more …&quot; link will be added automatically.</source>
+        <target>Der Teasertext kann in einer Referenzenliste anstatt des Referenzentextes angezeigt werden. Ein &quot;Weiterlesen …&quot;-Link wird automatisch hinzugefügt.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.text.0">
+        <source>portfolio text</source>
+        <target>Referenzentext</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.text.1">
+        <source>Here you can enter the portfolio text.</source>
+        <target>Hier können Sie den Referenzentext eingeben.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.addImage.0">
+        <source>Add an image</source>
+        <target>Ein Bild hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.addImage.1">
+        <source>Add an image to the portfolio item.</source>
+        <target>Dem Eintrag ein Bild hinzufügen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.addEnclosure.0">
+        <source>Add enclosures</source>
+        <target>Anlagen hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.addEnclosure.1">
+        <source>Add one or more downloadable files to the portfolio item.</source>
+        <target>Dem Eintrag eine oder mehrere Dateien als Download hinzufügen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.enclosure.0">
+        <source>Enclosures</source>
+        <target>Anlagen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.enclosure.1">
+        <source>Please choose the files you want to attach.</source>
+        <target>Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.source.0">
+        <source>Redirect target</source>
+        <target>Weiterleitungsziel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.source.1">
+        <source>Here you can override the default redirect target.</source>
+        <target>Hier können Sie die Standard-Weiterleitung überschreiben.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.default.0">
+        <source>Use default</source>
+        <target>Standard</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.default.1">
+        <source>By clicking the &quot;read more …&quot; button, visitors will be redirected to the default page of the portfolio archive.</source>
+        <target>Beim Anklicken des &quot;Weiterlesen …&quot;-Links wird der Besucher auf die Standardseite des Referenzenarchivs weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.internal.0">
+        <source>Page</source>
+        <target>Seite</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.internal.1">
+        <source>By clicking the &quot;read more …&quot; button, visitors will be redirected to a page.</source>
+        <target>Beim Anklicken des &quot;Weiterlesen …&quot;-Links wird der Besucher auf eine Seite weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.article.0">
+        <source>Article</source>
+        <target>Artikel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.article.1">
+        <source>By clicking the &quot;read more …&quot; button, visitors will be redirected to an article.</source>
+        <target>Beim Anklicken des &quot;Weiterlesen …&quot;-Links wird der Besucher auf einen Artikel weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.external.0">
+        <source>External URL</source>
+        <target>Externe URL</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.external.1">
+        <source>By clicking the &quot;read more …&quot; button, visitors will be redirected to an external website.</source>
+        <target>Beim Anklicken des &quot;Weiterlesen …&quot;-Links wird der Besucher auf eine externe Webseite weitergeleitet.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.jumpTo.0">
+        <source>Redirect page</source>
+        <target>Weiterleitungsseite</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.jumpTo.1">
+        <source>Please choose the page to which visitors will be redirected when clicking the portfolio item.</source>
+        <target>Bitte wählen Sie die Seite aus, zu der Besucher weitergeleitet werden, wenn Sie einen Eintrag anklicken.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.articleId.0">
+        <source>Article</source>
+        <target>Artikel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.articleId.1">
+        <source>Please choose the article to which visitors will be redirected when clicking the portfolio item.</source>
+        <target>Bitte wählen Sie den Artikel aus, zu der Besucher weitergeleitet werden, wenn Sie einen Eintrag anklicken.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.cssClass.0">
+        <source>CSS class</source>
+        <target>CSS-Klasse</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.cssClass.1">
+        <source>Here you can enter one or more classes.</source>
+        <target>Hier können Sie eine oder mehrere Klassen eingeben.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.noComments.0">
+        <source>Disable comments</source>
+        <target>Kommentare deaktivieren</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.noComments.1">
+        <source>Do not allow comments for this particular portfolio item.</source>
+        <target>Die Kommentarfunktion für diesen ReferenzenEintrag deaktivieren.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.featured.0">
+        <source>Feature item</source>
+        <target>Eintrag hervorheben</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.featured.1">
+        <source>Show the portfolio item in a featured portfolio list.</source>
+        <target>Den Eintrag in einer Liste hervorgehobener Referenzen anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.published.0">
+        <source>Publish item</source>
+        <target>Eintrag veröffentlichen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.published.1">
+        <source>Make the portfolio item publicly visible on the website.</source>
+        <target>Den Eintrag auf der Webseite anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.start.0">
+        <source>Show from</source>
+        <target>Anzeigen ab</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.start.1">
+        <source>Do not show the portfolio item on the website before this day.</source>
+        <target>Den Eintrag erst ab diesem Tag auf der Webseite anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.stop.0">
+        <source>Show until</source>
+        <target>Anzeigen bis</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.stop.1">
+        <source>Do not show the portfolio item on the website on and after this day.</source>
+        <target>Den Eintrag nur bis zu diesem Tag auf der Webseite anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.tstamp.0">
+        <source>Revision date</source>
+        <target>Änderungsdatum</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.tstamp.1">
+        <source>Date and time of the latest revision</source>
+        <target>Datum und Uhrzeit der letzten Änderung</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.title_legend">
+        <source>Title and author</source>
+        <target>Titel und Kategorie</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.date_legend">
+        <source>Date and time</source>
+        <target>Datum und Uhrzeit</target>
+      </trans-unit>
+	  <trans-unit id="tl_news.image_legend">
+        <source>Image settings</source>
+        <target>Bild-Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.teaser_legend">
+        <source>Subheadline and teaser</source>
+        <target>Unterüberschrift und Teaser</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.text_legend">
+        <source>portfolio text</source>
+        <target>Referenzentext</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.image_legend">
+        <source>Image settings</source>
+        <target>Bild-Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.enclosure_legend">
+        <source>Enclosures</source>
+        <target>Anlagen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.source_legend">
+        <source>Redirect target</source>
+        <target>Weiterleitungsziel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.expert_legend">
+        <source>Expert settings</source>
+        <target>Experten-Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.publish_legend">
+        <source>Publish settings</source>
+        <target>Veröffentlichung</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.new.0">
+        <source>New article</source>
+        <target>Neuer Eintrag</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.new.1">
+        <source>Create a new portfolio article</source>
+        <target>Einen neuen ReferenzenEintrag erstellen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.show.0">
+        <source>Article details</source>
+        <target>Eintragsdetails</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.show.1">
+        <source>Show the details of portfolio article ID %s</source>
+        <target>Die Details des Eintrags ID %s anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.edit.0">
+        <source>Edit article</source>
+        <target>Eintrag bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.edit.1">
+        <source>Edit portfolio article ID %s</source>
+        <target>Eintrag ID %s bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.copy.0">
+        <source>Duplicate article</source>
+        <target>Eintrag duplizieren</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.copy.1">
+        <source>Duplicate portfolio article ID %s</source>
+        <target>Eintrag ID %s duplizieren</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.cut.0">
+        <source>Move article</source>
+        <target>Eintrag verschieben</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.cut.1">
+        <source>Move portfolio article ID %s</source>
+        <target>Eintrag ID %s verschieben</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.delete.0">
+        <source>Delete article</source>
+        <target>Eintrag löschen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.delete.1">
+        <source>Delete portfolio article ID %s</source>
+        <target>Eintrag ID %s löschen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.toggle.0">
+        <source>Publish/unpublish article</source>
+        <target>Eintrag veröffentlichen/unveröffentlichen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.toggle.1">
+        <source>Publish/unpublish portfolio article ID %s</source>
+        <target>Eintrag ID %s veröffentlichen/unveröffentlichen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.feature.0">
+        <source>Feature/unfeature article</source>
+        <target>Eintrag hervorheben/zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.feature.1">
+        <source>Feature/unfeature portfolio article ID %s</source>
+        <target>Eintrag ID %s hervorheben/zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.editheader.0">
+        <source>Edit archive settings</source>
+        <target>Referenzenarchiv bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.editheader.1">
+        <source>Edit the archive settings</source>
+        <target>Die Referenzenarchiv-Einstellungen bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.editmeta.0">
+        <source>Edit article settings</source>
+        <target>Eintragseinstellungen bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.editmeta.1">
+        <source>Edit the article settings</source>
+        <target>Die Eintragseinstellungen bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.pasteafter.0">
+        <source>Paste into this archive</source>
+        <target>In dieses Referenzenarchiv einfügen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.pasteafter.1">
+        <source>Paste after portfolio article ID %s</source>
+        <target>Nach dem Eintrag ID %s einfügen</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

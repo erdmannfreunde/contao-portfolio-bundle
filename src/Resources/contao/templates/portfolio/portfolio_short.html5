@@ -1,0 +1,10 @@
+
+<div class="layout_short block<?php echo $this->class; ?>" data-category="<?php echo $this->category ?>">
+  <div class="inside">
+    <?php if (strlen($this->text)) : ?>
+      <?php echo $this->linkHeadline; ?>
+    <?php else: ?>
+      <span><?php echo $this->headline; ?></span>
+    <?php endif; ?>
+  </div>
+</div>
