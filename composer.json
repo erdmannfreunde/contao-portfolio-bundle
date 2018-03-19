@@ -32,6 +32,6 @@
 	]
   },
   "extra": {
-    "contao-manager-plugin": "EuF\\PorfolioBundle\\ContaoManager\\Plugin"
+    "contao-manager-plugin": "EuF\\PortfolioBundle\\ContaoManager\\Plugin"
   }
 }
