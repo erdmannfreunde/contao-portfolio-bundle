@@ -3,14 +3,15 @@
 <?php $this->block('content'); ?>
   <nav class="nav nav--projects block">
   	<h4>Projektauswahl</h4>
+	<?php if($this->categories):?>
   	<ul class="level_1">
+		<?php foreach($this->categories as $category): ?>
   		<li>
-  			<a href="#vermieter" data-category="vermieter">Vermieter</a>
+  			<a href="#<?php echo $category->alias; ?>" data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></a>
   		</li>
-  		<li>
-  			<a href="#nutzer" data-category="nutzer">Nutzer</a>
-  		</li>
+		<?php endforeach; ?>
   	</ul>
+	<?php endif; ?>
   </nav>
 
     <?php if (empty($this->items)): ?>

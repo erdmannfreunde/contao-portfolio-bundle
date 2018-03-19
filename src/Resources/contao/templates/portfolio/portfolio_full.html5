@@ -2,4 +2,9 @@
 <div class="layout_full block<?php echo $this->class; ?>">
    
     <?php echo $this->text; ?>
+	
+	<?php if ($this->addImage): ?>
+        <?php $this->insert('image', $this->arrData); ?>
+      <?php endif; ?>
+
 </div>

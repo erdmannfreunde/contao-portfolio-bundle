@@ -1,9 +1,10 @@
 <?php
 
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace EuF\PortfolioBundle\Modules;
+
+use EuF\PortfolioBundle\Models\PortfolioModel;
+use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+
 
 /**
  * Class ModulePortfolioList
@@ -46,6 +47,17 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function compile()
     {
+        $objCategories = \PortfolioCategoryModel::findAll([
+            'column' => 'published',
+            'value' => 1,
+            'order' => 'sorting ASC',
+        ]);
+		
+		if ($objCategories !== null)
+        {
+            $this->Template->categories = $objCategories;
+        }		
+		
         $objItems = \PortfolioModel::findAll([
             'column' => 'published',
             'value' => 1,

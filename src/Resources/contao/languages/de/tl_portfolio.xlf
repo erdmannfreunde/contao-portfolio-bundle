@@ -25,13 +25,13 @@
         <source>Here you can change the author of the portfolio item.</source>
         <target>Hier können Sie den Autor des Eintrags ändern.</target>
       </trans-unit>
-      <trans-unit id="tl_portfolio.category.0">
-        <source>Category</source>
-        <target>Kategorie</target>
+      <trans-unit id="tl_portfolio.categories.0">
+        <source>Categories</source>
+        <target>Kategorien</target>
       </trans-unit>
-      <trans-unit id="tl_portfolio.category.1">
-        <source>Here you can change the category of the portfolio item.</source>
-        <target>Hier können Sie die Kategorie des Eintrags festlegen.</target>
+      <trans-unit id="tl_portfolio.categories.1">
+        <source>Here you can change the categories of the portfolio item.</source>
+        <target>Hier können Sie die Kategorien des Eintrags festlegen.</target>
       </trans-unit>
       <trans-unit id="tl_portfolio.date.0">
         <source>Date</source>

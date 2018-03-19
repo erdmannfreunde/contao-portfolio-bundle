@@ -1,10 +1,8 @@
 <?php
 
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace EuF\PortfolioBundle\Modules;
 
+use EuF\PortfolioBundle\Models\PortfolioModel;
 
 /**
  * Class ModulePortfolioReader

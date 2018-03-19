@@ -3,16 +3,16 @@
 /**
  * Run in a custom namespace, so the class can be replaced
  */
-namespace Sourceboat;
+namespace EuF\PorfolioBundle\Models;
 
 /**
  * Reads and writes portfolio items.
  */
-class PortfolioModel extends \Model
+class PortfolioCategoryModel extends \Model
 {
     /**
      * Table name
      * @var string
      */
-    protected static $strTable = 'tl_portfolio';
+    protected static $strTable = 'tl_portfolio_category';
 }

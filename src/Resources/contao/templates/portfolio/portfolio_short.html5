@@ -6,5 +6,9 @@
     <?php else: ?>
       <span><?php echo $this->headline; ?></span>
     <?php endif; ?>
+	  <?php if ($this->addImage): ?>
+        <?php $this->insert('image', $this->arrData); ?>
+      <?php endif; ?>
+
   </div>
 </div>

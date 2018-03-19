@@ -51,6 +51,13 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
         ),
         'global_operations' => array
         (
+			'categories' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+				'href'                => 'table=tl_portfolio_category',
+				'icon'                => 'bundles/erdmannfreundeportfoliobundle/icon.png',
+				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
+			),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -112,7 +119,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     'palettes' => array
     (
         '__selector__'                => array('addImage', 'source', 'overwriteMeta'),
-        'default'                     => '{title_legend},headline,alias,category;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
+        'default'                     => '{title_legend},headline,alias,categories;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
     ),
 
     // Subpalettes
@@ -168,17 +175,17 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             ),
             'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
         ),
-        'category' => array
+        'categories' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['category'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'sorting'                 => false,
-            'flag'                    => 11,
-			'foreignKey'			  => 'tl_portfolio_category.title',
-            'inputType'               => 'select',
-            'eval'                    => array('chosen'=>true, 'mandatory'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
+
+            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'select',
+			'foreignKey'              => 'tl_portfolio_category.title',
+			'eval'                    => array('multiple'=>true, 'chosen'=> true, 'tl_class'=>'w50'),
+			'sql'                     => "blob NULL"
+
         ),
         'date' => array
         (
