@@ -2,6 +2,7 @@
 
 namespace EuF\PortfolioBundle\Modules;
 
+use EuF\PortfolioBundle\Modules\ModulePortfolio;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
 /**
@@ -9,7 +10,7 @@ use EuF\PortfolioBundle\Models\PortfolioModel;
  *
  * Front end module "portfolio reader".
  */
-class ModulePortfolioReader extends \ModulePortfolio
+class ModulePortfolioReader extends ModulePortfolio
 {
 
     /**
@@ -69,7 +70,7 @@ class ModulePortfolioReader extends \ModulePortfolio
         $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the portfolio item
-        $objItem = \PortfolioModel::findByIdOrAlias(\Input::get('items'));
+        $objItem = PortfolioModel::findByIdOrAlias(\Input::get('items'));
 
         if ($objItem === null)
         {

@@ -2,9 +2,9 @@
 
 namespace EuF\PortfolioBundle\Modules;
 
+use EuF\PortfolioBundle\Modules\ModulePortfolio;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
-
 
 /**
  * Class ModulePortfolioList
@@ -47,7 +47,7 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function compile()
     {
-        $objCategories = \PortfolioCategoryModel::findAll([
+        $objCategories = PortfolioCategoryModel::findAll([
             'column' => 'published',
             'value' => 1,
             'order' => 'sorting ASC',
@@ -58,7 +58,7 @@ class ModulePortfolioList extends ModulePortfolio
             $this->Template->categories = $objCategories;
         }		
 		
-        $objItems = \PortfolioModel::findAll([
+        $objItems = PortfolioModel::findAll([
             'column' => 'published',
             'value' => 1,
             'order' => 'sorting ASC',

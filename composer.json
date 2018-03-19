@@ -20,7 +20,16 @@
   "autoload": {
     "psr-4": {
       "EuF\\PorfolioBundle\\": "src/"
-    }
+    },
+	"classmap": [
+		"src/Resources/contao/"
+	],
+	"exclude-from-classmap": [
+		"src/Resources/contao/config/",
+		"src/Resources/contao/dca/",
+		"src/Resources/contao/languages/",
+		"src/Resources/contao/templates/"
+	]
   },
   "extra": {
     "contao-manager-plugin": "EuF\\PorfolioBundle\\ContaoManager\\Plugin"

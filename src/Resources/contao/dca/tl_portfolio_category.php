@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = array
         (
             'mode'                    => 1,
 			'flag'					  => 1,
-            'icon'                    => 'bundles/erdmannfreundeportfoliobundle/icon.png',
+            'icon'                    => 'bundles/eufporfolio/icon.png',
             'panelLayout'             => 'sort,filter;search,limit',
 			'fields'                  => array('title')
         ),
@@ -117,6 +117,10 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = array
         (
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
         ),
+		 'pid' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        ),
         'sorting' => array
         (
             'sql'                     => "int(10) unsigned NOT NULL default '0'"
@@ -136,7 +140,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = array
         ),
 		'alias' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['alias'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio_category']['alias'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',

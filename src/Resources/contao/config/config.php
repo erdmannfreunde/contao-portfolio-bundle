@@ -19,7 +19,7 @@ array_insert($GLOBALS['FE_MOD'], 3, array
 (
     'portfolio' => array
     (
-        'portfoliolist'     => 'EuF\PorfolioBundle\Modules\ModulePortfolioList',
-        'portfolioreader'   => 'EuF\PorfolioBundle\Modules\ModulePortfolioReader',
+        'portfoliolist'     => 'ModulePortfolioList',
+        'portfolioreader'   => 'ModulePortfolioReader',
     )
 ));

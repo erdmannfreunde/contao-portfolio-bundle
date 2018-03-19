@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
 				'href'                => 'table=tl_portfolio_category',
-				'icon'                => 'bundles/erdmannfreundeportfoliobundle/icon.png',
+				'icon'                => 'bundles/eufporfolio/icon.png',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
 			),
             'all' => array
