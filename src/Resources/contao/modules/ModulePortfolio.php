@@ -5,6 +5,8 @@
  */
 namespace EuF\PortfolioBundle\Modules;
 
+use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+
 /**
  * Class ModulePortfolio
  *
@@ -84,6 +86,16 @@ abstract class ModulePortfolio extends \Module
         $objTemplate->timestamp = $objItem->date;
         $objTemplate->author = $arrMeta['author'];
         $objTemplate->datetime = date('Y-m-d\TH:i:sP', $objItem->date);
+		
+		if($objItem->categories) {
+			$objTemplate->categories = '';
+			$categories = unserialize($objItem->categories);
+			foreach($categories as $category) {
+				$objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
+				$objTemplate->categories .= $objPortfolioCategoryModel->alias.' ';
+				
+			}
+		}
         
 		$objTemplate->addImage = false;
 

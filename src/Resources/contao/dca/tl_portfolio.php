@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
 				'href'                => 'table=tl_portfolio_category',
-				'icon'                => 'bundles/eufporfolio/icon.png',
+				'icon'                => 'bundles/eufportfolio/icon.png',
 				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
 			),
             'all' => array
@@ -413,7 +413,7 @@ class tl_portfolio extends Backend
         if ($varValue == '')
         {
             $autoAlias = true;
-            $varValue = standardize(String::restoreBasicEntities($dc->activeRecord->headline));
+            $varValue = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
         }
 
         $objAlias = $this->Database->prepare("SELECT id FROM tl_portfolio WHERE alias=?")
