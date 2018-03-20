@@ -23,3 +23,8 @@ array_insert($GLOBALS['FE_MOD'], 3, array
         'portfolioreader'   => 'EuF\PortfolioBundle\Modules\ModulePortfolioReader',
     )
 ));
+
+$GLOBALS['TL_MODELS']['tl_portfolio'] = 'EuF\PortfolioBundle\Models\PortfolioModel';  
+$GLOBALS['TL_MODELS']['tl_portfolio_category'] = 'EuF\PortfolioBundle\Models\PortfolioCategoryModel';  
+
+

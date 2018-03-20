@@ -19,7 +19,7 @@
   },
   "autoload": {
     "psr-4": {
-      "EuF\\PorfolioBundle\\": "src/"
+      "EuF\\PortfolioBundle\\": "src/"
     },
 	"classmap": [
 		"src/Resources/contao/"

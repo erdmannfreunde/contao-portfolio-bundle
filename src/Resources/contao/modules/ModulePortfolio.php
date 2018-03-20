@@ -84,7 +84,34 @@ abstract class ModulePortfolio extends \Module
         $objTemplate->timestamp = $objItem->date;
         $objTemplate->author = $arrMeta['author'];
         $objTemplate->datetime = date('Y-m-d\TH:i:sP', $objItem->date);
-        $objTemplate->category = $objItem->category;
+        
+		$objTemplate->addImage = false;
+
+		// Add an image
+		if ($objItem->addImage && $objItem->singleSRC != '')
+		{
+			$objModel = \FilesModel::findByUuid($objItem->singleSRC);
+
+			if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
+			{
+				// Do not override the field now that we have a model registry (see #6303)
+				$arrArticle = $objItem->row();
+
+				// Override the default image size
+				if ($this->imgSize != '')
+				{
+					$size = \StringUtil::deserialize($this->imgSize);
+
+					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+					{
+						$arrArticle['size'] = $this->imgSize;
+					}
+				}
+
+				$arrArticle['singleSRC'] = $objModel->path;
+				$this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+			}
+		}
 
         return $objTemplate->parse();
     }
