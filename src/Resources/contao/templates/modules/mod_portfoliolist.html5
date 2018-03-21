@@ -7,7 +7,7 @@
   	<ul class="level_1">
 		<?php foreach($this->categories as $category): ?>
   		<li>
-  			<a href="#<?php echo $category->alias; ?>" data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></a>
+  			<button data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></button>
   		</li>
 		<?php endforeach; ?>
   	</ul>
