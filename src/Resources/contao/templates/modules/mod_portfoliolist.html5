@@ -1,7 +1,7 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-  <nav class="nav nav--projects block">
+  <nav class="nav nav--portfolio block">
   	<h4>Projektauswahl</h4>
 	<?php if($this->categories):?>
   	<ul class="level_1">
