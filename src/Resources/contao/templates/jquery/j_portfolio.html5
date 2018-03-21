@@ -1,0 +1,33 @@
+<!-- jquery portfolio -->
+<script src="/bundles/eufportfolio/js/isotope.pkgd.min.js"></script>
+<script src="/bundles/eufportfolio/js/packery-mode.pkgd.min.js"></script>
+
+<script>
+
+var $portfolio = $('.portfolio .portfolio_container').isotope({
+  // options
+  itemSelector: '.portfolio__item',
+  layoutMode: 'packery'
+  /*
+  masonry: {
+    columnWidth: 50
+  }
+  */
+});
+
+$('.nav--portfolio').on( 'click', 'button', function() {
+	$('.nav--portfolio button').removeClass('active');
+  $(this).addClass('active');
+	
+  var filterValue = $(this).attr('data-category');
+  if (filterValue != '*') {
+	  $portfolio.isotope({ filter: '[data-category="'+ filterValue + '"]' });
+  } else {
+	  $portfolio.isotope({ filter: ''});
+  }
+ 
+});
+
+ $portfolio.isotope();
+
+</script>
