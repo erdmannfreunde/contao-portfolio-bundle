@@ -93,6 +93,12 @@ abstract class ModulePortfolio extends \Module
 			foreach($categories as $category) {
 				$objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
 				$objTemplate->categories .= $objPortfolioCategoryModel->alias.' ';
+				if(!$objTemplate->category_titles) {
+					$objTemplate->category_titles = $objPortfolioCategoryModel->title;
+				} else {
+					$objTemplate->category_titles .= ", ".$objPortfolioCategoryModel->title;
+				}
+				
 				
 			}
 		}
