@@ -21,7 +21,7 @@ $('.nav--portfolio').on( 'click', 'button', function() {
 	
   var filterValue = $(this).attr('data-category');
   if (filterValue != '*') {
-	  $portfolio.isotope({ filter: '[data-category="'+ filterValue + '"]' });
+	  $portfolio.isotope({ filter: '[data-category*="'+ filterValue + '"]' });
   } else {
 	  $portfolio.isotope({ filter: ''});
   }
