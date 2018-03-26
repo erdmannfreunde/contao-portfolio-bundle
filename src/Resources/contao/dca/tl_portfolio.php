@@ -125,7 +125,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     // Subpalettes
     'subpalettes' => array
     (
-		'addImage'                    => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
+		'addImage'                    => 'singleSRC,imgSize,floating,imagemargin,fullsize,overwriteMeta',
         'source_internal'             => 'jumpTo',
         'source_article'              => 'articleId',
         'source_external'             => 'url,target',
@@ -241,7 +241,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
 			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
-		'size' => array
+		'imgSize' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['size'],
 			'exclude'                 => true,
