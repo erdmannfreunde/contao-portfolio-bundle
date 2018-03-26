@@ -1,0 +1,54 @@
+<?php $GLOBALS['TL_JAVASCRIPT'][]  = 'bundles/eufportfolio/isotope.pkgd.min.js|static'; ?>
+
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+  <div class="isotope isotope--button-group block">
+  	<h4>Referenzen</h4>
+	<?php if($this->categories):?>
+        <button class="button" data-filter="*">Alle zeigen</button>
+		<?php foreach($this->categories as $category): ?>
+  			<button class="button" data-filter=".<?= $category->alias; ?>"><?php echo $category->title; ?></button>
+		<?php endforeach; ?>
+	<?php endif; ?>
+  </div>
+
+    <?php if (empty($this->items)): ?>
+        <p class="empty"><?php echo $this->empty; ?></p>
+    <?php else: ?>
+      <div class="projects__items">
+        <div class="gutter-sizer"></div>
+        <?php echo implode('', $this->items); ?>
+        <?php echo $this->pagination; ?>
+      </div>
+    <?php endif; ?>
+
+<!-- add this to your css for a 4 column layout
+<style type="text/css">
+    .layout_isotope { width: 23%; }
+    .gutter-sizer { width: 2.666666%; }
+</style>
+-->
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function(){
+          var $grid = $('.projects__items').isotope({
+              itemSelector: '.layout_isotope',
+              layoutMode: 'fitRows',
+              percentPosition: true,
+              fitRows: {
+                  gutter: ".gutter-sizer"
+              }
+          });
+
+          $(".isotope--button-group button").on("click", function() {
+              var filterValue = $(this).attr("data-filter");
+              $grid.isotope({ filter: filterValue });
+          });
+    });
+})(jQuery);
+</script>
+
+<?php $this->endblock(); ?>
+
