@@ -1,10 +1,11 @@
 
-<div class="layout_full block<?php echo $this->class; ?>">
+<div class="layout_full block<?php echo $this->class; ?>" itemscope itemtype="http://schema.org/Article">
    
-    <?php echo $this->text; ?>
-	
-	<?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
-      <?php endif; ?>
+  <h1 itemprop="name"><?= $this->headline; ?></h1>
+  <p class="portfolio__client">
+	  <?= $this->client ?>
+  </p>
+  
+  <?php echo $this->text; ?>
 
 </div>

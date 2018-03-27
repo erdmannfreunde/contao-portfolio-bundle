@@ -9,6 +9,14 @@
         <source>Please enter the portfolio title.</source>
         <target>Bitte geben Sie den Referenzen-Titel ein.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.client.0">
+        <source>Client</source>
+        <target>Kunde</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.client.1">
+        <source>Please enter the client name.</source>
+        <target>Bitte geben Sie den Kundennamen ein.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.alias.0">
         <source>portfolio alias</source>
         <target>Referenzenalias</target>

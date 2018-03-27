@@ -119,7 +119,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     'palettes' => array
     (
         '__selector__'                => array('addImage', 'source', 'overwriteMeta'),
-        'default'                     => '{title_legend},headline,alias,categories;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
+        'default'                     => '{title_legend},headline,client,alias,categories;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
     ),
 
     // Subpalettes
@@ -159,7 +159,18 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'sorting'                 => true,
             'flag'                    => 1,
             'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'maxlength'=>255),
+            'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'client' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['client'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'sorting'                 => true,
+            'flag'                    => 1,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
         ),
         'alias' => array
