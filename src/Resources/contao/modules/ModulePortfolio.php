@@ -94,13 +94,12 @@ abstract class ModulePortfolio extends \Module
 				$objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
 				$objTemplate->categories .= $objPortfolioCategoryModel->alias.' ';
 				if(!$objTemplate->category_titles) {
-					$objTemplate->category_titles = $objPortfolioCategoryModel->title;
+					$objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
 				} else {
-					$objTemplate->category_titles .= ", ".$objPortfolioCategoryModel->title;
+					$objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
 				}
-				
-				
 			}
+			$objTemplate->category_titles .= '</ul>';
 		}
         
 		$objTemplate->addImage = false;
