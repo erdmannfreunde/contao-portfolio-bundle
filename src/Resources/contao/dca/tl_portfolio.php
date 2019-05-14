@@ -13,373 +13,388 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
 (
 
     // Config
-    'config' => array
+    'config'      => array
     (
-        'dataContainer'               => 'Table',
-        'ctable'                      => array('tl_content'),
-        'switchToEdit'                => true,
-        'enableVersioning'            => true,
+        'dataContainer'     => 'Table',
+        'ctable'            => array('tl_content'),
+        'switchToEdit'      => true,
+        'enableVersioning'  => true,
         'onsubmit_callback' => array
         (
             array('tl_portfolio', 'adjustTime'),
         ),
-        'sql' => array
+        'sql'               => array
         (
             'keys' => array
             (
-                'id' => 'primary',
+                'id'    => 'primary',
                 'alias' => 'index'
             )
         )
     ),
 
     // List
-    'list' => array
+    'list'        => array
     (
-        'sorting' => array
+        'sorting'           => array
         (
-            'mode'                    => 5,
-			'flag'					  => 1,
-            'fields'                  => array('sorting'),
-            'panelLayout'             => 'filter;sort,search,limit',
-			'paste_button_callback'   => array('tl_portfolio', 'pasteElement'),
+            'mode'                  => 5,
+            'flag'                  => 1,
+            'fields'                => array('sorting'),
+            'panelLayout'           => 'filter;sort,search,limit',
+            'paste_button_callback' => array('tl_portfolio', 'pasteElement'),
         ),
-        'label' => array
+        'label'             => array
         (
-            'fields'                  => array('headline'),
-            'format'                  => '%s',
+            'fields' => array('headline'),
+            'format' => '%s',
         ),
         'global_operations' => array
         (
-			'categories' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
-				'href'                => 'table=tl_portfolio_category',
-				'icon'                => 'bundles/eufportfolio/icon.png',
-				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
-			),
-            'all' => array
+            'categories' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href'                => 'act=select',
-                'class'               => 'header_edit_all',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+                'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+                'href'       => 'table=tl_portfolio_category',
+                'icon'       => 'bundles/eufportfolio/icon.png',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="c"'
+            ),
+            'all'        => array
+            (
+                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href'       => 'act=select',
+                'class'      => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
             )
         ),
-        'operations' => array
+        'operations'        => array
         (
-            'edit' => array
+            'edit'       => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['edit'],
-                'href'                => 'table=tl_content',
-                'icon'                => 'edit.gif'
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['edit'],
+                'href'  => 'table=tl_content',
+                'icon'  => 'edit.gif'
             ),
             'editheader' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['editmeta'],
-                'href'                => 'act=edit',
-                'icon'                => 'header.gif'
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['editmeta'],
+                'href'  => 'act=edit',
+                'icon'  => 'header.gif'
             ),
-            'copy' => array
+            'copy'       => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['copy'],
-                'href'                => 'act=paste&amp;mode=copy',
-                'icon'                => 'copy.gif'
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['copy'],
+                'href'  => 'act=paste&amp;mode=copy',
+                'icon'  => 'copy.gif'
             ),
-            'cut' => array
+            'cut'        => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['cut'],
-                'href'                => 'act=paste&amp;mode=cut',
-                'icon'                => 'cut.gif'
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['cut'],
+                'href'  => 'act=paste&amp;mode=cut',
+                'icon'  => 'cut.gif'
             ),
-            'delete' => array
+            'delete'     => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['delete'],
-                'href'                => 'act=delete',
-                'icon'                => 'delete.gif',
-                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
+                'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['delete'],
+                'href'       => 'act=delete',
+                'icon'       => 'delete.gif',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
             ),
-            'toggle' => array
+            'toggle'     => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['toggle'],
-                'icon'                => 'visible.gif',
-                'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback'     => array('tl_portfolio', 'toggleIcon')
+                'label'           => &$GLOBALS['TL_LANG']['tl_portfolio']['toggle'],
+                'icon'            => 'visible.gif',
+                'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
+                'button_callback' => array('tl_portfolio', 'toggleIcon')
             ),
-            'show' => array
+            'feature'    => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio']['show'],
-                'href'                => 'act=show',
-                'icon'                => 'show.gif'
+                'label'           => &$GLOBALS['TL_LANG']['tl_portfolio']['feature'],
+                'icon'            => 'featured.svg',
+                'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFeatured(this,%s)"',
+                'button_callback' => array('tl_portfolio', 'iconFeatured')
+            ),
+            'show'       => array
+            (
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['show'],
+                'href'  => 'act=show',
+                'icon'  => 'show.gif'
             )
         )
     ),
 
     // Palettes
-    'palettes' => array
+    'palettes'    => array
     (
-        '__selector__'                => array('addImage', 'source', 'overwriteMeta'),
-        'default'                     => '{title_legend},headline,alias,categories;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
+        '__selector__' => array('addImage', 'source', 'overwriteMeta'),
+        'default'      => '{title_legend},headline,alias,categories;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
     ),
 
     // Subpalettes
     'subpalettes' => array
     (
-		'addImage'                    => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
-        'source_internal'             => 'jumpTo',
-        'source_article'              => 'articleId',
-        'source_external'             => 'url,target',
-		'overwriteMeta'               => 'alt,imageTitle,imageUrl,caption'
+        'addImage'        => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
+        'source_internal' => 'jumpTo',
+        'source_article'  => 'articleId',
+        'source_external' => 'url,target',
+        'overwriteMeta'   => 'alt,imageTitle,imageUrl,caption'
     ),
 
     // Fields
-    'fields' => array
+    'fields'      => array
     (
-        'id' => array
+        'id'            => array
         (
-            'sql'                     => "int(10) unsigned NOT NULL auto_increment"
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
         ),
-		'pid' => array
+        'pid'           => array
         (
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+            'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
-        'tstamp' => array
+        'tstamp'        => array
         (
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+            'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
-		'sorting' => array
-		(
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-        'headline' => array
+        'sorting'       => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['headline'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'sorting'                 => true,
-            'flag'                    => 1,
-            'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'maxlength'=>255),
-            'sql'                     => "varchar(255) NOT NULL default ''"
+            'sql' => "int(10) unsigned NOT NULL default '0'"
         ),
-        'alias' => array
+        'headline'      => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['alias'],
-            'exclude'                 => true,
-            'search'                  => false,
-            'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'alias', 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['headline'],
+            'exclude'   => true,
+            'search'    => true,
+            'sorting'   => true,
+            'flag'      => 1,
+            'inputType' => 'text',
+            'eval'      => array('mandatory' => true, 'maxlength' => 255),
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ),
+        'alias'         => array
+        (
+            'label'         => &$GLOBALS['TL_LANG']['tl_portfolio']['alias'],
+            'exclude'       => true,
+            'search'        => false,
+            'inputType'     => 'text',
+            'eval'          => array('rgxp' => 'alias', 'unique' => true, 'maxlength' => 128, 'tl_class' => 'w50'),
             'save_callback' => array
             (
                 array('tl_portfolio', 'generateAlias')
             ),
-            'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
+            'sql'           => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
         ),
-        'categories' => array
+        'categories'    => array
         (
 
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
-			'exclude'                 => true,
-			'filter'                  => true,
-			'inputType'               => 'select',
-			'foreignKey'              => 'tl_portfolio_category.title',
-			'eval'                    => array('multiple'=>true, 'chosen'=> true, 'tl_class'=>'w50'),
-			'sql'                     => "blob NULL"
+            'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+            'exclude'    => true,
+            'filter'     => true,
+            'inputType'  => 'select',
+            'foreignKey' => 'tl_portfolio_category.title',
+            'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'w50'),
+            'sql'        => "blob NULL"
 
         ),
-        'date' => array
+        'date'          => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['date'],
-            'default'                 => time(),
-            'exclude'                 => true,
-            'filter'                  => true,
-            'sorting'                 => true,
-            'flag'                    => 8,
-            'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'date', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['date'],
+            'default'   => time(),
+            'exclude'   => true,
+            'filter'    => true,
+            'sorting'   => true,
+            'flag'      => 8,
+            'inputType' => 'text',
+            'eval'      => array('rgxp' => 'date', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
         ),
-		'addImage' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['addImage'],
-			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true),
-			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'overwriteMeta' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['overwriteMeta'],
-			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50 clr'),
-			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'singleSRC' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'],
-			'exclude'                 => true,
-			'inputType'               => 'fileTree',
-			'eval'                    => array('fieldType'=>'radio', 'filesOnly'=>true, 'extensions'=>Config::get('validImageTypes'), 'mandatory'=>true),
-			'sql'                     => "binary(16) NULL"
-		),
-		'alt' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['alt'],
-			'exclude'                 => true,
-			'search'                  => true,
-			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'imageTitle' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['imageTitle'],
-			'exclude'                 => true,
-			'search'                  => true,
-			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'size' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['size'],
-			'exclude'                 => true,
-			'inputType'               => 'imageSize',
-			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'eval'                    => array('rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
-			'options_callback' => function ()
-			{
-				return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
-			},
-			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
-		'imagemargin' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
-			'exclude'                 => true,
-			'inputType'               => 'trbl',
-			'options'                 => $GLOBALS['TL_CSS_UNITS'],
-			'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(128) NOT NULL default ''"
-		),
-		'imageUrl' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
-			'exclude'                 => true,
-			'search'                  => true,
-			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'dcaPicker'=>true, 'tl_class'=>'w50 wizard'),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'fullsize' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
-			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array('tl_class'=>'w50 m12'),
-			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'caption' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['caption'],
-			'exclude'                 => true,
-			'search'                  => true,
-			'inputType'               => 'text',
-			'eval'                    => array('maxlength'=>255, 'allowHtml'=>true, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'floating' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_content']['floating'],
-			'default'                 => 'above',
-			'exclude'                 => true,
-			'inputType'               => 'radioTable',
-			'options'                 => array('above', 'left', 'right', 'below'),
-			'eval'                    => array('cols'=>4, 'tl_class'=>'w50'),
-			'reference'               => &$GLOBALS['TL_LANG']['MSC'],
-			'sql'                     => "varchar(12) NOT NULL default ''"
-		),
-        'source' => array
+        'addImage'      => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['source'],
-            'default'                 => 'default',
-            'exclude'                 => true,
-            'filter'                  => true,
-            'inputType'               => 'radio',
-            'options_callback'        => array('tl_portfolio', 'getSourceOptions'),
-            'reference'               => &$GLOBALS['TL_LANG']['tl_portfolio'],
-            'eval'                    => array('submitOnChange'=>true, 'helpwizard'=>true),
-            'sql'                     => "varchar(12) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['addImage'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => array('submitOnChange' => true),
+            'sql'       => "char(1) NOT NULL default ''"
         ),
-        'jumpTo' => array
+        'overwriteMeta' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['jumpTo'],
-            'exclude'                 => true,
-            'inputType'               => 'pageTree',
-            'foreignKey'              => 'tl_page.title',
-            'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio'),
-            'sql'                     => "int(10) unsigned NOT NULL default '0'",
-            'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['overwriteMeta'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => array('submitOnChange' => true, 'tl_class' => 'w50 clr'),
+            'sql'       => "char(1) NOT NULL default ''"
         ),
-        'articleId' => array
+        'singleSRC'     => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['articleId'],
-            'exclude'                 => true,
-            'inputType'               => 'select',
-            'options_callback'        => array('tl_portfolio', 'getArticleAlias'),
-            'eval'                    => array('chosen'=>true, 'mandatory'=>true),
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'],
+            'exclude'   => true,
+            'inputType' => 'fileTree',
+            'eval'      => array('fieldType' => 'radio', 'filesOnly' => true, 'extensions' => Config::get('validImageTypes'), 'mandatory' => true),
+            'sql'       => "binary(16) NULL"
         ),
-        'url' => array
+        'alt'           => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['MSC']['url'],
-            'exclude'                 => true,
-            'search'                  => false,
-            'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['alt'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'target' => array
+        'imageTitle'    => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['MSC']['target'],
-            'exclude'                 => true,
-            'inputType'               => 'checkbox',
-            'eval'                    => array('tl_class'=>'w50 m12'),
-            'sql'                     => "char(1) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['imageTitle'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'cssClass' => array
+        'size'          => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['cssClass'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'sql'                     => "varchar(255) NOT NULL default ''"
+            'label'            => &$GLOBALS['TL_LANG']['tl_content']['size'],
+            'exclude'          => true,
+            'inputType'        => 'imageSize',
+            'reference'        => &$GLOBALS['TL_LANG']['MSC'],
+            'eval'             => array('rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'),
+            'options_callback' => function () {
+                return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+            },
+            'sql'              => "varchar(64) NOT NULL default ''"
         ),
-        'published' => array
+        'imagemargin'   => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['published'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'flag'                    => 1,
-            'inputType'               => 'checkbox',
-            'eval'                    => array('doNotCopy'=>true),
-            'sql'                     => "char(1) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
+            'exclude'   => true,
+            'inputType' => 'trbl',
+            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'eval'      => array('includeBlankOption' => true, 'tl_class' => 'w50'),
+            'sql'       => "varchar(128) NOT NULL default ''"
         ),
-        'start' => array
+        'imageUrl'      => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['start'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-            'sql'                     => "varchar(10) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => array('rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'tl_class' => 'w50 wizard'),
+            'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'stop' => array
+        'fullsize'      => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio']['stop'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-            'sql'                     => "varchar(10) NOT NULL default ''"
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => array('tl_class' => 'w50 m12'),
+            'sql'       => "char(1) NOT NULL default ''"
+        ),
+        'caption'       => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['caption'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'allowHtml' => true, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ),
+        'floating'      => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_content']['floating'],
+            'default'   => 'above',
+            'exclude'   => true,
+            'inputType' => 'radioTable',
+            'options'   => array('above', 'left', 'right', 'below'),
+            'eval'      => array('cols' => 4, 'tl_class' => 'w50'),
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'sql'       => "varchar(12) NOT NULL default ''"
+        ),
+        'source'        => array
+        (
+            'label'            => &$GLOBALS['TL_LANG']['tl_portfolio']['source'],
+            'default'          => 'default',
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'radio',
+            'options_callback' => array('tl_portfolio', 'getSourceOptions'),
+            'reference'        => &$GLOBALS['TL_LANG']['tl_portfolio'],
+            'eval'             => array('submitOnChange' => true, 'helpwizard' => true),
+            'sql'              => "varchar(12) NOT NULL default ''"
+        ),
+        'jumpTo'        => array
+        (
+            'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['jumpTo'],
+            'exclude'    => true,
+            'inputType'  => 'pageTree',
+            'foreignKey' => 'tl_page.title',
+            'eval'       => array('mandatory' => true, 'fieldType' => 'radio'),
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'relation'   => array('type' => 'belongsTo', 'load' => 'lazy')
+        ),
+        'articleId'     => array
+        (
+            'label'            => &$GLOBALS['TL_LANG']['tl_portfolio']['articleId'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => array('tl_portfolio', 'getArticleAlias'),
+            'eval'             => array('chosen' => true, 'mandatory' => true),
+            'sql'              => "int(10) unsigned NOT NULL default '0'"
+        ),
+        'url'           => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['MSC']['url'],
+            'exclude'   => true,
+            'search'    => false,
+            'inputType' => 'text',
+            'eval'      => array('mandatory' => true, 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ),
+        'target'        => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['MSC']['target'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => array('tl_class' => 'w50 m12'),
+            'sql'       => "char(1) NOT NULL default ''"
+        ),
+        'cssClass'      => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['cssClass'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ),
+        'published'     => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['published'],
+            'exclude'   => true,
+            'filter'    => true,
+            'flag'      => 1,
+            'inputType' => 'checkbox',
+            'eval'      => array('doNotCopy' => true),
+            'sql'       => "char(1) NOT NULL default ''"
+        ),
+        'start'         => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['start'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+            'sql'       => "varchar(10) NOT NULL default ''"
+        ),
+        'stop'          => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['stop'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+            'sql'       => "varchar(10) NOT NULL default ''"
+        ),
+        'featured'      => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['featured'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => array('tl_class' => 'w50'),
+            'sql'       => "char(1) NOT NULL default ''"
         )
     )
 );
@@ -417,7 +432,7 @@ class tl_portfolio extends Backend
         }
 
         $objAlias = $this->Database->prepare("SELECT id FROM tl_portfolio WHERE alias=?")
-                                   ->execute($varValue);
+            ->execute($varValue);
 
         // Check whether the portfolio alias exists
         if ($objAlias->numRows > 1 && !$autoAlias)
@@ -457,13 +472,13 @@ class tl_portfolio extends Backend
                 return $arrAlias;
             }
 
-            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(". implode(',', array_map('intval', array_unique($arrPids))) .") ORDER BY parent, a.sorting")
-                                       ->execute($dc->id);
+            $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN(" . implode(',', array_map('intval', array_unique($arrPids))) . ") ORDER BY parent, a.sorting")
+                ->execute($dc->id);
         }
         else
         {
             $objAlias = $this->Database->prepare("SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting")
-                                       ->execute($dc->id);
+                ->execute($dc->id);
         }
 
         if ($objAlias->numRows)
@@ -478,7 +493,6 @@ class tl_portfolio extends Backend
 
         return $arrAlias;
     }
-
 
     /**
      * Add the source options depending on the allowed fields (see #5498)
@@ -522,7 +536,6 @@ class tl_portfolio extends Backend
         return $arrOptions;
     }
 
-
     /**
      * Adjust start end end time of the event based on date, span, startTime and endTime
      * @param \DataContainer
@@ -563,16 +576,15 @@ class tl_portfolio extends Backend
             return '';
         }
 
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
         if (!$row['published'])
         {
             $icon = 'invisible.gif';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
-
 
     /**
      * Disable/enable a user group
@@ -606,16 +618,97 @@ class tl_portfolio extends Backend
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
-                       ->execute($intId);
+        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=" . time() . ", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+            ->execute($intId);
 
         $objVersions->create();
-        $this->log('A new version of record "tl_portfolio.id='.$intId.'" has been created'.$this->getParentEntries('tl_portfolio', $intId), __METHOD__, TL_GENERAL);
+        $this->log('A new version of record "tl_portfolio.id=' . $intId . '" has been created' . $this->getParentEntries('tl_portfolio', $intId), __METHOD__, TL_GENERAL);
     }
-	
-	public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard) {
-		
-	$imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
-	return '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
-	}
+
+    /**
+     * @param DataContainer $dc
+     * @param $row
+     * @param $table
+     * @param $cr
+     * @param $arrClipboard
+     * @return string
+     */
+    public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard)
+    {
+        $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
+        return '<a href="' . $this->addToUrl('act=' . $arrClipboard['mode'] . '&mode=1&pid=' . $row['id']) . '" title="' . specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])) . '" onclick="Backend.getScrollOffset()">' . $imagePasteAfter . '</a> ';
+    }
+
+    /**
+     * Return the "feature/unfeature element" button
+     *
+     * @param array $row
+     * @param string $href
+     * @param string $label
+     * @param string $title
+     * @param string $icon
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
+    {
+        if (\strlen(Contao\Input::get('fid')))
+        {
+            $this->toggleFeatured(Contao\Input::get('fid'), (Contao\Input::get('state') == 1), (@func_get_arg(12) ?: null));
+            $this->redirect($this->getReferer());
+        }
+
+        $href .= '&amp;fid=' . $row['id'] . '&amp;state=' . ($row['featured'] ? '' : 1);
+
+        if (!$row['featured'])
+        {
+            $icon = 'featured_.svg';
+        }
+
+        return '<a href="' . $this->addToUrl($href) . '" title="' . Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Contao\Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"') . '</a> ';
+    }
+
+    /**
+     * Feature/unfeature a news item
+     *
+     * @param integer $intId
+     * @param boolean $blnVisible
+     * @param Contao\DataContainer $dc
+     *
+     * @throws Contao\CoreBundle\Exception\AccessDeniedException
+     */
+    public function toggleFeatured($intId, $blnVisible, Contao\DataContainer $dc = null)
+    {
+        // Check permissions to edit
+        Contao\Input::setGet('id', $intId);
+        Contao\Input::setGet('act', 'feature');
+
+        $objVersions = new Contao\Versions('tl_portfolio', $intId);
+        $objVersions->initialize();
+
+        // Trigger the save_callback
+        if (\is_array($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback'] as $callback)
+            {
+                if (\is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
+                }
+                elseif (\is_callable($callback))
+                {
+                    $blnVisible = $callback($blnVisible, $this);
+                }
+            }
+        }
+
+        // Update the database
+        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=" . time() . ", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+            ->execute($intId);
+
+        $objVersions->create();
+    }
+
 }
