@@ -41,7 +41,6 @@ class ModulePortfolioList extends ModulePortfolio
         return parent::generate();
     }
 
-
     /**
      * Generate the module
      */
@@ -49,27 +48,27 @@ class ModulePortfolioList extends ModulePortfolio
     {
         $objCategories = PortfolioCategoryModel::findAll([
             'column' => 'published',
-            'value' => 1,
-            'order' => 'sorting ASC',
+            'value'  => 1,
+            'order'  => 'sorting ASC',
         ]);
 
-		if ($objCategories !== null)
+        if ($objCategories !== null)
         {
             $this->Template->categories = $objCategories;
         }
 
-        // Maximum number of items
-		if ($this->numberOfItems > 0)
-		{
-			$limit = $this->numberOfItems;
-		}
+        $arrColumns = ['tl_portfolio.published=?'];
+        $arrValues = ['1'];
+        $arrOptions = ['order' => 'tl_portfolio.sorting ASC'];
 
-        $objItems = PortfolioModel::findAll([
-            'column' => 'published',
-            'value' => 1,
-            'order' => 'sorting ASC',
-            'limit' =>  $limit,
-        ]);
+        // Handle featured/unfeatured items
+        if ($this->portfolio_featured === 'featured' || $this->portfolio_featured === 'unfeatured')
+        {
+            $arrColumns[] = 'tl_portfolio.featured=?';
+            $arrValues[] = $this->portfolio_featured === 'featured' ? '1' : '';
+        }
+
+        $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
 
         if ($objItems !== null)
         {

@@ -345,6 +345,14 @@
         <source>Paste after portfolio article ID %s</source>
         <target>Nach dem Eintrag ID %s einfügen</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.featured.0">
+        <source>Feature item</source>
+        <target>Beitrag hervorheben</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.featured.1">
+        <source>Show the news item in a featured portfolio list.</source>
+        <target>Den Beitrag in einer Liste hervorgehobener Portfolios anzeigen.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
