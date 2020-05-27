@@ -52,16 +52,23 @@ class ModulePortfolioList extends ModulePortfolio
             'value' => 1,
             'order' => 'sorting ASC',
         ]);
-		
+
 		if ($objCategories !== null)
         {
             $this->Template->categories = $objCategories;
-        }		
-		
+        }
+
+        // Maximum number of items
+		if ($this->numberOfItems > 0)
+		{
+			$limit = $this->numberOfItems;
+		}
+
         $objItems = PortfolioModel::findAll([
             'column' => 'published',
             'value' => 1,
             'order' => 'sorting ASC',
+            'limit' =>  $limit,
         ]);
 
         if ($objItems !== null)
