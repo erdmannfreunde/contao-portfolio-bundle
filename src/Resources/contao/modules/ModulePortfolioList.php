@@ -57,9 +57,19 @@ class ModulePortfolioList extends ModulePortfolio
             $this->Template->categories = $objCategories;
         }
 
+        // Maximum number of items
+		if ($this->numberOfItems > 0)
+		{
+			$limit = $this->numberOfItems;
+		}
+
+
         $arrColumns = ['tl_portfolio.published=?'];
         $arrValues = ['1'];
-        $arrOptions = ['order' => 'tl_portfolio.sorting ASC'];
+        $arrOptions = [
+            'order' => 'tl_portfolio.sorting ASC',
+            'limit' => $limit
+        ];
 
         // Handle featured/unfeatured items
         if ($this->portfolio_featured === 'featured' || $this->portfolio_featured === 'unfeatured')
