@@ -52,7 +52,7 @@ class ModulePortfolioList extends ModulePortfolio
             'order'  => 'sorting ASC',
         ]);
 
-        if ($objCategories !== null)
+        if ($objCategories !== null && $this->portfolio_filter)
         {
             $this->Template->categories = $objCategories;
         }
