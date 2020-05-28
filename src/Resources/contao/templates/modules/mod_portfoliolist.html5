@@ -1,18 +1,17 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
+  <?php if($this->categories):?>
   <nav class="nav nav--portfolio block">
-  	<h4>Projektauswahl</h4>
-	<?php if($this->categories):?>
   	<ul class="level_1">
 		<?php foreach($this->categories as $category): ?>
   		<li>
   			<button data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></button>
   		</li>
 		<?php endforeach; ?>
-  	</ul>
-	<?php endif; ?>
+    </ul>
   </nav>
+	<?php endif; ?>
 
     <?php if (empty($this->items)): ?>
         <p class="empty"><?php echo $this->empty; ?></p>
