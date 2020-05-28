@@ -46,6 +46,12 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function compile()
     {
+
+        // Add the "reset categories" link
+        if ($this->portfolio_filter_reset) {
+            $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
+        }
+
         $objCategories = PortfolioCategoryModel::findAll([
             'column' => 'published',
             'value'  => 1,
@@ -54,6 +60,8 @@ class ModulePortfolioList extends ModulePortfolio
 
         if ($objCategories !== null && $this->portfolio_filter)
         {
+
+
             $this->Template->categories = $objCategories;
         }
 
