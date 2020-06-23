@@ -5,7 +5,7 @@
   <nav class="nav nav--portfolio block">
   	<ul class="level_1">
       <?php if($this->portfolio_filter_reset): ?>
-        <li><button data-category="all"><?= $this->portfolio_filter_reset ?></button></li>
+        <li><button class="active" data-category="all"><?= $this->portfolio_filter_reset ?></button></li>
       <?php endif; ?>
 		<?php foreach($this->categories as $category): ?>
   		<li><button data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></button></li>
