@@ -1,33 +1,40 @@
 <!-- jquery portfolio -->
-<script src="/bundles/eufportfolio/js/isotope.pkgd.min.js"></script>
-<script src="/bundles/eufportfolio/js/packery-mode.pkgd.min.js"></script>
-
 <script>
+(function($) {
+  'use strict';
 
-var $portfolio = $('.portfolio .portfolio_container').isotope({
-  // options
-  itemSelector: '.portfolio__item',
-  layoutMode: 'packery'
-  /*
-  masonry: {
-    columnWidth: 50
-  }
-  */
-});
+  var $filters = $('.portfolio__filter [data-category]'),
+      $items = $('.projects__items .layout_short');
 
-$('.nav--portfolio').on( 'click', 'button', function() {
-	$('.nav--portfolio button').removeClass('active');
-  $(this).addClass('active');
-	
-  var filterValue = $(this).attr('data-category');
-  if (filterValue != '*') {
-	  $portfolio.isotope({ filter: '[data-category*="'+ filterValue + '"]' });
-  } else {
-	  $portfolio.isotope({ filter: ''});
-  }
- 
-});
+  $filters.on('click', function(e) {
+    e.preventDefault();
+    var $this = $(this);
 
- $portfolio.isotope();
+    $filters.removeClass('active');
+    $this.addClass('active');
 
-</script>
+    var $filterCategory = $this.attr('data-category');
+
+    if ($filterCategory == 'all') {
+      $items.removeClass('is-animated')
+        .fadeOut().promise().done(function() {
+          $items.addClass('is-animated').fadeIn();
+        });
+    } else {
+      $items.removeClass('is-animated')
+        .fadeOut().promise().done(function() {
+
+          $items.each(function() {
+            var categories = $(this).data('category').split(',');
+
+            if (categories.indexOf($filterCategory) != -1) {
+              $(this).addClass('is-animated').fadeIn();
+            }
+          });
+
+        });
+    }
+  });
+})(jQuery);
+  </script>
+
