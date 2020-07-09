@@ -116,13 +116,13 @@ abstract class ModulePortfolio extends \Module
 				$arrArticle = $objItem->row();
 
 				// Override the default image size
-				if ($this->imgSize != '')
+				if ($objItem->imgSize != '')
 				{
-					$size = \StringUtil::deserialize($this->imgSize);
+					$size = \StringUtil::deserialize($objItem->imgSize);
 
 					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
 					{
-						$arrArticle['size'] = $this->imgSize;
+						$arrArticle['size'] = $objItem->imgSize;
 					}
 				}
 
