@@ -189,7 +189,7 @@ class tl_portfolio_category extends Backend
         if ($varValue == '')
         {
             $autoAlias = true;
-            $varValue = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
+            $varValue = StringUtil::generateAlias($dc->activeRecord->title);
         }
 
         $objAlias = $this->Database->prepare("SELECT id FROM tl_portfolio_category WHERE alias=?")
