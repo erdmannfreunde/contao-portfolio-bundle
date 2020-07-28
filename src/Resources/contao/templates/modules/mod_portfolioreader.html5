@@ -3,5 +3,9 @@
 <?php $this->block('content'); ?>
 
     <?php echo $this->items; ?>
-    
+
+    <!-- indexer::stop -->
+    <p class="back"><a href="<?= $this->referer ?>" title="<?= $this->back ?>"><?= $this->back ?></a></p>
+    <!-- indexer::continue -->
+
 <?php $this->endblock(); ?>
