@@ -6,6 +6,7 @@
 namespace EuF\PortfolioBundle\Modules;
 
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use Contao\StringUtil;
 
 /**
  * Class ModulePortfolio
@@ -87,49 +88,68 @@ abstract class ModulePortfolio extends \Module
         $objTemplate->author = $arrMeta['author'];
         $objTemplate->datetime = date('Y-m-d\TH:i:sP', $objItem->date);
 
-		if($objItem->categories) {
-			$objTemplate->categories = '';
-			$categories = unserialize($objItem->categories);
-			foreach($categories as $category) {
-				$objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
-				$objCategories[] = $objPortfolioCategoryModel->alias;
-				if(!$objTemplate->category_titles) {
-					$objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
-				} else {
-					$objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
-				}
-			}
+        if($objItem->categories) {
+            $objTemplate->categories = '';
+            $categories = unserialize($objItem->categories);
+            foreach($categories as $category) {
+                $objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
+                $objCategories[] = $objPortfolioCategoryModel->alias;
+                if(!$objTemplate->category_titles) {
+                    $objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
+                } else {
+                    $objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
+                }
+            }
             $objTemplate->category_titles .= '</ul>';
             $objTemplate->categories .= implode(',', $objCategories);
-		}
+        }
 
-		$objTemplate->addImage = false;
+        $objTemplate->addImage = false;
 
-		// Add an image
-		if ($objItem->addImage && $objItem->singleSRC != '')
-		{
-			$objModel = \FilesModel::findByUuid($objItem->singleSRC);
+        // Add an image
+        if ($objItem->addImage && $objItem->singleSRC != '')
+        {
+            $objModel = \FilesModel::findByUuid($objItem->singleSRC);
 
-			if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
-			{
-				// Do not override the field now that we have a model registry (see #6303)
-				$arrArticle = $objItem->row();
+            if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
+            {
+                // Do not override the field now that we have a model registry (see #6303)
+                $arrArticle = $objItem->row();
 
-				// Override the default image size
-				if ($objItem->imgSize != '')
-				{
-					$size = \StringUtil::deserialize($objItem->imgSize);
+                // Override the default image size
+                if ($objItem->imgSize != '')
+                {
+                    $size = \StringUtil::deserialize($objItem->imgSize);
 
-					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-					{
-						$arrArticle['size'] = $objItem->imgSize;
-					}
-				}
+                    if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+                    {
+                        $arrArticle['size'] = $objItem->imgSize;
+                    }
+                }
 
-				$arrArticle['singleSRC'] = $objModel->path;
-				$this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
-			}
-		}
+                $arrArticle['singleSRC'] = $objModel->path;
+                $this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+                
+                // Link to the portfolio reader if no image link has been defined (see #30)
+                if (!$objTemplate->fullsize && !$objTemplate->imageUrl)
+                {
+                    // Unset the image title attribute
+                    $picture = $objTemplate->picture;
+                    unset($picture['title']);
+                    $objTemplate->picture = $picture;
+
+                    // Link to the portfolio reader
+                    $objTemplate->href = $objTemplate->link;
+                    $objTemplate->linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true);
+
+                    // If the external link is opened in a new window, open the image link in a new window, too
+                    if ($objTemplate->source == 'external' && $objTemplate->target && strpos($objTemplate->attributes, 'target="_blank"') === false)
+                    {
+                        $objTemplate->attributes .= ' target="_blank"';
+                    }
+                }
+            }
+        }
 
         return $objTemplate->parse();
     }
