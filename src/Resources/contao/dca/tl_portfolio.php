@@ -524,7 +524,7 @@ class tl_portfolio extends Backend
             return;
         }
 
-        $arrSet['date'] = strtotime(date('Y-m-d', $dc->activeRecord->date).' '.date('H:i:s', $dc->activeRecord->time));
+        $arrSet['date'] = strtotime(date('Y-m-d', ((int) $dc->activeRecord->date)));
         $this->Database->prepare('UPDATE tl_portfolio %s WHERE id=?')->set($arrSet)->execute($dc->id);
     }
 
