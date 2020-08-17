@@ -3,7 +3,7 @@
 /**
  * Add palettes to tl_module
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['portfoliolist'] = '{title_legend},name,headline,type;{config_legend},portfolio_featured,numberOfItems,portfolio_filter,portfolio_filter_reset;{redirect_legend},jumpTo;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['portfoliolist'] = '{title_legend},name,headline,type;{config_legend},portfolio_featured,numberOfItems,portfolio_filter,portfolio_filter_reset,filter_categories;{redirect_legend},jumpTo;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['portfolioreader'] = '{title_legend},name,headline,type;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 /**
@@ -46,6 +46,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_filter_reset'] = [
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean', 'default' => 0],
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['filter_categories']    = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+    'exclude'    => true,
+    'filter'     => true,
+    'inputType'  => 'select',
+    'foreignKey' => 'tl_portfolio_category.title',
+    'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr w50'),
+    'sql'        => "blob NULL"
 ];
 
 /**
