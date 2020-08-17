@@ -1,123 +1,105 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of Contao.
- *
- * (c) Leo Feyer
- *
- * @license LGPL-3.0-or-later
+ * Contao Portfolio Bundle for Contao Open Source CMS.
+ * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @author     Erdmann & Freunde <https://erdmann-freunde.de>
+ * @license    MIT
+ * @link       http://github.com/erdmannfreunde/contao-grid
  */
 
-$GLOBALS['TL_DCA']['tl_portfolio_archive'] = array
-(
+$GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
-    'config' => array
-    (
+    'config' => [
         'dataContainer'               => 'Table',
-        'ctable'                      => array('tl_portfolio'),
+        'ctable'                      => ['tl_portfolio'],
         'switchToEdit'                => true,
         'enableVersioning'            => true,
-        'sql' => array
-        (
-            'keys' => array
-            (
-                'id' => 'primary'
-            )
-        )
-    ),
+        'sql'                         => [
+            'keys' => [
+                'id' => 'primary',
+            ],
+        ],
+    ],
 
     // List
-    'list' => array
-    (
-        'sorting' => array
-        (
+    'list' => [
+        'sorting' => [
             'mode'                    => 1,
-            'fields'                  => array('title'),
+            'fields'                  => ['title'],
             'flag'                    => 1,
-            'panelLayout'             => 'search,limit'
-        ),
-        'label' => array
-        (
-            'fields'                  => array('title'),
-            'format'                  => '%s'
-        ),
-        'global_operations' => array
-        (
-            'all' => array
-            (
+            'panelLayout'             => 'search,limit',
+        ],
+        'label' => [
+            'fields'                  => ['title'],
+            'format'                  => '%s',
+        ],
+        'global_operations' => [
+            'all' => [
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'                => 'act=select',
                 'class'               => 'header_edit_all',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            )
-        ),
-        'operations' => array
-        (
-            'edit' => array
-            (
+                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
+        ],
+        'operations' => [
+            'edit' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['edit'],
                 'href'                => 'table=tl_portfolio',
-                'icon'                => 'edit.svg'
-            ),
-            'editheader' => array
-            (
+                'icon'                => 'edit.svg',
+            ],
+            'editheader' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['editheader'],
                 'href'                => 'act=edit',
                 'icon'                => 'header.svg',
-                'button_callback'     => array('tl_portfolio_archive', 'editHeader')
-            ),
-            'copy' => array
-            (
+                'button_callback'     => ['tl_portfolio_archive', 'editHeader'],
+            ],
+            'copy' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['copy'],
                 'href'                => 'act=copy',
                 'icon'                => 'copy.svg',
-                'button_callback'     => array('tl_portfolio_archive', 'copyArchive')
-            ),
-            'delete' => array
-            (
+                'button_callback'     => ['tl_portfolio_archive', 'copyArchive'],
+            ],
+            'delete' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['delete'],
                 'href'                => 'act=delete',
                 'icon'                => 'delete.svg',
-                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-                'button_callback'     => array('tl_portfolio_archive', 'deleteArchive')
-            ),
-            'show' => array
-            (
+                'attributes'          => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'button_callback'     => ['tl_portfolio_archive', 'deleteArchive'],
+            ],
+            'show' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['show'],
                 'href'                => 'act=show',
-                'icon'                => 'show.svg'
-            )
-        )
-    ),
+                'icon'                => 'show.svg',
+            ],
+        ],
+    ],
 
     // Palettes
-    'palettes' => array
-    (
-        'default'                     => '{title_legend},title;'
-    ),
+    'palettes' => [
+        'default'                     => '{title_legend},title;',
+    ],
 
     // Fields
-    'fields' => array
-    (
-        'id' => array
-        (
-            'sql'                     => "int(10) unsigned NOT NULL auto_increment"
-        ),
-        'tstamp' => array
-        (
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
-        ),
-        'title' => array
-        (
+    'fields' => [
+        'id' => [
+            'sql'                     => 'int(10) unsigned NOT NULL auto_increment',
+        ],
+        'tstamp' => [
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'title' => [
             'label'                   => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['title'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-            'sql'                     => "varchar(255) NOT NULL default ''"
-        )
-    )
-);
+            'eval'                    => ['mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'],
+            'sql'                     => "varchar(255) NOT NULL default ''",
+        ],
+    ],
+];
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
@@ -129,7 +111,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = array
 class tl_portfolio_archive extends Backend
 {
     /**
-     * Import the back end user object
+     * Import the back end user object.
      */
     public function __construct()
     {
@@ -138,7 +120,7 @@ class tl_portfolio_archive extends Backend
     }
 
     /**
-     * Return the edit header button
+     * Return the edit header button.
      *
      * @param array  $row
      * @param string $href
@@ -151,11 +133,11 @@ class tl_portfolio_archive extends Backend
      */
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->User->canEditFieldsOf('tl_portfolio_archive') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+        return $this->User->canEditFieldsOf('tl_portfolio_archive') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
-     * Return the copy archive button
+     * Return the copy archive button.
      *
      * @param array  $row
      * @param string $href
@@ -168,11 +150,11 @@ class tl_portfolio_archive extends Backend
      */
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->User->hasAccess('create', 'newp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+        return $this->User->hasAccess('create', 'newp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
-     * Return the delete archive button
+     * Return the delete archive button.
      *
      * @param array  $row
      * @param string $href
@@ -185,6 +167,6 @@ class tl_portfolio_archive extends Backend
      */
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->User->hasAccess('delete', 'newp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+        return $this->User->hasAccess('delete', 'newp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 }

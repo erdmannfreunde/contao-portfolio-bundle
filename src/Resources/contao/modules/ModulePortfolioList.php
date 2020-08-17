@@ -1,39 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Contao Portfolio Bundle for Contao Open Source CMS.
+ * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @author     Erdmann & Freunde <https://erdmann-freunde.de>
+ * @license    MIT
+ * @link       http://github.com/erdmannfreunde/contao-grid
+ */
+
 namespace EuF\PortfolioBundle\Modules;
 
-use EuF\PortfolioBundle\Modules\ModulePortfolio;
-use EuF\PortfolioBundle\Models\PortfolioModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use EuF\PortfolioBundle\Models\PortfolioModel;
 
 /**
- * Class ModulePortfolioList
+ * Class ModulePortfolioList.
  *
  * Front end module "portfolio list".
  */
 class ModulePortfolioList extends ModulePortfolio
 {
     /**
-     * Template
+     * Template.
+     *
      * @var string
      */
     protected $strTemplate = 'mod_portfoliolist';
 
     /**
-     * Display a wildcard in the back end
+     * Display a wildcard in the back end.
+     *
      * @return string
      */
     public function generate()
     {
-        if (TL_MODE == 'BE')
-        {
+        if (TL_MODE === 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['portfoliolist'][0]) . ' ###';
-            $objTemplate->title = $this->headline;
-            $objTemplate->id = $this->id;
-            $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->wildcard = '### '.utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['portfoliolist'][0]).' ###';
+            $objTemplate->title    = $this->headline;
+            $objTemplate->id       = $this->id;
+            $objTemplate->link     = $this->name;
+            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }
@@ -42,11 +52,10 @@ class ModulePortfolioList extends ModulePortfolio
     }
 
     /**
-     * Generate the module
+     * Generate the module.
      */
     protected function compile()
     {
-
         // Add the "reset categories" link
         if ($this->portfolio_filter_reset) {
             $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
@@ -58,38 +67,31 @@ class ModulePortfolioList extends ModulePortfolio
             'order'  => 'sorting ASC',
         ]);
 
-        if ($objCategories !== null && $this->portfolio_filter)
-        {
-
-
+        if (null !== $objCategories && $this->portfolio_filter) {
             $this->Template->categories = $objCategories;
         }
 
         // Maximum number of items
-		if ($this->numberOfItems > 0)
-		{
-			$limit = $this->numberOfItems;
-		}
-
+        if ($this->numberOfItems > 0) {
+            $limit = $this->numberOfItems;
+        }
 
         $arrColumns = ['tl_portfolio.published=?'];
-        $arrValues = ['1'];
+        $arrValues  = ['1'];
         $arrOptions = [
             'order' => 'tl_portfolio.sorting ASC',
-            'limit' => $limit
+            'limit' => $limit,
         ];
 
         // Handle featured/unfeatured items
-        if ($this->portfolio_featured === 'featured' || $this->portfolio_featured === 'unfeatured')
-        {
+        if ('featured' === $this->portfolio_featured || 'unfeatured' === $this->portfolio_featured) {
             $arrColumns[] = 'tl_portfolio.featured=?';
-            $arrValues[] = $this->portfolio_featured === 'featured' ? '1' : '';
+            $arrValues[]  = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
         $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
 
-        if ($objItems !== null)
-        {
+        if (null !== $objItems) {
             $this->Template->items = $this->parseItems($objItems);
         }
     }
