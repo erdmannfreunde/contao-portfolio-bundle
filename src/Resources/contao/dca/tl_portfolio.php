@@ -644,7 +644,7 @@ class tl_portfolio extends Backend
             $icon = 'featured_.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.Contao\StringUtilUtil::specialchars($title).'"'.$attributes.'>'.Contao\Image::getHtml($icon, $label, 'data-state="'.($row['featured'] ? 1 : 0).'"').'</a> ';
+        return '<a href="'.$this->addToUrl($href).'" title="'.Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.Contao\Image::getHtml($icon, $label, 'data-state="'.($row['featured'] ? 1 : 0).'"').'</a> ';
     }
 
     /**
