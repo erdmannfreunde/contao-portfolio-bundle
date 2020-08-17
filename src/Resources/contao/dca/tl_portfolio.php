@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     'palettes'    => array
     (
         '__selector__' => array('addImage', 'source', 'overwriteMeta'),
-        'default'      => '{title_legend},headline,alias,categories,client,description;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
+        'default'      => '{title_legend},headline,alias,categories,client;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
     ),
 
     // Subpalettes
@@ -166,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'sorting'   => true,
             'flag'      => 1,
             'inputType' => 'text',
-            'eval'      => array('mandatory' => true, 'maxlength' => 255),
+            'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
         'alias'         => array
@@ -190,7 +190,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'filter'     => true,
             'inputType'  => 'select',
             'foreignKey' => 'tl_portfolio_category.title',
-            'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'w50'),
+            'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr w50'),
             'sql'        => "blob NULL"
 
         ),
@@ -204,13 +204,13 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'eval'      => array('maxlength' => 255, 'tl_class'  => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''",
         ),
-        'description'     => array
+        'teaser'     => array
         (
-            'label'       => &$GLOBALS['TL_LANG']['tl_portfolio']['description'],
+            'label'       => &$GLOBALS['TL_LANG']['tl_portfolio']['teaser'],
             'exclude'     => true,
             'search'      => true,
             'inputType'   => 'textarea',
-            'eval'        => array('mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'),
+            'eval'        => array('rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'),
             'explanation' => 'insertTags',
             'sql'         => 'mediumtext NULL',
         ),
