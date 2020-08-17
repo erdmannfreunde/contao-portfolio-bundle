@@ -60,12 +60,12 @@ abstract class ModulePortfolio extends \Module
         // Clean the RTE output
         if ('' !== $objItem->teaser) {
             if ('xhtml' === $objPage->outputFormat) {
-                $objTemplate->teaser = \String::toXhtml($objItem->teaser);
+                $objTemplate->teaser = \StringUtil::toXhtml($objItem->teaser);
             } else {
-                $objTemplate->teaser = \String::toHtml5($objItem->teaser);
+                $objTemplate->teaser = \StringUtil::toHtml5($objItem->teaser);
             }
 
-            $objTemplate->teaser = \String::encodeEmail($objTemplate->teaser);
+            $objTemplate->teaser = \StringUtil::encodeEmail($objTemplate->teaser);
         }
 
         // Display the "read more" button for external/article links
@@ -86,8 +86,6 @@ abstract class ModulePortfolio extends \Module
         // Add the meta information
         $objTemplate->date      = Date::parse($objPage->dateFormat, $objItem->date);
         $objTemplate->timestamp = $objItem->date;
-        $objTemplate->author    = $arrMeta['author'];
-        $objTemplate->datetime  = date('Y-m-d\TH:i:sP', $objItem->date);
 
         if ($objItem->categories) {
             $objTemplate->categories = '';
@@ -202,7 +200,7 @@ abstract class ModulePortfolio extends \Module
             // Link to an external page
             case 'external':
                 if ('mailto:' === substr($objItem->url, 0, 7)) {
-                    self::$arrUrlCache[$strCacheKey] = \String::encodeEmail($objItem->url);
+                    self::$arrUrlCache[$strCacheKey] = \StringUtil::encodeEmail($objItem->url);
                 } else {
                     self::$arrUrlCache[$strCacheKey] = ampersand($objItem->url);
                 }

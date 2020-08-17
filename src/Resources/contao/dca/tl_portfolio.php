@@ -548,8 +548,8 @@ class tl_portfolio extends Backend
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        if (\strlen(Input::get('tid'))) {
-            $this->toggleVisibility(Input::get('tid'), (1 === Input::get('state')));
+        if (Contao\Input::get('tid')) {
+            $this->toggleVisibility(Contao\Input::get('tid'), (1 === Contao\Input::get('state')));
             $this->redirect($this->getReferer());
         }
 
@@ -633,7 +633,7 @@ class tl_portfolio extends Backend
      */
     public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
     {
-        if (\strlen(Contao\Input::get('fid'))) {
+        if (Contao\Input::get('fid')) {
             $this->toggleFeatured(Contao\Input::get('fid'), (1 === Contao\Input::get('state')), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
         }
@@ -644,7 +644,7 @@ class tl_portfolio extends Backend
             $icon = 'featured_.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.Contao\Image::getHtml($icon, $label, 'data-state="'.($row['featured'] ? 1 : 0).'"').'</a> ';
+        return '<a href="'.$this->addToUrl($href).'" title="'.Contao\StringUtilUtil::specialchars($title).'"'.$attributes.'>'.Contao\Image::getHtml($icon, $label, 'data-state="'.($row['featured'] ? 1 : 0).'"').'</a> ';
     }
 
     /**
