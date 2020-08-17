@@ -194,6 +194,26 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'sql'        => "blob NULL"
 
         ),
+        'client'         => array
+        (
+            'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['client'],
+            'exclude'   => true,
+            'search'    => true,
+            'flag'      => 1,
+            'inputType' => 'text',
+            'eval'      => array('maxlength' => 255, 'tl_class'  => 'w50'),
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ),
+        'description'     => array
+        (
+            'label'       => &$GLOBALS['TL_LANG']['tl_portfolio']['description'],
+            'exclude'     => true,
+            'search'      => true,
+            'inputType'   => 'textarea',
+            'eval'        => array('mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'),
+            'explanation' => 'insertTags',
+            'sql'         => 'mediumtext NULL',
+        ),
         'date'          => array
         (
             'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['date'],
@@ -248,7 +268,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'eval'      => array('maxlength' => 255, 'tl_class' => 'w50'),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
-        'imgSize'          => array
+        'imgSize'              => array
         (
             'label'            => &$GLOBALS['TL_LANG']['tl_content']['size'],
             'exclude'          => true,

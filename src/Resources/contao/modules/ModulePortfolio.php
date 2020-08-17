@@ -7,6 +7,7 @@ namespace EuF\PortfolioBundle\Modules;
 
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 use Contao\StringUtil;
+use Contao\Date;
 
 /**
  * Class ModulePortfolio
@@ -80,10 +81,7 @@ abstract class ModulePortfolio extends \Module
         }
 
         // Add the meta information
-        $objTemplate->date = $arrMeta['date'];
-        $objTemplate->hasMetaFields = !empty($arrMeta);
-        $objTemplate->numberOfComments = $arrMeta['ccount'];
-        $objTemplate->commentCount = $arrMeta['comments'];
+        $objTemplate->date = Date::parse($objPage->dateFormat, $objItem->date);
         $objTemplate->timestamp = $objItem->date;
         $objTemplate->author = $arrMeta['author'];
         $objTemplate->datetime = date('Y-m-d\TH:i:sP', $objItem->date);
