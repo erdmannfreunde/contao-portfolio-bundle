@@ -7,8 +7,8 @@ array_insert($GLOBALS['BE_MOD']['content'], 2, array
 (
     'portfolio' => array
     (
-        'tables'      => array('tl_portfolio', 'tl_portfolio_category', 'tl_content'),
-        'icon'        => 'system/modules/portfolio/assets/icon.png',
+        'tables'      => array('tl_portfolio_archive', 'tl_portfolio', 'tl_portfolio_category', 'tl_content'),
+        //'icon'        => 'system/modules/portfolio/assets/icon.png',
     )
 ));
 

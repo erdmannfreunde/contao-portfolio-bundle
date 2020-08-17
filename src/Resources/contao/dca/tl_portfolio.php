@@ -16,6 +16,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     'config'      => array
     (
         'dataContainer'     => 'Table',
+        'ptable'            => 'tl_portfolio_archive',
         'ctable'            => array('tl_content'),
         'switchToEdit'      => true,
         'enableVersioning'  => true,
@@ -28,7 +29,8 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
             'keys' => array
             (
                 'id'    => 'primary',
-                'alias' => 'index'
+                'alias' => 'index',
+                'pid,start,stop,published' => 'index'
             )
         )
     ),
@@ -38,10 +40,11 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = array
     (
         'sorting'           => array
         (
-            'mode'                  => 5,
-            'flag'                  => 1,
+            'mode'                  => 4,
             'fields'                => array('sorting'),
             'panelLayout'           => 'filter;sort,search,limit',
+            'headerFields'            => array('title'),
+            'child_record_callback'   => array('tl_portfolio', 'listItems'),
             'paste_button_callback' => array('tl_portfolio', 'pasteElement'),
         ),
         'label'             => array
@@ -432,6 +435,18 @@ class tl_portfolio extends Backend
         parent::__construct();
         $this->import('BackendUser', 'User');
     }
+
+    /**
+	 * Add the type of input field
+	 *
+	 * @param array $arrRow
+	 *
+	 * @return string
+	 */
+	public function listItems($arrRow)
+	{
+        return '<div class="tl_content_left">' . $arrRow['headline'] . ' <span style="color:#999;padding-left:3px">[' . Date::parse(Config::get('dateFormat'), $arrRow['date']) . ']</span></div>';
+	}
 
     /**
      * Auto-generate the portfolio alias if it has not been set yet
