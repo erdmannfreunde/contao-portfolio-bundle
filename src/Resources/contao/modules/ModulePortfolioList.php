@@ -109,7 +109,7 @@ class ModulePortfolioList extends ModulePortfolio
                     $arrFilteredItems = array_slice($arrFilteredItems, 0, $limit);
                 }
             } else {
-                $arrFilteredItems = $objItems->toArray();
+                $arrFilteredItems = $objItems->fetchAll();
             }
 
             $this->Template->items = $this->parseItems($arrFilteredItems);

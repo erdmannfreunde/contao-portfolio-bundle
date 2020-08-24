@@ -157,9 +157,9 @@ abstract class ModulePortfolio extends \Module
      */
     protected function parseItems($arrItems)
     {
-        $limit = count($arrItems);
+        $intTotal = count($arrItems);
 
-        if ($limit < 1) {
+        if ($intTotal < 1) {
             return [];
         }
 
@@ -268,9 +268,9 @@ abstract class ModulePortfolio extends \Module
 
         // External link
         return sprintf('<a href="%s" title="%s"%s>%s</a>',
-                        $strArticleUrl,
-                        specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
-                        ($objItem->target ? (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
-                        $strLink);
+            $strArticleUrl,
+            specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
+            ($objItem->target ? (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
+            $strLink);
     }
 }
