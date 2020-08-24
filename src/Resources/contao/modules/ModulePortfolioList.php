@@ -73,14 +73,17 @@ class ModulePortfolioList extends ModulePortfolio
 
         // Maximum number of items
         if ($this->numberOfItems > 0) {
-            $limit = $this->numberOfItems;
+            $intLimit = $this->numberOfItems;
         }
 
         $arrColumns = ['tl_portfolio.published=?'];
         $arrValues  = ['1'];
         $arrOptions = [
-            'order' => 'tl_portfolio.sorting ASC',
+            'order' => 'tl_portfolio.sorting ASC'
         ];
+        if (!$this->filter_categories && !empty($intLimit)) {
+            $arrOptions['limit'] = $intLimit;
+        }
 
         // Handle featured/unfeatured items
         if ('featured' === $this->portfolio_featured || 'unfeatured' === $this->portfolio_featured) {
@@ -105,8 +108,8 @@ class ModulePortfolioList extends ModulePortfolio
                         }
                     }
                 }
-                if ($limit !== 0 && count($arrFilteredItems) > $limit) {
-                    $arrFilteredItems = array_slice($arrFilteredItems, 0, $limit);
+                if ($intLimit !== 0 && count($arrFilteredItems) > $intLimit) {
+                    $arrFilteredItems = array_slice($arrFilteredItems, 0, $intLimit);
                 }
             } else {
                 $arrFilteredItems = $objItems;
