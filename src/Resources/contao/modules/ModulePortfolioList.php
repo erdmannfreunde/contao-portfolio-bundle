@@ -80,7 +80,6 @@ class ModulePortfolioList extends ModulePortfolio
         $arrValues  = ['1'];
         $arrOptions = [
             'order' => 'tl_portfolio.sorting ASC',
-            'limit' => $limit,
         ];
 
         // Handle featured/unfeatured items
@@ -92,7 +91,28 @@ class ModulePortfolioList extends ModulePortfolio
         $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
 
         if (null !== $objItems) {
-            $this->Template->items = $this->parseItems($objItems);
+            // Pre-filter items based on filter_categories
+            if ($this->filter_categories) {
+                $arrCategoryIds = \StringUtil::deserialize($this->filter_categories);
+                $arrFilteredItems = [];
+                while ($objItems->next()) {
+                    if ($objItems->categories) {
+                        $arrCategories = \StringUtil::deserialize($objItems->categories);
+                        foreach ($arrCategories as $category) {
+                            if (in_array($category, $arrCategoryIds, true)) {
+                                $arrFilteredItems[] = $objItems->current();
+                            }
+                        }
+                    }
+                }
+                if ($limit !== 0 && count($arrFilteredItems) > $limit) {
+                    $arrFilteredItems = array_slice($arrFilteredItems, 0, $limit);
+                }
+            } else {
+                $arrFilteredItems = $objItems->toArray();
+            }
+
+            $this->Template->items = $this->parseItems($arrFilteredItems);
         }
     }
 }

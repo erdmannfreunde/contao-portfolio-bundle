@@ -54,12 +54,12 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_filter_reset'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['filter_categories']    = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
+    'label'      => &$GLOBALS['TL_LANG']['tl_module']['filter_categories'],
     'exclude'    => true,
     'filter'     => true,
     'inputType'  => 'select',
     'foreignKey' => 'tl_portfolio_category.title',
-    'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr w50'),
+    'eval'       => ['multiple' => true, 'chosen' => true, 'tl_class' => 'clr w50'],
     'sql'        => "blob NULL"
 ];
 
@@ -68,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['filter_categories']    = [
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_module_portfolio extends Backend
+class tl_module_portfolio extends \Backend
 {
     /**
      * Return all portfolio templates as array.
