@@ -151,13 +151,13 @@ abstract class ModulePortfolio extends \Module
      * Parse one or more items and return them as array.
      *
      * @param object
-     * @param mixed $objItems
+     * @param array $arrItems
      *
      * @return array
      */
-    protected function parseItems($objItems)
+    protected function parseItems($arrItems)
     {
-        $limit = $objItems->count();
+        $limit = count($arrItems);
 
         if ($limit < 1) {
             return [];
@@ -166,9 +166,9 @@ abstract class ModulePortfolio extends \Module
         $count       = 0;
         $arrArticles = [];
 
-        while ($objItems->next()) {
+        foreach ($arrItems as $objItem) {
             $strClass      = ((1 === ++$count) ? ' first' : '').(($count === $limit) ? ' last' : '').((0 === ($count % 2)) ? ' odd' : ' even');
-            $arrArticles[] = $this->parseItem($objItems, $strClass, $count);
+            $arrArticles[] = $this->parseItem($objItem, $strClass, $count);
         }
 
         return $arrArticles;
