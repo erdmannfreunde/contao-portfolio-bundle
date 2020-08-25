@@ -73,15 +73,17 @@ class ModulePortfolioList extends ModulePortfolio
 
         // Maximum number of items
         if ($this->numberOfItems > 0) {
-            $limit = $this->numberOfItems;
+            $intLimit = $this->numberOfItems;
         }
 
         $arrColumns = ['tl_portfolio.published=?'];
         $arrValues  = ['1'];
         $arrOptions = [
-            'order' => 'tl_portfolio.sorting ASC',
-            'limit' => $limit,
+            'order' => 'tl_portfolio.sorting ASC'
         ];
+        if (!$this->filter_categories && !empty($intLimit)) {
+            $arrOptions['limit'] = $intLimit;
+        }
 
         // Handle featured/unfeatured items
         if ('featured' === $this->portfolio_featured || 'unfeatured' === $this->portfolio_featured) {
@@ -92,7 +94,28 @@ class ModulePortfolioList extends ModulePortfolio
         $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
 
         if (null !== $objItems) {
-            $this->Template->items = $this->parseItems($objItems);
+            // Pre-filter items based on filter_categories
+            if ($this->filter_categories) {
+                $arrCategoryIds = \StringUtil::deserialize($this->filter_categories);
+                $arrFilteredItems = [];
+                while ($objItems->next()) {
+                    if ($objItems->categories) {
+                        $arrCategories = \StringUtil::deserialize($objItems->categories);
+                        foreach ($arrCategories as $category) {
+                            if (in_array($category, $arrCategoryIds, true)) {
+                                $arrFilteredItems[] = $objItems->current();
+                            }
+                        }
+                    }
+                }
+                if ($intLimit !== 0 && count($arrFilteredItems) > $intLimit) {
+                    $arrFilteredItems = array_slice($arrFilteredItems, 0, $intLimit);
+                }
+            } else {
+                $arrFilteredItems = $objItems;
+            }
+
+            $this->Template->items = $this->parseItems($arrFilteredItems);
         }
     }
 }

@@ -151,24 +151,24 @@ abstract class ModulePortfolio extends \Module
      * Parse one or more items and return them as array.
      *
      * @param object
-     * @param mixed $objItems
+     * @param array $arrItems
      *
      * @return array
      */
-    protected function parseItems($objItems)
+    protected function parseItems($arrItems)
     {
-        $limit = $objItems->count();
+        $intTotal = count($arrItems);
 
-        if ($limit < 1) {
+        if ($intTotal < 1) {
             return [];
         }
 
         $count       = 0;
         $arrArticles = [];
 
-        while ($objItems->next()) {
+        foreach ($arrItems as $objItem) {
             $strClass      = ((1 === ++$count) ? ' first' : '').(($count === $limit) ? ' last' : '').((0 === ($count % 2)) ? ' odd' : ' even');
-            $arrArticles[] = $this->parseItem($objItems, $strClass, $count);
+            $arrArticles[] = $this->parseItem($objItem, $strClass, $count);
         }
 
         return $arrArticles;
@@ -268,9 +268,9 @@ abstract class ModulePortfolio extends \Module
 
         // External link
         return sprintf('<a href="%s" title="%s"%s>%s</a>',
-                        $strArticleUrl,
-                        specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
-                        ($objItem->target ? (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
-                        $strLink);
+            $strArticleUrl,
+            specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
+            ($objItem->target ? (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
+            $strLink);
     }
 }
