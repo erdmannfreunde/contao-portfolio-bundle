@@ -17,7 +17,7 @@
     <?php if (empty($this->items)): ?>
         <p class="empty"><?php echo $this->empty; ?></p>
     <?php else: ?>
-      <div class="projects__items">
+      <div class="projects__items portfolio__items">
         <?php echo implode('', $this->items); ?>
         <?php echo $this->pagination; ?>
       </div>

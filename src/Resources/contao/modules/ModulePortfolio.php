@@ -1,33 +1,46 @@
 <?php
 
-/**
- * Run in a custom namespace, so the class can be replaced
+declare(strict_types=1);
+
+/*
+ * Contao Portfolio Bundle for Contao Open Source CMS.
+ * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @author     Erdmann & Freunde <https://erdmann-freunde.de>
+ * @license    MIT
+ * @link       http://github.com/erdmannfreunde/contao-grid
  */
+
 namespace EuF\PortfolioBundle\Modules;
 
+use Contao\Date;
+use Contao\StringUtil;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 
 /**
- * Class ModulePortfolio
+ * Class ModulePortfolio.
  *
  * Parent class for portfolio modules.
  */
 abstract class ModulePortfolio extends \Module
 {
-
     /**
-     * URL cache array
+     * URL cache array.
+     *
      * @var array
      */
-    private static $arrUrlCache = array();
-
+    private static $arrUrlCache = [];
 
     /**
-     * Parse an item and return it as string
+     * Parse an item and return it as string.
+     *
      * @param object
-     * @param boolean
+     * @param bool
      * @param string
-     * @param integer
+     * @param int
+     * @param mixed $objItem
+     * @param mixed $strClass
+     * @param mixed $intCount
+     *
      * @return string
      */
     protected function parseItem($objItem, $strClass='', $intCount=0)
@@ -37,212 +50,209 @@ abstract class ModulePortfolio extends \Module
         $objTemplate = new \FrontendTemplate($this->portfolio_template);
         $objTemplate->setData($objItem->row());
 
-        $objTemplate->class = (($objItem->cssClass != '') ? ' ' . $objItem->cssClass : '') . $strClass;
-        $objTemplate->headline = $objItem->headline;
+        $objTemplate->class        = (('' !== $objItem->cssClass) ? ' '.$objItem->cssClass : '').$strClass;
+        $objTemplate->headline     = $objItem->headline;
         $objTemplate->linkHeadline = $this->generateLink($objItem->headline, $objItem, $blnAddArchive);
-        $objTemplate->link = $this->generatePortfolioUrl($objItem, $blnAddArchive);
-        $objTemplate->count = $intCount; // see #5708
-        $objTemplate->text = '';
+        $objTemplate->link         = $this->generatePortfolioUrl($objItem, $blnAddArchive);
+        $objTemplate->count        = $intCount; // see #5708
+        $objTemplate->text         = '';
 
         // Clean the RTE output
-        if ($objItem->teaser != '')
-        {
-            if ($objPage->outputFormat == 'xhtml')
-            {
-                $objTemplate->teaser = \String::toXhtml($objItem->teaser);
-            }
-            else
-            {
-                $objTemplate->teaser = \String::toHtml5($objItem->teaser);
+        if ('' !== $objItem->teaser) {
+            if ('xhtml' === $objPage->outputFormat) {
+                $objTemplate->teaser = \StringUtil::toXhtml($objItem->teaser);
+            } else {
+                $objTemplate->teaser = \StringUtil::toHtml5($objItem->teaser);
             }
 
-            $objTemplate->teaser = \String::encodeEmail($objTemplate->teaser);
+            $objTemplate->teaser = \StringUtil::encodeEmail($objTemplate->teaser);
         }
 
         // Display the "read more" button for external/article links
-        if ($objItem->source != 'default')
-        {
+        if ('default' !== $objItem->source) {
             $objTemplate->text = true;
         }
 
         // Compile the portfolio text
-        else
-        {
+        else {
             $objElement = \ContentModel::findPublishedByPidAndTable($objItem->id, 'tl_portfolio');
-            if ($objElement !== null)
-            {
-                while ($objElement->next())
-                {
+            if (null !== $objElement) {
+                while ($objElement->next()) {
                     $objTemplate->text .= $this->getContentElement($objElement->current());
                 }
             }
         }
 
         // Add the meta information
-        $objTemplate->date = $arrMeta['date'];
-        $objTemplate->hasMetaFields = !empty($arrMeta);
-        $objTemplate->numberOfComments = $arrMeta['ccount'];
-        $objTemplate->commentCount = $arrMeta['comments'];
+        $objTemplate->date      = Date::parse($objPage->dateFormat, $objItem->date);
         $objTemplate->timestamp = $objItem->date;
-        $objTemplate->author = $arrMeta['author'];
-        $objTemplate->datetime = date('Y-m-d\TH:i:sP', $objItem->date);
 
-		if($objItem->categories) {
-			$objTemplate->categories = '';
-			$categories = unserialize($objItem->categories);
-			foreach($categories as $category) {
-				$objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
-				$objCategories[] = $objPortfolioCategoryModel->alias;
-				if(!$objTemplate->category_titles) {
-					$objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
-				} else {
-					$objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
-				}
-			}
+        if ($objItem->categories) {
+            $objTemplate->categories = '';
+            $categories              = unserialize($objItem->categories);
+            foreach ($categories as $category) {
+                $objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
+                $objCategories[]           = $objPortfolioCategoryModel->alias;
+                if (!$objTemplate->category_titles) {
+                    $objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
+                } else {
+                    $objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
+                }
+            }
             $objTemplate->category_titles .= '</ul>';
             $objTemplate->categories .= implode(',', $objCategories);
-		}
+        }
 
-		$objTemplate->addImage = false;
+        $objTemplate->addImage = false;
 
-		// Add an image
-		if ($objItem->addImage && $objItem->singleSRC != '')
-		{
-			$objModel = \FilesModel::findByUuid($objItem->singleSRC);
+        // Add an image
+        if ($objItem->addImage && '' !== $objItem->singleSRC) {
+            $objModel = \FilesModel::findByUuid($objItem->singleSRC);
 
-			if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
-			{
-				// Do not override the field now that we have a model registry (see #6303)
-				$arrArticle = $objItem->row();
+            if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
+                // Do not override the field now that we have a model registry (see #6303)
+                $arrArticle = $objItem->row();
 
-				// Override the default image size
-				if ($objItem->imgSize != '')
-				{
-					$size = \StringUtil::deserialize($objItem->imgSize);
+                // Override the default image size
+                if ('' !== $objItem->imgSize) {
+                    $size = \StringUtil::deserialize($objItem->imgSize);
 
-					if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
-					{
-						$arrArticle['size'] = $objItem->imgSize;
-					}
-				}
+                    if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
+                        $arrArticle['size'] = $objItem->imgSize;
+                    }
+                }
 
-				$arrArticle['singleSRC'] = $objModel->path;
-				$this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
-			}
-		}
+                $arrArticle['singleSRC'] = $objModel->path;
+                $this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+
+                // Link to the portfolio reader if no image link has been defined (see #30)
+                if (!$objTemplate->fullsize && !$objTemplate->imageUrl && $objTemplate->text) {
+                    // Unset the image title attribute
+                    $picture = $objTemplate->picture;
+                    unset($picture['title']);
+                    $objTemplate->picture = $picture;
+
+                    // Link to the portfolio reader
+                    $objTemplate->href      = $objTemplate->link;
+                    $objTemplate->linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objArticle->headline), true);
+
+                    // If the external link is opened in a new window, open the image link in a new window, too
+                    if ('external' === $objTemplate->source && $objTemplate->target && false === strpos($objTemplate->attributes, 'target="_blank"')) {
+                        $objTemplate->attributes .= ' target="_blank"';
+                    }
+                }
+            }
+        }
 
         return $objTemplate->parse();
     }
 
-
     /**
-     * Parse one or more items and return them as array
+     * Parse one or more items and return them as array.
+     *
      * @param object
+     * @param array $arrItems
+     *
      * @return array
      */
-    protected function parseItems($objItems)
+    protected function parseItems($arrItems)
     {
-        $limit = $objItems->count();
+        $intTotal = count($arrItems);
 
-        if ($limit < 1)
-        {
-            return array();
+        if ($intTotal < 1) {
+            return [];
         }
 
-        $count = 0;
-        $arrArticles = array();
+        $count       = 0;
+        $arrArticles = [];
 
-        while ($objItems->next())
-        {
-            $strClass = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even');
-            $arrArticles[] = $this->parseItem($objItems, $strClass, $count);
+        foreach ($arrItems as $objItem) {
+            $strClass      = ((1 === ++$count) ? ' first' : '').(($count === $limit) ? ' last' : '').((0 === ($count % 2)) ? ' odd' : ' even');
+            $arrArticles[] = $this->parseItem($objItem, $strClass, $count);
         }
 
         return $arrArticles;
     }
 
     /**
-     * Generate a URL and return it as string
+     * Generate a URL and return it as string.
+     *
      * @param object
-     * @param boolean
+     * @param bool
+     * @param mixed $objItem
+     * @param mixed $blnAddArchive
+     *
      * @return string
      */
     protected function generatePortfolioUrl($objItem, $blnAddArchive=false)
     {
-        $strCacheKey = 'id_' . $objItem->id;
+        $strCacheKey = 'id_'.$objItem->id;
 
         // Load the URL from cache
-        if (isset(self::$arrUrlCache[$strCacheKey]))
-        {
+        if (isset(self::$arrUrlCache[$strCacheKey])) {
             return self::$arrUrlCache[$strCacheKey];
         }
 
         // Initialize the cache
         self::$arrUrlCache[$strCacheKey] = null;
 
-        switch ($objItem->source)
-        {
+        switch ($objItem->source) {
             // Link to an external page
             case 'external':
-                if (substr($objItem->url, 0, 7) == 'mailto:')
-                {
-                    self::$arrUrlCache[$strCacheKey] = \String::encodeEmail($objItem->url);
-                }
-                else
-                {
+                if ('mailto:' === substr($objItem->url, 0, 7)) {
+                    self::$arrUrlCache[$strCacheKey] = \StringUtil::encodeEmail($objItem->url);
+                } else {
                     self::$arrUrlCache[$strCacheKey] = ampersand($objItem->url);
                 }
                 break;
 
             // Link to an internal page
             case 'internal':
-                if (($objTarget = $objItem->getRelated('jumpTo')) !== null)
-                {
+                if (null !== ($objTarget = $objItem->getRelated('jumpTo'))) {
                     self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objTarget->row()));
                 }
                 break;
 
             // Link to an article
             case 'article':
-                if (($objItem = \ArticleModel::findByPk($objItem->articleId, array('eager'=>true))) !== null && ($objPid = $objItem->getRelated('pid')) !== null)
-                {
-                    self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPid->row(), '/articles/' . ((!\Config::get('disableAlias') && $objItem->alias != '') ? $objItem->alias : $objItem->id)));
+                if (null !== ($objItem = \ArticleModel::findByPk($objItem->articleId, ['eager'=>true])) && null !== ($objPid = $objItem->getRelated('pid'))) {
+                    self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPid->row(), '/articles/'.((!\Config::get('disableAlias') && '' !== $objItem->alias) ? $objItem->alias : $objItem->id)));
                 }
                 break;
         }
 
         // Link to the default page
-        if (self::$arrUrlCache[$strCacheKey] === null)
-        {
+        if (null === self::$arrUrlCache[$strCacheKey]) {
             $objPage = \PageModel::findByPk($this->jumpTo);
 
-            if ($objPage === null)
-            {
+            if (null === $objPage) {
                 self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'), true);
-            }
-            else
-            {
-                self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPage->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objItem->alias != '') ? $objItem->alias : $objItem->id)));
+            } else {
+                self::$arrUrlCache[$strCacheKey] = ampersand($this->generateFrontendUrl($objPage->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias') && '' !== $objItem->alias) ? $objItem->alias : $objItem->id)));
             }
         }
 
         return self::$arrUrlCache[$strCacheKey];
     }
 
-
     /**
-     * Generate a link and return it as string
+     * Generate a link and return it as string.
+     *
      * @param string
      * @param object
-     * @param boolean
-     * @param boolean
+     * @param bool
+     * @param bool
+     * @param mixed $strLink
+     * @param mixed $objItem
+     * @param mixed $blnAddArchive
+     * @param mixed $blnIsReadMore
+     *
      * @return string
      */
     protected function generateLink($strLink, $objItem, $blnAddArchive=false, $blnIsReadMore=false)
     {
         // Internal link
-        if ($objItem->source != 'external')
-        {
+        if ('external' !== $objItem->source) {
             return sprintf('<a href="%s" title="%s">%s%s</a>',
                 $this->generatePortfolioUrl($objItem, $blnAddArchive),
                 specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->headline), true),
@@ -251,18 +261,16 @@ abstract class ModulePortfolio extends \Module
         }
 
         // Ampersand URIs
-        else
-        {
-            $strArticleUrl = ampersand($objItem->url);
-        }
+
+        $strArticleUrl = ampersand($objItem->url);
 
         global $objPage;
 
         // External link
         return sprintf('<a href="%s" title="%s"%s>%s</a>',
-                        $strArticleUrl,
-                        specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
-                        ($objItem->target ? (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
-                        $strLink);
+            $strArticleUrl,
+            specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
+            ($objItem->target ? (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"') : ''),
+            $strLink);
     }
 }

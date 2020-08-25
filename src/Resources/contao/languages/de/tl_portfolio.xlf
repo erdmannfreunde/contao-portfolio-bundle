@@ -41,6 +41,22 @@
         <source>Here you can change the categories of the portfolio item.</source>
         <target>Hier können Sie die Kategorien des Eintrags festlegen.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.client.0">
+        <source>Client</source>
+        <target>Kunde</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.client.1">
+        <source>Here you can add the clients name.</source>
+        <target>Hier können Sie den Kunden hinzufügen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.description.0">
+        <source>Description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.description.1">
+        <source>Here you can add a short description.</source>
+        <target>Hier können Sie eine kurze Beschreibung hinzufügen.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.date.0">
         <source>Date</source>
         <target>Datum</target>
