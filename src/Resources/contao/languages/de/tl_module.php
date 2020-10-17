@@ -10,6 +10,7 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-grid
  */
 
+$GLOBALS['TL_LANG']['tl_module']['portfolio_archives']     = ['Portfolio-Archive', 'Bitte wählen Sie ein oder mehrere Portfolio-Archive aus.'];
 $GLOBALS['TL_LANG']['tl_module']['portfolio_template']     = ['Portfoliotemplate', 'Hier können Sie das Portfoliotemplate auswählen.'];
 $GLOBALS['TL_LANG']['tl_module']['portfolio_featured']     = ['Hervorgehobene Beiträge', 'Hier legen Sie fest, wie hervorgehobene Beiträge gehandhabt werden.'];
 $GLOBALS['TL_LANG']['tl_module']['portfolio_filter']       = ['Kategorie-Filter anzeigen', 'Hier legen Sie fest, ob die Liste um eine Kategorie-Navigation erweitert werden soll.'];

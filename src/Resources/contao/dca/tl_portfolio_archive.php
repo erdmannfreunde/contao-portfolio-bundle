@@ -17,6 +17,19 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
         'ctable'                      => ['tl_portfolio'],
         'switchToEdit'                => true,
         'enableVersioning'            => true,
+        'markAsCopy'                  => 'title',
+        'onload_callback' => array
+        (
+            array('tl_portfolio_archive', 'checkPermission')
+        ),
+        'oncreate_callback' => array
+        (
+            array('tl_portfolio_archive', 'adjustPermissions')
+        ),
+        'oncopy_callback' => array
+        (
+            array('tl_portfolio_archive', 'adjustPermissions')
+        ),
         'sql'                         => [
             'keys' => [
                 'id' => 'primary',
@@ -120,6 +133,183 @@ class tl_portfolio_archive extends Backend
     }
 
     /**
+     * Check permissions to edit table tl_portfolio_archive
+     *
+     * @throws AccessDeniedException
+     */
+    public function checkPermission()
+    {
+        if ($this->User->isAdmin)
+        {
+            return;
+        }
+
+        // Set root IDs
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
+        {
+            $root = array(0);
+        }
+        else
+        {
+            $root = $this->User->portfolio;
+        }
+
+        $GLOBALS['TL_DCA']['tl_portfolio_archive']['list']['sorting']['root'] = $root;
+
+        // Check permissions to add archives
+        if (!$this->User->hasAccess('create', 'portfoliop'))
+        {
+            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['closed'] = true;
+            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCreatable'] = true;
+            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCopyable'] = true;
+        }
+
+        // Check permissions to delete calendars
+        if (!$this->User->hasAccess('delete', 'portfoliop'))
+        {
+            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notDeletable'] = true;
+        }
+
+        /** @var SessionInterface $objSession */
+        $objSession = System::getContainer()->get('session');
+
+        // Check current action
+        switch (Input::get('act'))
+        {
+            case 'select':
+                // Allow
+                break;
+
+            case 'create':
+                if (!$this->User->hasAccess('create', 'portfoliop'))
+                {
+                    throw new AccessDeniedException('Not enough permissions to create portfolio archives.');
+                }
+                break;
+
+            case 'edit':
+            case 'copy':
+            case 'delete':
+            case 'show':
+                if (!in_array(Input::get('id'), $root) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'portfoliop')))
+                {
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio archive ID ' . Input::get('id') . '.');
+                }
+                break;
+
+            case 'editAll':
+            case 'deleteAll':
+            case 'overrideAll':
+            case 'copyAll':
+                $session = $objSession->all();
+
+                if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'portfoliop'))
+                {
+                    $session['CURRENT']['IDS'] = array();
+                }
+                else
+                {
+                    $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $root);
+                }
+                $objSession->replace($session);
+                break;
+
+            default:
+                if (Input::get('act'))
+                {
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio archives.');
+                }
+                break;
+        }
+    }
+
+    /**
+     * Add the new archive to the permissions
+     *
+     * @param $insertId
+     */
+    public function adjustPermissions($insertId)
+    {
+        // The oncreate_callback passes $insertId as second argument
+        if (func_num_args() == 4)
+        {
+            $insertId = func_get_arg(1);
+        }
+
+        if ($this->User->isAdmin)
+        {
+            return;
+        }
+
+        // Set root IDs
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
+        {
+            $root = array(0);
+        }
+        else
+        {
+            $root = $this->User->portfolio;
+        }
+
+        // The archive is enabled already
+        if (in_array($insertId, $root))
+        {
+            return;
+        }
+
+        /** @var AttributeBagInterface $objSessionBag */
+        $objSessionBag = System::getContainer()->get('session')->getBag('contao_backend');
+
+        $arrNew = $objSessionBag->get('new_records');
+
+        if (is_array($arrNew['tl_portfolio_archive']) && in_array($insertId, $arrNew['tl_portfolio_archive']))
+        {
+            // Add the permissions on group level
+            if ($this->User->inherit != 'custom')
+            {
+                $objGroup = $this->Database->execute("SELECT id, portfolio, portfoliop FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
+
+                while ($objGroup->next())
+                {
+                    $arrPortfoliop = StringUtil::deserialize($objGroup->portfoliop);
+
+                    if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop))
+                    {
+                        $arrPortfolio = StringUtil::deserialize($objGroup->portfolio, true);
+                        $arrPortfolio[] = $insertId;
+
+                        $this->Database->prepare("UPDATE tl_user_group SET portfolio=? WHERE id=?")
+                            ->execute(serialize($arrPortfolio), $objGroup->id);
+                    }
+                }
+            }
+
+            // Add the permissions on user level
+            if ($this->User->inherit != 'group')
+            {
+                $objUser = $this->Database->prepare("SELECT portfolio, portfoliop FROM tl_user WHERE id=?")
+                    ->limit(1)
+                    ->execute($this->User->id);
+
+                $arrPortfoliop = StringUtil::deserialize($objUser->portfoliop);
+
+                if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop))
+                {
+                    $arrPortfolio = StringUtil::deserialize($objUser->portfolio, true);
+                    $arrPortfolio[] = $insertId;
+
+                    $this->Database->prepare("UPDATE tl_user SET portfolio=? WHERE id=?")
+                        ->execute(serialize($arrPortfolio), $this->User->id);
+                }
+            }
+
+            // Add the new element to the user object
+            $root[] = $insertId;
+            $this->User->portfolio = $root;
+        }
+    }
+
+    /**
      * Return the edit header button.
      *
      * @param array  $row
@@ -150,7 +340,7 @@ class tl_portfolio_archive extends Backend
      */
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->User->hasAccess('create', 'newp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $this->User->hasAccess('create', 'portfoliop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
@@ -167,6 +357,6 @@ class tl_portfolio_archive extends Backend
      */
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return $this->User->hasAccess('delete', 'newp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $this->User->hasAccess('delete', 'portfoliop') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 }

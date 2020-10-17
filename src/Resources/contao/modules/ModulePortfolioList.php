@@ -91,6 +91,9 @@ class ModulePortfolioList extends ModulePortfolio
             $arrValues[]  = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
+        $arrPids = \StringUtil::deserialize($this->portfolio_archives);
+        $arrColumns[] = 'tl_portfolio.pid IN(' . implode(',', array_map('\intval', $arrPids)) . ')';
+
         $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
 
         if (null !== $objItems) {

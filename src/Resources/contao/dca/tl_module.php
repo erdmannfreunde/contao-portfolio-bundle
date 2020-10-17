@@ -10,12 +10,21 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['portfoliolist'] = '{title_legend},name,headline,type;{config_legend},portfolio_featured,numberOfItems,filter_categories;{nav_legend},portfolio_filter,portfolio_filter_reset;{redirect_legend},jumpTo;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['portfoliolist'] = '{title_legend},name,headline,type;{config_legend},portfolio_archives,portfolio_featured,numberOfItems,filter_categories;{nav_legend},portfolio_filter,portfolio_filter_reset;{redirect_legend},jumpTo;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['portfolioreader'] = '{title_legend},name,headline,type;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 /*
  * Add fields to tl_module
  */
+$GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_archives'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_module']['portfolio_archives'],
+    'exclude'          => true,
+    'inputType'        => 'checkbox',
+    'options_callback' => ['tl_module_portfolio', 'getPortfolioArchives'],
+    'eval'             => ['multiple' => true, 'mandatory' => true],
+    'sql'              => "blob NULL",
+];
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_template'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_module']['portfolio_template'],
     'default'          => 'portfolio_short',
@@ -68,8 +77,17 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['filter_categories']    = [
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_module_portfolio extends \Backend
+class tl_module_portfolio extends Backend
 {
+    /**
+     * Import the back end user object
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->import('BackendUser', 'User');
+    }
+
     /**
      * Return all portfolio templates as array.
      *
@@ -78,5 +96,31 @@ class tl_module_portfolio extends \Backend
     public function getPortfolioTemplates()
     {
         return $this->getTemplateGroup('portfolio_');
+    }
+
+    /**
+     * Get all portfolio archives and return them as array
+     *
+     * @return array
+     */
+    public function getPortfolioArchives()
+    {
+        if (!$this->User->isAdmin && !is_array($this->User->portfolio))
+        {
+            return array();
+        }
+
+        $arrArchives = array();
+        $objArchives = $this->Database->execute("SELECT id, title FROM tl_portfolio_archive ORDER BY title");
+
+        while ($objArchives->next())
+        {
+            if ($this->User->hasAccess($objArchives->id, 'portfolio'))
+            {
+                $arrArchives[$objArchives->id] = $objArchives->title;
+            }
+        }
+
+        return $arrArchives;
     }
 }
