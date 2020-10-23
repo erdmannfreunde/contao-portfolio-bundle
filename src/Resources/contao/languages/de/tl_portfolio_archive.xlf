@@ -69,6 +69,34 @@
         <source>Delete archive ID %s</source>
         <target>Archiv ID %s löschen</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio_archive.jumpTo.0">
+        <source>Redirect page</source>
+        <target>Weiterleitungsseite</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.jumpTo.1">
+        <source>Please choose the portfolio reader page to which visitors will be redirected when clicking a portfolio item.</source>
+        <target>Bitte wählen Sie die Portfolioleser-Seite aus, zu der Besucher weitergeleitet werden, wenn sie einen Beitrag anklicken.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.protected.0">
+        <source>Protect archive</source>
+        <target>Archiv schützen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.protected.1">
+        <source>Show portfolio items to certain member groups only.</source>
+        <target>Portfolio-Einträge nur bestimmten Mitgliedergruppen anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.groups.0">
+        <source>Allowed member groups</source>
+        <target>Erlaubte Mitgliedergruppen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.groups.1">
+        <source>These groups will be able to see the portfolio items in this archive.</source>
+        <target>Diese Mitgliedergruppen können die Einträge des Archivs sehen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.protected_legend">
+        <source>Access protection</source>
+        <target>Zugriffsschutz</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

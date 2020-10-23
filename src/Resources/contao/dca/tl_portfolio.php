@@ -13,6 +13,10 @@ declare(strict_types=1);
 /*
  * Load tl_content language file
  */
+
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 System::loadLanguageFile('tl_content');
 
 $GLOBALS['TL_DCA']['tl_portfolio'] = [
@@ -131,7 +135,9 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid'           => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'foreignKey' => 'tl_portfolio_archive.title',
+            'sql'        => "int(10) unsigned NOT NULL default 0",
+            'relation'   => ['type'=>'belongsTo', 'load'=>'lazy']
         ],
         'tstamp'        => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
@@ -389,7 +395,7 @@ class tl_portfolio extends Backend
      *
      * @throws AccessDeniedException
      */
-    public function checkPermission()
+    public function checkPermission(): void
     {
         if ($this->User->isAdmin)
         {
@@ -406,7 +412,7 @@ class tl_portfolio extends Backend
             $root = $this->User->portfolio;
         }
 
-        $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+        $id = Input::get('id') !== '' ? Input::get('id') : CURRENT_ID;
 
         // Check current action
         switch (Input::get('act'))
@@ -414,14 +420,14 @@ class tl_portfolio extends Backend
             case 'paste':
             case 'select':
                 // Check CURRENT_ID here (see #247)
-                if (!in_array(CURRENT_ID, $root))
+                if (!in_array(CURRENT_ID, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
                 }
                 break;
 
             case 'create':
-                if (!Input::get('pid') || !in_array(Input::get('pid'), $root))
+                if (!Input::get('pid') || !in_array(Input::get('pid'), $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to create portfolio items in portfolio archive ID ' . Input::get('pid') . '.');
                 }
@@ -429,7 +435,7 @@ class tl_portfolio extends Backend
 
             case 'cut':
             case 'copy':
-                if (Input::get('act') == 'cut' && Input::get('mode') == 1)
+                if (Input::get('act') === 'cut' && Input::get('mode') === 1)
                 {
                     $objArchive = $this->Database->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
                         ->limit(1)
@@ -447,7 +453,7 @@ class tl_portfolio extends Backend
                     $pid = Input::get('pid');
                 }
 
-                if (!in_array($pid, $root))
+                if (!in_array($pid, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio item ID ' . $id . ' to portfolio archive ID ' . $pid . '.');
                 }
@@ -467,7 +473,7 @@ class tl_portfolio extends Backend
                     throw new AccessDeniedException('Invalid portfolio item ID ' . $id . '.');
                 }
 
-                if (!in_array($objArchive->pid, $root))
+                if (!in_array($objArchive->pid, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio item ID ' . $id . ' of portfolio archive ID ' . $objArchive->pid . '.');
                 }
@@ -478,7 +484,7 @@ class tl_portfolio extends Backend
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root))
+                if (!in_array($id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
                 }
@@ -500,7 +506,7 @@ class tl_portfolio extends Backend
                     throw new AccessDeniedException('Invalid command "' . Input::get('act') . '".');
                 }
 
-                if (!in_array($id, $root))
+                if (!in_array($id, $root, true))
                 {
                     throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
                 }
@@ -515,7 +521,7 @@ class tl_portfolio extends Backend
      *
      * @return string
      */
-    public function listItems($arrRow)
+    public function listItems($arrRow): string
     {
         return '<div class="tl_content_left">'.$arrRow['headline'].' <span style="color:#999;padding-left:3px">['.Date::parse(Config::get('dateFormat'), $arrRow['date']).']</span></div>';
     }
@@ -523,22 +529,20 @@ class tl_portfolio extends Backend
     /**
      * Auto-generate the portfolio alias if it has not been set yet.
      *
-     * @param mixed
-     * @param \DataContainer
      * @param mixed $varValue
      *
-     * @throws \Exception
-     *
+     * @param DataContainer $dc
      * @return string
+     * @throws Exception
      */
-    public function generateAlias($varValue, DataContainer $dc)
+    public function generateAlias($varValue, DataContainer $dc): string
     {
         $autoAlias = false;
 
         // Generate alias if there is none
         if ('' === $varValue) {
             $autoAlias = true;
-            $varValue  = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
+            $varValue  = StringUtil::standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
         }
 
         $objAlias = $this->Database->prepare('SELECT id FROM tl_portfolio WHERE alias=?')
@@ -546,7 +550,7 @@ class tl_portfolio extends Backend
 
         // Check whether the portfolio alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         // Add ID to alias
@@ -560,11 +564,11 @@ class tl_portfolio extends Backend
     /**
      * Get all articles and return them as array.
      *
-     * @param \DataContainer
+     * @param DataContainer
      *
      * @return array
      */
-    public function getArticleAlias(DataContainer $dc)
+    public function getArticleAlias(DataContainer $dc): array
     {
         $arrPids  = [];
         $arrAlias = [];
@@ -600,11 +604,11 @@ class tl_portfolio extends Backend
     /**
      * Add the source options depending on the allowed fields (see #5498).
      *
-     * @param \DataContainer
+     * @param DataContainer
      *
      * @return array
      */
-    public function getSourceOptions(DataContainer $dc)
+    public function getSourceOptions(DataContainer $dc): array
     {
         if ($this->User->isAdmin) {
             return ['default', 'internal', 'article', 'external'];
@@ -639,9 +643,9 @@ class tl_portfolio extends Backend
     /**
      * Adjust start end end time of the event based on date, span, startTime and endTime.
      *
-     * @param \DataContainer
+     * @param DataContainer
      */
-    public function adjustTime(DataContainer $dc)
+    public function adjustTime(DataContainer $dc): void
     {
         // Return if there is no active record (override all)
         if (!$dc->activeRecord) {
@@ -655,8 +659,8 @@ class tl_portfolio extends Backend
     /**
      * Return the "toggle visibility" button
      *
-     * @param array  $row
-     * @param string $href
+     * @param array $row
+     * @param string|null $href
      * @param string $label
      * @param string $title
      * @param string $icon
@@ -664,12 +668,12 @@ class tl_portfolio extends Backend
      *
      * @return string
      */
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
+    public function toggleIcon(array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string
     {
         if (Input::get('tid'))
         {
-            $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
-            $this->redirect($this->getReferer());
+            $this->toggleVisibility(Input::get('tid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
+            self::redirect(self::getReferer());
         }
 
         // Check permissions AFTER checking the tid, so hacking attempts are logged
@@ -685,17 +689,17 @@ class tl_portfolio extends Backend
             $icon = 'invisible.svg';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
+        return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
     }
 
     /**
      * Disable/enable a portfolio item
      *
-     * @param integer       $intId
-     * @param boolean       $blnVisible
-     * @param DataContainer $dc
+     * @param integer $intId
+     * @param boolean $blnVisible
+     * @param DataContainer|null $dc
      */
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
+    public function toggleVisibility(int $intId, bool $blnVisible, DataContainer $dc=null): void
     {
         // Set the ID and action
         Input::setGet('id', $intId);
@@ -797,6 +801,7 @@ class tl_portfolio extends Backend
     }
 
     /**
+     * @param DataContainer $dc
      * @param $row
      * @param $table
      * @param $cr
@@ -804,18 +809,18 @@ class tl_portfolio extends Backend
      *
      * @return string
      */
-    public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard)
+    public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard): string
     {
         $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
 
-        return '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+        return '<a href="'.self::addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
     }
 
     /**
      * Return the "feature/unfeature element" button
      *
-     * @param array  $row
-     * @param string $href
+     * @param array $row
+     * @param string|null $href
      * @param string $label
      * @param string $title
      * @param string $icon
@@ -823,12 +828,12 @@ class tl_portfolio extends Backend
      *
      * @return string
      */
-    public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
+    public function iconFeatured(array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string
     {
         if (Input::get('fid'))
         {
-            $this->toggleFeatured(Input::get('fid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
-            $this->redirect($this->getReferer());
+            $this->toggleFeatured(Input::get('fid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
+            self::redirect(self::getReferer());
         }
 
         // Check permissions AFTER checking the fid, so hacking attempts are logged
@@ -844,19 +849,18 @@ class tl_portfolio extends Backend
             $icon = 'featured_.svg';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"') . '</a> ';
+        return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"') . '</a> ';
     }
 
     /**
      * Feature/unfeature a portfolio item
      *
-     * @param integer       $intId
-     * @param boolean       $blnVisible
-     * @param DataContainer $dc
+     * @param integer $intId
+     * @param boolean $blnVisible
+     * @param DataContainer|null $dc
      *
-     * @throws AccessDeniedException
      */
-    public function toggleFeatured($intId, $blnVisible, DataContainer $dc=null)
+    public function toggleFeatured(int $intId, bool $blnVisible, DataContainer $dc=null): void
     {
         // Check permissions to edit
         Input::setGet('id', $intId);

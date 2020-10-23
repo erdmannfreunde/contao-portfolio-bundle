@@ -12,15 +12,17 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Models;
 
+use Contao\Model;
+
 /**
- * Reads and writes portfolio items.
+ * Reads and writes portfolio archive items.
  */
-class PortfolioCategoryModel extends \Model
+class PortfolioArchiveModel extends Model
 {
     /**
      * Table name.
      *
      * @var string
      */
-    protected static $strTable = 'tl_portfolio_category';
+    protected static $strTable = 'tl_portfolio_archive';
 }

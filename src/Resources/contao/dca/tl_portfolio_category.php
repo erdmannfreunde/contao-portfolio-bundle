@@ -144,15 +144,13 @@ class tl_portfolio_category extends Backend
     /**
      * Auto-generate the portfolio alias if it has not been set yet.
      *
-     * @param mixed
-     * @param \DataContainer
      * @param mixed $varValue
      *
-     * @throws \Exception
-     *
+     * @param DataContainer $dc
      * @return string
+     * @throws Exception
      */
-    public function generateAlias($varValue, DataContainer $dc)
+    public function generateAlias($varValue, DataContainer $dc): string
     {
         $autoAlias = false;
 
@@ -167,7 +165,7 @@ class tl_portfolio_category extends Backend
 
         // Check whether the portfolio alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         // Add ID to alias

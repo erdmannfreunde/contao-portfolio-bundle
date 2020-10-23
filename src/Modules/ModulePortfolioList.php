@@ -7,11 +7,13 @@ declare(strict_types=1);
  * @copyright  Copyright (c) 2020, Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
- * @link       http://github.com/erdmannfreunde/contao-grid
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
 namespace EuF\PortfolioBundle\Modules;
 
+use Contao\StringUtil;
+use Patchwork\Utf8;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
@@ -34,12 +36,12 @@ class ModulePortfolioList extends ModulePortfolio
      *
      * @return string
      */
-    public function generate()
+    public function generate(): string
     {
         if (TL_MODE === 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### '.utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['portfoliolist'][0]).' ###';
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['portfoliolist'][0]).' ###';
             $objTemplate->title    = $this->headline;
             $objTemplate->id       = $this->id;
             $objTemplate->link     = $this->name;
@@ -53,8 +55,9 @@ class ModulePortfolioList extends ModulePortfolio
 
     /**
      * Generate the module.
+     * @throws \Exception
      */
-    protected function compile()
+    protected function compile(): void
     {
         // Add the "reset categories" link
         if ($this->portfolio_filter_reset) {
@@ -71,6 +74,7 @@ class ModulePortfolioList extends ModulePortfolio
             $this->Template->categories = $objCategories;
         }
 
+        $intLimit = 0;
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $intLimit = $this->numberOfItems;
@@ -91,7 +95,7 @@ class ModulePortfolioList extends ModulePortfolio
             $arrValues[]  = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
-        $arrPids = \StringUtil::deserialize($this->portfolio_archives);
+        $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $arrColumns[] = 'tl_portfolio.pid IN(' . implode(',', array_map('\intval', $arrPids)) . ')';
 
         $objItems = PortfolioModel::findBy($arrColumns, $arrValues, $arrOptions);
@@ -99,11 +103,11 @@ class ModulePortfolioList extends ModulePortfolio
         if (null !== $objItems) {
             // Pre-filter items based on filter_categories
             if ($this->filter_categories) {
-                $arrCategoryIds = \StringUtil::deserialize($this->filter_categories);
+                $arrCategoryIds = StringUtil::deserialize($this->filter_categories);
                 $arrFilteredItems = [];
                 while ($objItems->next()) {
                     if ($objItems->categories) {
-                        $arrCategories = \StringUtil::deserialize($objItems->categories);
+                        $arrCategories = StringUtil::deserialize($objItems->categories);
                         foreach ($arrCategories as $category) {
                             if (in_array($category, $arrCategoryIds, true)) {
                                 $arrFilteredItems[] = $objItems->current();
