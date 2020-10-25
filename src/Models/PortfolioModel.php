@@ -172,4 +172,31 @@ class PortfolioModel extends \Model
 
         return static::findBy($arrColumns, $intId, $arrOptions);
     }
+
+    /**
+     * Find published portfolio items with the default redirect target by their parent ID
+     *
+     * @param integer $intPid     The portfolio archive ID
+     * @param array   $arrOptions An optional options array
+     *
+     * @return Collection|PortfolioModel[]|PortfolioModel|null A collection of models or null if there are no portfolio items
+     */
+    public static function findPublishedDefaultByPid(int $intPid, array $arrOptions=array())
+    {
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid=? AND $t.source='default'");
+
+        if (!static::isPreviewMode($arrOptions))
+        {
+            $time = Date::floorToMinute();
+            $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
+        }
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.date DESC";
+        }
+
+        return static::findBy($arrColumns, $intPid, $arrOptions);
+    }
 }

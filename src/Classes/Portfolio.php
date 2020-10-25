@@ -111,7 +111,7 @@ class Portfolio extends Frontend {
                             continue;
                         }
 
-                        $arrPages[] = $this->getLink($objArticle, $strUrl);
+                        $arrPages[] = $this->getLink($objArticle->current(), $strUrl);
                     }
                 }
             }
