@@ -7,12 +7,16 @@ declare(strict_types=1);
  * @copyright  Copyright (c) 2020, Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
- * @link       http://github.com/erdmannfreunde/contao-grid
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
 /*
  * Load tl_content language file
  */
+
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 System::loadLanguageFile('tl_content');
 
 $GLOBALS['TL_DCA']['tl_portfolio'] = [
@@ -131,7 +135,9 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid'           => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'foreignKey' => 'tl_portfolio_archive.title',
+            'sql'        => "int(10) unsigned NOT NULL default 0",
+            'relation'   => ['type'=>'belongsTo', 'load'=>'lazy']
         ],
         'tstamp'        => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
@@ -385,13 +391,137 @@ class tl_portfolio extends Backend
     }
 
     /**
+     * Check permissions to edit table tl_portfolio
+     *
+     * @throws AccessDeniedException
+     */
+    public function checkPermission(): void
+    {
+        if ($this->User->isAdmin)
+        {
+            return;
+        }
+
+        // Set the root IDs
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
+        {
+            $root = array(0);
+        }
+        else
+        {
+            $root = $this->User->portfolio;
+        }
+
+        $id = Input::get('id') !== '' ? Input::get('id') : CURRENT_ID;
+
+        // Check current action
+        switch (Input::get('act'))
+        {
+            case 'paste':
+            case 'select':
+                // Check CURRENT_ID here (see #247)
+                if (!in_array(CURRENT_ID, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
+                }
+                break;
+
+            case 'create':
+                if (!Input::get('pid') || !in_array(Input::get('pid'), $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to create portfolio items in portfolio archive ID ' . Input::get('pid') . '.');
+                }
+                break;
+
+            case 'cut':
+            case 'copy':
+                if (Input::get('act') === 'cut' && Input::get('mode') === 1)
+                {
+                    $objArchive = $this->Database->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
+                        ->limit(1)
+                        ->execute(Input::get('pid'));
+
+                    if ($objArchive->numRows < 1)
+                    {
+                        throw new AccessDeniedException('Invalid portfolio item ID ' . Input::get('pid') . '.');
+                    }
+
+                    $pid = $objArchive->pid;
+                }
+                else
+                {
+                    $pid = Input::get('pid');
+                }
+
+                if (!in_array($pid, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio item ID ' . $id . ' to portfolio archive ID ' . $pid . '.');
+                }
+            // no break
+
+            case 'edit':
+            case 'show':
+            case 'delete':
+            case 'toggle':
+            case 'feature':
+                $objArchive = $this->Database->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
+                    ->limit(1)
+                    ->execute($id);
+
+                if ($objArchive->numRows < 1)
+                {
+                    throw new AccessDeniedException('Invalid portfolio item ID ' . $id . '.');
+                }
+
+                if (!in_array($objArchive->pid, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio item ID ' . $id . ' of portfolio archive ID ' . $objArchive->pid . '.');
+                }
+                break;
+
+            case 'editAll':
+            case 'deleteAll':
+            case 'overrideAll':
+            case 'cutAll':
+            case 'copyAll':
+                if (!in_array($id, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
+                }
+
+                $objArchive = $this->Database->prepare("SELECT id FROM tl_portfolio WHERE pid=?")
+                    ->execute($id);
+
+                /** @var SessionInterface $objSession */
+                $objSession = System::getContainer()->get('session');
+
+                $session = $objSession->all();
+                $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
+                $objSession->replace($session);
+                break;
+
+            default:
+                if (Input::get('act'))
+                {
+                    throw new AccessDeniedException('Invalid command "' . Input::get('act') . '".');
+                }
+
+                if (!in_array($id, $root, true))
+                {
+                    throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
+                }
+                break;
+        }
+    }
+
+    /**
      * Add the type of input field.
      *
      * @param array $arrRow
      *
      * @return string
      */
-    public function listItems($arrRow)
+    public function listItems($arrRow): string
     {
         return '<div class="tl_content_left">'.$arrRow['headline'].' <span style="color:#999;padding-left:3px">['.Date::parse(Config::get('dateFormat'), $arrRow['date']).']</span></div>';
     }
@@ -399,22 +529,20 @@ class tl_portfolio extends Backend
     /**
      * Auto-generate the portfolio alias if it has not been set yet.
      *
-     * @param mixed
-     * @param \DataContainer
      * @param mixed $varValue
      *
-     * @throws \Exception
-     *
+     * @param DataContainer $dc
      * @return string
+     * @throws Exception
      */
-    public function generateAlias($varValue, DataContainer $dc)
+    public function generateAlias($varValue, DataContainer $dc): string
     {
         $autoAlias = false;
 
         // Generate alias if there is none
         if ('' === $varValue) {
             $autoAlias = true;
-            $varValue  = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
+            $varValue  = StringUtil::standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
         }
 
         $objAlias = $this->Database->prepare('SELECT id FROM tl_portfolio WHERE alias=?')
@@ -422,7 +550,7 @@ class tl_portfolio extends Backend
 
         // Check whether the portfolio alias exists
         if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         // Add ID to alias
@@ -436,11 +564,11 @@ class tl_portfolio extends Backend
     /**
      * Get all articles and return them as array.
      *
-     * @param \DataContainer
+     * @param DataContainer
      *
      * @return array
      */
-    public function getArticleAlias(DataContainer $dc)
+    public function getArticleAlias(DataContainer $dc): array
     {
         $arrPids  = [];
         $arrAlias = [];
@@ -476,11 +604,11 @@ class tl_portfolio extends Backend
     /**
      * Add the source options depending on the allowed fields (see #5498).
      *
-     * @param \DataContainer
+     * @param DataContainer
      *
      * @return array
      */
-    public function getSourceOptions(DataContainer $dc)
+    public function getSourceOptions(DataContainer $dc): array
     {
         if ($this->User->isAdmin) {
             return ['default', 'internal', 'article', 'external'];
@@ -515,9 +643,9 @@ class tl_portfolio extends Backend
     /**
      * Adjust start end end time of the event based on date, span, startTime and endTime.
      *
-     * @param \DataContainer
+     * @param DataContainer
      */
-    public function adjustTime(DataContainer $dc)
+    public function adjustTime(DataContainer $dc): void
     {
         // Return if there is no active record (override all)
         if (!$dc->activeRecord) {
@@ -529,101 +657,10 @@ class tl_portfolio extends Backend
     }
 
     /**
-     * Return the "toggle visibility" button.
+     * Return the "toggle visibility" button
      *
-     * @param array
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param string
-     * @param mixed $row
-     * @param mixed $href
-     * @param mixed $label
-     * @param mixed $title
-     * @param mixed $icon
-     * @param mixed $attributes
-     *
-     * @return string
-     */
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
-    {
-        if (Contao\Input::get('tid')) {
-            $this->toggleVisibility(Contao\Input::get('tid'), (1 === Contao\Input::get('state')));
-            $this->redirect($this->getReferer());
-        }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_portfolio::published', 'alexf')) {
-            return '';
-        }
-
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
-
-        if (!$row['published']) {
-            $icon = 'invisible.gif';
-        }
-
-        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
-    }
-
-    /**
-     * Disable/enable a user group.
-     *
-     * @param int
-     * @param bool
-     * @param mixed $intId
-     * @param mixed $blnVisible
-     */
-    public function toggleVisibility($intId, $blnVisible)
-    {
-        // Check permissions to edit
-        Input::setGet('id', $intId);
-        Input::setGet('act', 'toggle');
-
-        $objVersions = new Versions('tl_portfolio', $intId);
-        $objVersions->initialize();
-
-        // Trigger the save_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_portfolio']['fields']['published']['save_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['fields']['published']['save_callback'] as $callback) {
-                if (\is_array($callback)) {
-                    $this->import($callback[0]);
-                    $blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
-                } elseif (\is_callable($callback)) {
-                    $blnVisible = $callback($blnVisible, $this);
-                }
-            }
-        }
-
-        // Update the database
-        $this->Database->prepare('UPDATE tl_portfolio SET tstamp='.time().", published='".($blnVisible ? 1 : '')."' WHERE id=?")
-            ->execute($intId);
-
-        $objVersions->create();
-        $this->log('A new version of record "tl_portfolio.id='.$intId.'" has been created'.$this->getParentEntries('tl_portfolio', $intId), __METHOD__, TL_GENERAL);
-    }
-
-    /**
-     * @param $row
-     * @param $table
-     * @param $cr
-     * @param $arrClipboard
-     *
-     * @return string
-     */
-    public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard)
-    {
-        $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
-
-        return '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
-    }
-
-    /**
-     * Return the "feature/unfeature element" button.
-     *
-     * @param array  $row
-     * @param string $href
+     * @param array $row
+     * @param string|null $href
      * @param string $label
      * @param string $title
      * @param string $icon
@@ -631,54 +668,234 @@ class tl_portfolio extends Backend
      *
      * @return string
      */
-    public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
+    public function toggleIcon(array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        if (Contao\Input::get('fid')) {
-            $this->toggleFeatured(Contao\Input::get('fid'), (1 === Contao\Input::get('state')), (@func_get_arg(12) ?: null));
-            $this->redirect($this->getReferer());
+        if (Input::get('tid'))
+        {
+            $this->toggleVisibility(Input::get('tid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
+            self::redirect(self::getReferer());
         }
 
-        $href .= '&amp;fid='.$row['id'].'&amp;state='.($row['featured'] ? '' : 1);
-
-        if (!$row['featured']) {
-            $icon = 'featured_.svg';
+        // Check permissions AFTER checking the tid, so hacking attempts are logged
+        if (!$this->User->hasAccess('tl_portfolio::published', 'alexf'))
+        {
+            return '';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.Contao\Image::getHtml($icon, $label, 'data-state="'.($row['featured'] ? 1 : 0).'"').'</a> ';
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
+
+        if (!$row['published'])
+        {
+            $icon = 'invisible.svg';
+        }
+
+        return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
     }
 
     /**
-     * Feature/unfeature a news item.
+     * Disable/enable a portfolio item
      *
-     * @param int                  $intId
-     * @param bool                 $blnVisible
-     * @param Contao\DataContainer $dc
-     *
-     * @throws Contao\CoreBundle\Exception\AccessDeniedException
+     * @param integer $intId
+     * @param boolean $blnVisible
+     * @param DataContainer|null $dc
      */
-    public function toggleFeatured($intId, $blnVisible, Contao\DataContainer $dc = null)
+    public function toggleVisibility(int $intId, bool $blnVisible, DataContainer $dc=null): void
     {
-        // Check permissions to edit
-        Contao\Input::setGet('id', $intId);
-        Contao\Input::setGet('act', 'feature');
+        // Set the ID and action
+        Input::setGet('id', $intId);
+        Input::setGet('act', 'toggle');
 
-        $objVersions = new Contao\Versions('tl_portfolio', $intId);
+        if ($dc)
+        {
+            $dc->id = $intId; // see #8043
+        }
+
+        // Trigger the onload_callback
+        if (is_array($GLOBALS['TL_DCA']['tl_portfolio']['config']['onload_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['config']['onload_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $this->{$callback[0]}->{$callback[1]}($dc);
+                }
+                elseif (is_callable($callback))
+                {
+                    $callback($dc);
+                }
+            }
+        }
+
+        // Check the field access
+        if (!$this->User->hasAccess('tl_portfolio::published', 'alexf'))
+        {
+            throw new AccessDeniedException('Not enough permissions to publish/unpublish portfolio item ID ' . $intId . '.');
+        }
+
+        $objRow = $this->Database->prepare("SELECT * FROM tl_portfolio WHERE id=?")
+            ->limit(1)
+            ->execute($intId);
+
+        if ($objRow->numRows < 1)
+        {
+            throw new AccessDeniedException('Invalid portfolio item ID ' . $intId . '.');
+        }
+
+        // Set the current record
+        if ($dc)
+        {
+            $dc->activeRecord = $objRow;
+        }
+
+        $objVersions = new Versions('tl_portfolio', $intId);
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback'] as $callback) {
-                if (\is_array($callback)) {
+        if (is_array($GLOBALS['TL_DCA']['tl_portfolio']['fields']['published']['save_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['fields']['published']['save_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
                     $this->import($callback[0]);
                     $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
-                } elseif (\is_callable($callback)) {
+                }
+                elseif (is_callable($callback))
+                {
+                    $blnVisible = $callback($blnVisible, $dc);
+                }
+            }
+        }
+
+        $time = time();
+
+        // Update the database
+        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+            ->execute($intId);
+
+        if ($dc)
+        {
+            $dc->activeRecord->tstamp = $time;
+            $dc->activeRecord->published = ($blnVisible ? '1' : '');
+        }
+
+        // Trigger the onsubmit_callback
+        if (is_array($GLOBALS['TL_DCA']['tl_portfolio']['config']['onsubmit_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['config']['onsubmit_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $this->{$callback[0]}->{$callback[1]}($dc);
+                }
+                elseif (is_callable($callback))
+                {
+                    $callback($dc);
+                }
+            }
+        }
+
+        $objVersions->create();
+    }
+
+    /**
+     * @param DataContainer $dc
+     * @param $row
+     * @param $table
+     * @param $cr
+     * @param $arrClipboard
+     *
+     * @return string
+     */
+    public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard): string
+    {
+        $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
+
+        return '<a href="'.self::addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+    }
+
+    /**
+     * Return the "feature/unfeature element" button
+     *
+     * @param array $row
+     * @param string|null $href
+     * @param string $label
+     * @param string $title
+     * @param string $icon
+     * @param string $attributes
+     *
+     * @return string
+     */
+    public function iconFeatured(array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string
+    {
+        if (Input::get('fid'))
+        {
+            $this->toggleFeatured(Input::get('fid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
+            self::redirect(self::getReferer());
+        }
+
+        // Check permissions AFTER checking the fid, so hacking attempts are logged
+        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf'))
+        {
+            return '';
+        }
+
+        $href .= '&amp;fid=' . $row['id'] . '&amp;state=' . ($row['featured'] ? '' : 1);
+
+        if (!$row['featured'])
+        {
+            $icon = 'featured_.svg';
+        }
+
+        return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"') . '</a> ';
+    }
+
+    /**
+     * Feature/unfeature a portfolio item
+     *
+     * @param integer $intId
+     * @param boolean $blnVisible
+     * @param DataContainer|null $dc
+     *
+     */
+    public function toggleFeatured(int $intId, bool $blnVisible, DataContainer $dc=null): void
+    {
+        // Check permissions to edit
+        Input::setGet('id', $intId);
+        Input::setGet('act', 'feature');
+
+        $this->checkPermission();
+
+        // Check permissions to feature
+        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf'))
+        {
+            throw new AccessDeniedException('Not enough permissions to feature/unfeature portfolio item ID ' . $intId . '.');
+        }
+
+        $objVersions = new Versions('tl_portfolio', $intId);
+        $objVersions->initialize();
+
+        // Trigger the save_callback
+        if (is_array($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_portfolio']['fields']['featured']['save_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
+                }
+                elseif (is_callable($callback))
+                {
                     $blnVisible = $callback($blnVisible, $this);
                 }
             }
         }
 
         // Update the database
-        $this->Database->prepare('UPDATE tl_portfolio SET tstamp='.time().", featured='".($blnVisible ? 1 : '')."' WHERE id=?")
+        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=" . time() . ", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
             ->execute($intId);
 
         $objVersions->create();

@@ -10,6 +10,19 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
-if ('portfolio' === Input::get('do')) {
-    $GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_portfolio';
+namespace EuF\PortfolioBundle\Models;
+
+use Contao\Model;
+
+/**
+ * Reads and writes portfolio archive items.
+ */
+class PortfolioArchiveModel extends Model
+{
+    /**
+     * Table name.
+     *
+     * @var string
+     */
+    protected static $strTable = 'tl_portfolio_archive';
 }
