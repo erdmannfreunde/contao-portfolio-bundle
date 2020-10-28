@@ -5,11 +5,18 @@
   "license":"LGPL-3.0-or-later",
   "authors": [
         {
+          "name": "Florian Ludwig",
+          "homepage": "https://github.com/feam-codes"
+        },
+        {
             "name": "Stephan Gehle",
             "homepage": "https://github.com/SGehle"
+        },
+        {
+          "name": "Dennis Erdmann",
+          "homepage": "https://erdmann-freunde.de"
         }
-    ],
-
+  ],
   "require": {
     "php": ">=7.3",
     "contao/core-bundle": "~4.4"
