@@ -7,7 +7,7 @@ declare(strict_types=1);
  * @copyright  Copyright (c) 2020, Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
- * @link       http://github.com/erdmannfreunde/contao-grid
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
 array_insert($GLOBALS['BE_MOD']['content'], 2, [
@@ -22,10 +22,16 @@ array_insert($GLOBALS['BE_MOD']['content'], 2, [
  */
 array_insert($GLOBALS['FE_MOD'], 3, [
     'portfolio' => [
-        'portfoliolist'     => 'EuF\PortfolioBundle\Modules\ModulePortfolioList',
-        'portfolioreader'   => 'EuF\PortfolioBundle\Modules\ModulePortfolioReader',
+        'portfoliolist'     => '\\EuF\\PortfolioBundle\\Modules\\ModulePortfolioList',
+        'portfolioreader'   => '\\EuF\\PortfolioBundle\\Modules\\ModulePortfolioReader',
     ],
 ]);
 
-$GLOBALS['TL_MODELS']['tl_portfolio']          = 'EuF\PortfolioBundle\Models\PortfolioModel';
-$GLOBALS['TL_MODELS']['tl_portfolio_category'] = 'EuF\PortfolioBundle\Models\PortfolioCategoryModel';
+$GLOBALS['TL_MODELS']['tl_portfolio']          = '\\EuF\\PortfolioBundle\\Models\\PortfolioModel';
+$GLOBALS['TL_MODELS']['tl_portfolio_archive']  = '\\EuF\\PortfolioBundle\\Models\\PortfolioArchiveModel';
+$GLOBALS['TL_MODELS']['tl_portfolio_category'] = '\\EuF\\PortfolioBundle\\Models\\PortfolioCategoryModel';
+
+/*
+ * Register hooks
+ */
+$GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['\\EuF\\PortfolioBundle\\Classes\\Portfolio', 'getSearchablePages'];

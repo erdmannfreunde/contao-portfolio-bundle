@@ -7,11 +7,17 @@ declare(strict_types=1);
  * @copyright  Copyright (c) 2020, Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
- * @link       http://github.com/erdmannfreunde/contao-grid
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
 namespace EuF\PortfolioBundle\Modules;
 
+use Contao\BackendTemplate;
+use Contao\Config;
+use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
 /**
@@ -35,8 +41,11 @@ class ModulePortfolioReader extends ModulePortfolio
      */
     public function generate()
     {
-        if (TL_MODE === 'BE') {
-            $objTemplate = new \BackendTemplate('be_wildcard');
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
+        {
+            $objTemplate = new BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### '.utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['portfolioreader'][0]).' ###';
             $objTemplate->title    = $this->headline;
@@ -48,17 +57,25 @@ class ModulePortfolioReader extends ModulePortfolio
         }
 
         // Set the item from the auto_item parameter
-        if (!isset($_GET['items']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
-            \Input::setGet('items', \Input::get('auto_item'));
+        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
+        {
+            Input::setGet('items', Input::get('auto_item'));
         }
 
         // Do not index or cache the page if no portfolio item has been specified
-        if (!\Input::get('items')) {
+        if (!Input::get('items')) {
             global $objPage;
             $objPage->noSearch = 1;
             $objPage->cache    = 0;
 
             return '';
+        }
+
+        $this->portfolio_archives = $this->sortOutProtected(StringUtil::deserialize($this->portfolio_archives));
+
+        if (empty($this->portfolio_archives) || !\is_array($this->portfolio_archives))
+        {
+            throw new InternalServerErrorException('The news reader ID ' . $this->id . ' has no archives specified.', $this->id);
         }
 
         return parent::generate();
@@ -76,7 +93,7 @@ class ModulePortfolioReader extends ModulePortfolio
         $this->Template->back    = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the portfolio item
-        $objItem = PortfolioModel::findByIdOrAlias(\Input::get('items'));
+        $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
 
         if (null === $objItem) {
             // Do not index or cache the page
@@ -85,7 +102,7 @@ class ModulePortfolioReader extends ModulePortfolio
 
             // Send a 404 header
             header('HTTP/1.1 404 Not Found');
-            $this->Template->items = '<p class="error">'.sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')).'</p>';
+            $this->Template->items = '<p class="error">'.sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], Input::get('items')).'</p>';
 
             return;
         }
@@ -93,9 +110,29 @@ class ModulePortfolioReader extends ModulePortfolio
         $arrItem               = $this->parseItem($objItem);
         $this->Template->items = $arrItem;
 
-        // Overwrite the page title (see #2853 and #4955)
-        if ('' !== $objItem->headline) {
-            $objPage->pageTitle = strip_tags(strip_insert_tags($objItem->headline));
+        // Overwrite the page title (see #2853 and #4955 and #87)
+        if ($objItem->pageTitle)
+        {
+            $objPage->pageTitle = $objItem->pageTitle;
+        }
+        elseif ($objItem->headline)
+        {
+            $objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($objItem->headline));
+        }
+
+        // Overwrite the page description
+        if ($objItem->description)
+        {
+            $objPage->description = $objItem->description;
+        }
+        elseif ($objItem->teaser)
+        {
+            $objPage->description = $this->prepareMetaDescription($objItem->teaser);
+        }
+
+        if ($objItem->robots)
+        {
+            $objPage->robots = $objItem->robots;
         }
     }
 }
