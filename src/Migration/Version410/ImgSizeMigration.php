@@ -28,7 +28,7 @@ class ImgSizeMigration extends AbstractMigration
 
         $columns = $schemaManager->listTableColumns('tl_portfolio');
 
-        return isset($columns['imgSize']) && !isset($columns['size']);
+        return isset($columns['imgsize']) && !isset($columns['size']);
     }
 
     /**
