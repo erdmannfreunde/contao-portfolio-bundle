@@ -1,4 +1,0 @@
-services:
-  EuF\PortfolioBundle\Migration\ImgSizeMigration:
-    tags:
-      - { name: contao.migration, priority: 0 }

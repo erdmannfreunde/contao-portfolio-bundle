@@ -1,6 +1,6 @@
 <?php
 
-namespace EuF\PortfolioBundle\Migration;
+namespace EuF\PortfolioBundle\Migration\Version410;
 
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
@@ -22,7 +22,7 @@ class ImgSizeMigration extends AbstractMigration
     {
         $schemaManager = $this->connection->getSchemaManager();
 
-        if ($schemaManager !== null && !$schemaManager->tablesExist(['tl_portfolio'])) {
+        if (!$schemaManager->tablesExist(['tl_portfolio'])) {
             return false;
         }
 
@@ -37,11 +37,8 @@ class ImgSizeMigration extends AbstractMigration
      */
     public function run(): MigrationResult
     {
-        $this->connection->executeQuery("ALTER TABLE tl_portfolio CHANGE imgSize size VARCHAR(64) NOT NULL default ''");
+        $this->connection->executeStatement("ALTER TABLE tl_portfolio CHANGE imgSize size VARCHAR(64) NOT NULL default ''");
 
-        return new MigrationResult(
-            true,
-            'Renamed tl_portfolio.imgSize to tl_portfolio.size.'
-        );
+        return $this->createResult(true);
     }
 }
