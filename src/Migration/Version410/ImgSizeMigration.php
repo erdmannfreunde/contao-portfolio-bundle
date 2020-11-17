@@ -1,0 +1,44 @@
+<?php
+
+namespace EuF\PortfolioBundle\Migration\Version410;
+
+use Contao\CoreBundle\Migration\AbstractMigration;
+use Contao\CoreBundle\Migration\MigrationResult;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+
+class ImgSizeMigration extends AbstractMigration
+{
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    public function __construct(Connection $connection) {
+        $this->connection = $connection;
+    }
+
+    public function shouldRun(): bool
+    {
+        $schemaManager = $this->connection->getSchemaManager();
+
+        if (!$schemaManager->tablesExist(['tl_portfolio'])) {
+            return false;
+        }
+
+        $columns = $schemaManager->listTableColumns('tl_portfolio');
+
+        return isset($columns['imgsize']) && !isset($columns['size']);
+    }
+
+    /**
+     * @return MigrationResult
+     * @throws Exception
+     */
+    public function run(): MigrationResult
+    {
+        $this->connection->executeStatement("ALTER TABLE tl_portfolio CHANGE imgSize size VARCHAR(64) NOT NULL default ''");
+
+        return $this->createResult(true);
+    }
+}
