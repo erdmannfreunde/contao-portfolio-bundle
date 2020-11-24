@@ -245,8 +245,7 @@ abstract class ModulePortfolio extends \Module
         }
 
         // Ampersand URIs
-
-        $strArticleUrl = StringUtil::ampersand($objItem->url);
+        $strArticleUrl = ampersand($objItem->url);
 
         global $objPage;
 
