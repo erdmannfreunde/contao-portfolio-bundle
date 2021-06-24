@@ -35,3 +35,9 @@ $GLOBALS['TL_MODELS']['tl_portfolio_category'] = '\\EuF\\PortfolioBundle\\Models
  * Register hooks
  */
 $GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['\\EuF\\PortfolioBundle\\Classes\\Portfolio', 'getSearchablePages'];
+
+/*
+ * Add permissions
+ */
+$GLOBALS['TL_PERMISSIONS'][] = 'portfolio';
+$GLOBALS['TL_PERMISSIONS'][] = 'portfoliop';
