@@ -1,0 +1,25 @@
+
+<div class="layout_latest block<?php echo $this->class; ?>" data-category="<?php echo $this->categories ?>">
+  <div class="inside">
+    <?php if ($this->hasText) : ?>
+      <h2><?php echo $this->linkHeadline; ?></h2>
+    <?php else: ?>
+      <h2><?php echo $this->headline; ?></h2>
+    <?php endif; ?>
+    
+    <?php if ($this->addImage): ?>
+        <?php $this->insert('image', $this->arrData); ?>
+    <?php endif; ?>
+
+    <?php if ($this->hasTeaser): ?>
+      <div class="teaser"><?= $this->teaser; ?></div>
+    <?php endif; ?>
+
+    <?php if ($this->hasText || $this->hasTeaser): ?>
+        <?= $this->more; ?>
+    <?php endif; ?>
+
+  </div>
+</div>
+
+<?php $this->showTemplateVars(); ?>

@@ -93,18 +93,17 @@ abstract class ModulePortfolio extends \Module
         $objTemplate->class = (('' !== $objItem->cssClass) ? ' ' . $objItem->cssClass : '') . $strClass;
         $objTemplate->headline = $objItem->headline;
         $objTemplate->linkHeadline = $this->generateLink($objItem->headline, $objItem, $blnAddArchive);
+        $objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objItem, $blnAddArchive, true);
         $objTemplate->link = Portfolio::generatePortfolioUrl($objItem, $blnAddArchive);
         $objTemplate->count = $intCount; // see #5708
         $objTemplate->text = '';
+        $objTemplate->hasText = false;
+        $objTemplate->hasTeaser = false;
 
         // Clean the RTE output
-        if ('' !== $objItem->teaser) {
-            if ('xhtml' === $objPage->outputFormat) {
-                $objTemplate->teaser = StringUtil::toXhtml($objItem->teaser);
-            } else {
-                $objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
-            }
-
+        if ($objItem->teaser) {
+            $objTemplate->hasTeaser = true;
+            $objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
         }
 
@@ -119,6 +118,11 @@ abstract class ModulePortfolio extends \Module
                     $objTemplate->text .= self::getContentElement($objElement->current());
                 }
             }
+
+            $objTemplate->hasText = static function () use ($objItem)
+            {
+                return ContentModel::countPublishedByPidAndTable($objItem->id, 'tl_portfolio') > 0;
+            };
         }
 
         // Add the meta information
