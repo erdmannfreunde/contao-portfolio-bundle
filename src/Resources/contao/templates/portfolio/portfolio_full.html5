@@ -6,6 +6,12 @@
 	  <?= $this->client ?>
   </p>
   
-  <?php echo $this->text; ?>
+  <?php if ($this->hasText): ?>
+    <?= $this->text ?>
+  <?php else: ?>
+    <div class="teaser block">
+        <?= $this->teaser ?>
+    </div>
+  <?php endif; ?>
 
 </div>

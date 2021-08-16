@@ -672,7 +672,7 @@ class tl_portfolio extends Backend
     {
         if (Input::get('tid'))
         {
-            $this->toggleVisibility(Input::get('tid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
+            $this->toggleVisibility(Contao\Input::get('tid'), (Contao\Input::get('state') == 1), (func_num_args() <= 12 ? null : func_get_arg(12)));
             self::redirect(self::getReferer());
         }
 
@@ -699,7 +699,7 @@ class tl_portfolio extends Backend
      * @param boolean $blnVisible
      * @param DataContainer|null $dc
      */
-    public function toggleVisibility(int $intId, bool $blnVisible, DataContainer $dc=null): void
+    public function toggleVisibility($intId, $blnVisible, Contao\DataContainer $dc=null)
     {
         // Set the ID and action
         Input::setGet('id', $intId);
