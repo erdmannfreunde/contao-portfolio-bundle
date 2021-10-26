@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Models;
 
 use Contao\Date;
+use Contao\StringUtil;
 use Contao\Model\Collection;
 
 /**
@@ -67,7 +68,7 @@ class PortfolioModel extends \Model
      *
      * @return Collection|PortfolioModel[]|PortfolioModel|null A collection of models or null if there are no portfolio items
      */
-    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array())
+    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array(), array $arrCategories=array())
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -95,6 +96,13 @@ class PortfolioModel extends \Model
         if (!isset($arrOptions['order']))
         {
             $arrOptions['order']  = "$t.date DESC";
+        }
+
+        // check if categories are selected and filter by them
+        // not working because $t.categories is still a serialized array
+        if ($arrCategories) {
+            $stringCategories = StringUtil::deserialize($arrCategories);
+            // $arrColumns[] = "$t.categories IN(" . implode(',', array_map('\intval', $stringCategories)) . ")";
         }
 
         $arrOptions['limit']  = $intLimit;

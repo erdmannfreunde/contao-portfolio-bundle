@@ -75,7 +75,7 @@ abstract class ModulePortfolio extends \Module
     /**
      * Parse an item and return it as string.
      *
-     * @param mixed $objItem
+     * @param PortfolioModel $objItem
      * @param bool $blnAddArchive
      * @param mixed $strClass
      * @param mixed $intCount
@@ -192,15 +192,15 @@ abstract class ModulePortfolio extends \Module
     /**
      * Parse one or more items and return them as array
      *
-     * @param array $arrItems
+     * @param PortfolioModel $arrItems
      * @param boolean $blnAddArchive
      *
      * @return array
      * @throws \Exception
      */
-    protected function parseItems(array $arrItems, $blnAddArchive = false): array
+    protected function parseItems($objArticles, $blnAddArchive = false): array
     {
-        $limit = count($arrItems);
+        $limit = $objArticles->count();
 
         if ($limit < 1) {
             return [];
@@ -210,7 +210,7 @@ abstract class ModulePortfolio extends \Module
         $arrArticles = [];
         $uuids = [];
 
-        foreach ($arrItems as $objArticle) {
+        foreach ($objArticles as $objArticle) {
             if ($objArticle->addImage && $objArticle->singleSRC) {
                 $uuids[] = $objArticle->singleSRC;
             }
@@ -219,7 +219,7 @@ abstract class ModulePortfolio extends \Module
         // Preload all images in one query so they are loaded into the model registry
         FilesModel::findMultipleByUuids($uuids);
 
-        foreach ($arrItems as $objArticle) {
+        foreach ($objArticles as $objArticle) {
             $arrArticles[] = $this->parseItem($objArticle, $blnAddArchive, ((++$count === 1) ? ' first' : '') . (($count === $limit) ? ' last' : '') . (($count % 2 === 0) ? ' odd' : ' even'), $count);
         }
 
