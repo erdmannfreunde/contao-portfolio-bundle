@@ -83,18 +83,18 @@ class ModulePortfolioList extends ModulePortfolio
         }
 
         // Handle featured portfolio-items
-		if ($this->portfolio_featured == 'featured')
-		{
-			$blnFeatured = true;
-		}
-		elseif ($this->portfolio_featured == 'unfeatured')
-		{
-			$blnFeatured = false;
-		}
-		else
-		{
-			$blnFeatured = null;
-		}
+        if ($this->portfolio_featured == 'featured')
+        {
+            $blnFeatured = true;
+        }
+        elseif ($this->portfolio_featured == 'unfeatured')
+        {
+            $blnFeatured = false;
+        }
+        else
+        {
+            $blnFeatured = null;
+        }
 
         $arrColumns = ['tl_portfolio.published=?'];
         $arrValues  = ['1'];
@@ -114,9 +114,18 @@ class ModulePortfolioList extends ModulePortfolio
         $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $arrColumns[] = 'tl_portfolio.pid IN(' . implode(',', array_map('\intval', $arrPids)) . ')';
 
+        $arrCategoryIds = array();
+
+        // Pre-filter items based on filter_categories
+        if ($this->filter_categories) {
+            $arrCategoryIds = StringUtil::deserialize($this->filter_categories);
+        }
+
         // add portfolio pagination
         // Get the total number of items
-        $intTotal = $this->countItems($arrPids, $blnFeatured);
+        $intTotal = $this->countItems($arrPids, $blnFeatured, $arrCategoryIds);
+
+        echo $intTotal;
 
         if ($intTotal < 1)
         {
@@ -161,32 +170,6 @@ class ModulePortfolioList extends ModulePortfolio
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
 
-
-        // Pre-filter items based on filter_categories
-        if ($this->filter_categories) {
-            $arrCategoryIds = StringUtil::deserialize($this->filter_categories);
-            //var_dump($arrCategoryIds);
-            $arrFilteredItems = [];
-            /*
-            while ($objItems->next()) {
-                if ($objItems->categories) {
-                    $arrCategories = StringUtil::deserialize($objItems->categories);
-                    foreach ($arrCategories as $category) {
-                        if (in_array($category, $arrCategoryIds, true)) {
-                            $arrFilteredItems[] = $objItems->current();
-                        }
-                    }
-                }
-            }
-            
-            if ($limit !== 0 && count($arrFilteredItems) > $limit) {
-                $objItems = array_slice($arrFilteredItems, $offset, $limit);
-            } else {
-                $objItems = $this->fetchItems($arrPids, $blnFeatured, ($limit ?: 0), $offset);
-            }
-            */
-        }
-
         $objItems = $this->fetchItems($arrPids, $blnFeatured, ($limit ?: 0), $offset, $arrCategoryIds);
 
 
@@ -196,32 +179,32 @@ class ModulePortfolioList extends ModulePortfolio
     }
 
     /**
-	 * Count the total matching items
-	 *
-	 * @param array   $portfolioArchives
-	 * @param boolean $blnFeatured
-	 *
-	 * @return integer
-	 */
-	protected function countItems($portfolioArchives, $blnFeatured)
-	{
-		return PortfolioModel::countPublishedByPids($portfolioArchives, $blnFeatured);
-	}
+     * Count the total matching items
+     *
+     * @param array   $portfolioArchives
+     * @param boolean $blnFeatured
+     *
+     * @return integer
+     */
+    protected function countItems($portfolioArchives, $blnFeatured, $arrCategories)
+    {
+        return PortfolioModel::countPublishedByPids($portfolioArchives, $blnFeatured, $arrCategories);
+    }
 
     /**
-	 * Fetch the matching items
-	 *
-	 * @param array   $portfolioArchives
-	 * @param boolean $blnFeatured
-	 * @param integer $limit
-	 * @param integer $offset
-	 *
-	 * @return Collection|NewsModel|null
-	 */
-	protected function fetchItems($portfolioArchives, $blnFeatured, $limit, $offset, $arrCategories)
-	{
+     * Fetch the matching items
+     *
+     * @param array   $portfolioArchives
+     * @param boolean $blnFeatured
+     * @param integer $limit
+     * @param integer $offset
+     *
+     * @return Collection|NewsModel|null
+     */
+    protected function fetchItems($portfolioArchives, $blnFeatured, $limit, $offset, $arrCategories)
+    {
         $order .= 'tl_portfolio.sorting ASC';
 
-		return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, array('order'=>$order), $arrCategories);
-	}
+        return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, array('order'=>$order), $arrCategories);
+    }
 }
