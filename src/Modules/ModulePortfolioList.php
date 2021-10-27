@@ -125,8 +125,6 @@ class ModulePortfolioList extends ModulePortfolio
         // Get the total number of items
         $intTotal = $this->countItems($arrPids, $blnFeatured, $arrCategoryIds);
 
-        echo $intTotal;
-
         if ($intTotal < 1)
         {
             return;

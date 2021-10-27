@@ -146,8 +146,6 @@ class PortfolioModel extends \Model
         }
 
         // check if categories are selected and filter by them
-        // not working because $t.categories is still a serialized array
-        var_dump($arrCategories);
         if ($arrCategories) {
             $stringCategories = StringUtil::deserialize($arrCategories);
             $arrColumns[] = "$t.categories LIKE '%\"" . implode("\"%' OR $t.categories LIKE '%\"", array_map('\intval', $stringCategories))."\"%'";
