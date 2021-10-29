@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Models;
 
 use Contao\Date;
+use Contao\StringUtil;
 use Contao\Model\Collection;
 
 /**
@@ -67,7 +68,7 @@ class PortfolioModel extends \Model
      *
      * @return Collection|PortfolioModel[]|PortfolioModel|null A collection of models or null if there are no portfolio items
      */
-    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array())
+    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array(), array $arrCategories=array())
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -97,6 +98,13 @@ class PortfolioModel extends \Model
             $arrOptions['order']  = "$t.date DESC";
         }
 
+        // check if categories are selected and filter by them
+        // not working because $t.categories is still a serialized array
+        if ($arrCategories) {
+            $stringCategories = StringUtil::deserialize($arrCategories);
+            $arrColumns[] = "$t.categories LIKE '%\"" . implode("\"%' OR $t.categories LIKE '%\"", array_map('\intval', $stringCategories))."\"%'";
+        }
+
         $arrOptions['limit']  = $intLimit;
         $arrOptions['offset'] = $intOffset;
 
@@ -112,7 +120,7 @@ class PortfolioModel extends \Model
      *
      * @return integer The number of portfolio items
      */
-    public static function countPublishedByPids(array $arrPids, ?bool $blnFeatured=null, array $arrOptions=array()): int
+    public static function countPublishedByPids(array $arrPids, ?bool $blnFeatured=null, array $arrCategories=array(), array $arrOptions=array()): int
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
@@ -135,6 +143,12 @@ class PortfolioModel extends \Model
         {
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
+        }
+
+        // check if categories are selected and filter by them
+        if ($arrCategories) {
+            $stringCategories = StringUtil::deserialize($arrCategories);
+            $arrColumns[] = "$t.categories LIKE '%\"" . implode("\"%' OR $t.categories LIKE '%\"", array_map('\intval', $stringCategories))."\"%'";
         }
 
         return static::countBy($arrColumns, null, $arrOptions);
