@@ -16,4 +16,4 @@ $GLOBALS['TL_LANG']['tl_module']['portfolio_template']     = ['Portfoliotemplate
 $GLOBALS['TL_LANG']['tl_module']['portfolio_featured']     = ['Hervorgehobene Beiträge', 'Hier legen Sie fest, wie hervorgehobene Beiträge gehandhabt werden.'];
 $GLOBALS['TL_LANG']['tl_module']['portfolio_filter']       = ['Kategorie-Filter anzeigen', 'Hier legen Sie fest, ob die Liste um eine Kategorie-Navigation erweitert werden soll.'];
 $GLOBALS['TL_LANG']['tl_module']['portfolio_filter_reset'] = ['Kategorie-Filter zurücksetzen', 'Fügen Sie der Navigation einen Punkt zum Zurücksetzen hinzu.'];
-$GLOBALS['TL_LANG']['tl_module']['filter_categories']      = ['Nach Kategorien filtern', 'Bitte wählen Sie die Kategorien aus, deren Beiträge angezeigt werden sollen. Lassen Sie das Feld leer, um alle anzuzeigen.'];
+$GLOBALS['TL_LANG']['tl_module']['filter_categories']      = ['Nach Kategorien filtern', 'Bitte wählen Sie die Kategorien aus, deren Beiträge angezeigt werden sollen. Bei mehreren Kategorien werden alle Beiträge ausgegeben, die in einer der genannten Kategorien ist (ODER-Anweisung). Lassen Sie das Feld leer, um alle anzuzeigen.'];
