@@ -68,7 +68,7 @@ class PortfolioModel extends \Model
      *
      * @return Collection|PortfolioModel[]|PortfolioModel|null A collection of models or null if there are no portfolio items
      */
-    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array(), array $arrCategories=array())
+    public static function findPublishedByPids(array $arrPids, ?bool $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array(), array $arrCategories=array())
     {
         if (empty($arrPids) || !\is_array($arrPids))
         {
