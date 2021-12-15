@@ -179,7 +179,7 @@ abstract class ModulePortfolio extends \Module
                     $objTemplate->linkTitle = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->headline), true);
 
                     // If the external link is opened in a new window, open the image link in a new window, too
-                    if ('external' === $objTemplate->source && $objTemplate->target && false === strpos($objTemplate->attributes, 'target="_blank"')) {
+                    if ('external' === $objTemplate->source && $objTemplate->target) {
                         $objTemplate->attributes .= ' target="_blank"';
                     }
                 }
