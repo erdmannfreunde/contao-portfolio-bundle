@@ -16,7 +16,6 @@ declare(strict_types=1);
 $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
     // Config
     'config' => [
-        'label'                       => $GLOBALS['TL_LANG']['tl_news_archive']['categories'][0],
         'dataContainer'               => 'Table',
         'enableVersioning'            => true,
 
