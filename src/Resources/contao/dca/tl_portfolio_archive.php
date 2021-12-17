@@ -58,6 +58,12 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
             'format'                  => '%s',
         ],
         'global_operations' => [
+            'categories' => [
+                'label'      => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['categories'],
+                'href'       => 'table=tl_portfolio_category',
+                'icon'       => 'bundles/eufportfolio/icon.png',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="c"',
+            ],
             'all' => [
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'                => 'act=select',

@@ -29,6 +29,14 @@
         <source>Create a new archive</source>
         <target>Ein neues Archiv erstellen</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio_archive.categories.0">
+        <source>categories</source>
+        <target>Kategorien</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.categories.1">
+        <source>Here you can add categories.</source>
+        <target>Hier können Sie Kategorien anlegen und verwalten.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio_archive.show.0">
         <source>Archive details</source>
         <target>Archivdetails</target>
