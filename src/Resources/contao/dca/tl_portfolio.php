@@ -236,7 +236,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'size'              => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_content']['size'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_portfolio']['size'],
             'exclude'          => true,
             'inputType'        => 'imageSize',
             'reference'        => &$GLOBALS['TL_LANG']['MSC'],
