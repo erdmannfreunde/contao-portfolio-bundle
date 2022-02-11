@@ -158,7 +158,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'save_callback' => [
                 ['tl_portfolio', 'generateAlias'],
             ],
-            'sql'           => "varchar(128) COLLATE utf8_bin NOT NULL default ''",
+            'sql'           => "varchar(255) BINARY NOT NULL default ''"
         ],
         'categories'    => [
             'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['categories'],
