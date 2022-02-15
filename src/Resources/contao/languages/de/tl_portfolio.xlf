@@ -105,6 +105,14 @@
         <source>Add an image to the portfolio item.</source>
         <target>Dem Eintrag ein Bild hinzufügen.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.size.0">
+        <source>Image size</source>
+        <target>Bildgröße</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.size.1">
+        <source>Here you can set the image dimensions and the resize mode.</source>
+        <target>Hier können Sie die Abmessungen des Bildes und den Skalierungsmodus festlegen.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.addEnclosure.0">
         <source>Add enclosures</source>
         <target>Anlagen hinzufügen</target>
