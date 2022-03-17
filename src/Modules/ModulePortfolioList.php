@@ -18,7 +18,6 @@ use Contao\Input;
 use Contao\Pagination;
 use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Patchwork\Utf8;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
@@ -46,7 +45,7 @@ class ModulePortfolioList extends ModulePortfolio
         if (TL_MODE === 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['portfoliolist'][0]).' ###';
+            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
             $objTemplate->title    = $this->headline;
             $objTemplate->id       = $this->id;
             $objTemplate->link     = $this->name;
