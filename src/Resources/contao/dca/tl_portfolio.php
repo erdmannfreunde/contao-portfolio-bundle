@@ -111,7 +111,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
     // Palettes
     'palettes'    => [
         '__selector__' => ['addImage', 'source', 'overwriteMeta'],
-        'default'      => '{title_legend},headline,alias,categories,client;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
+        'default'      => '{title_legend},headline,alias,categories,client;{meta_legend},pageTitle,description,serpPreview;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
     ],
 
     // Subpalettes
@@ -177,6 +177,28 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'inputType' => 'text',
             'eval'      => ['maxlength' => 255, 'tl_class'  => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'pageTitle' => [
+        
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ],
+        'description' => [
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'textarea',
+            'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true, 'tl_class'=>'clr'),
+            'sql'                     => "text NULL"
+        ],
+        'serpPreview' => [
+            'label'                   => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
+            'exclude'                 => true,
+            'inputType'               => 'serpPreview',
+            'eval'                    => array('url_callback'=>array('tl_portfolio', 'getSerpUrl'), 'title_tag_callback'=>array('tl_portfolio', 'getTitleTag'), 'titleFields'=>array('pageTitle', 'headline'), 'descriptionFields'=>array('description', 'teaser')),
+            'sql'                     => null
         ],
         'teaser'     => [
             'label'       => &$GLOBALS['TL_LANG']['tl_portfolio']['teaser'],
@@ -529,30 +551,91 @@ class tl_portfolio extends Backend
      * @return string
      * @throws Exception
      */
-    public function generateAlias($varValue, DataContainer $dc): string
+
+    public function generateAlias($varValue, Contao\DataContainer $dc)
     {
-        $autoAlias = false;
+        $aliasExists = function (string $alias) use ($dc): bool
+        {
+            return $this->Database->prepare("SELECT id FROM tl_portfolio WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+        };
 
         // Generate alias if there is none
-        if ('' === $varValue) {
-            $autoAlias = true;
-            $varValue  = StringUtil::standardize(StringUtil::restoreBasicEntities($dc->activeRecord->headline));
+        if (!$varValue)
+        {
+            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->headline, EuF\PortfolioBundle\Models\PortfolioArchiveModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
         }
-
-        $objAlias = $this->Database->prepare('SELECT id FROM tl_portfolio WHERE alias=?')
-            ->execute($varValue);
-
-        // Check whether the portfolio alias exists
-        if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+        elseif (preg_match('/^[1-9]\d*$/', $varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $varValue));
         }
-
-        // Add ID to alias
-        if ($objAlias->numRows && $autoAlias) {
-            $varValue .= '-'.$dc->id;
+        elseif ($aliasExists($varValue))
+        {
+            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         return $varValue;
+    }
+
+    /**
+     * Return the SERP URL
+     *
+     * @param  EuF\PortfolioBundle\Models\PortfolioModel $model
+     *
+     * @return string
+     */
+    public function getSerpUrl( EuF\PortfolioBundle\Models\PortfolioModel $model)
+    {
+        return  EuF\PortfolioBundle\Classes\Portfolio::generatePortfolioUrl($model, false, true);
+    }
+
+    /**
+     * Return the title tag from the associated page layout
+     *
+     * @param  EuF\PortfolioBundle\Models\PortfolioModel $model
+     *
+     * @return string
+     */
+    public function getTitleTag( EuF\PortfolioBundle\Models\PortfolioModel $model)
+    {
+        /** @var EuF\PortfolioBundle\Models\PortfolioArchiveModel $archive */
+        if (!$archive = $model->getRelated('pid'))
+        {
+            return '';
+        }
+
+        /** @var Contao\PageModel $page */
+        if (!$page = $archive->getRelated('jumpTo'))
+        {
+            return '';
+        }
+
+        $page->loadDetails();
+
+        /** @var Contao\LayoutModel $layout */
+        if (!$layout = $page->getRelated('layout'))
+        {
+            return '';
+        }
+
+        $origObjPage = $GLOBALS['objPage'] ?? null;
+
+        // Override the global page object, so we can replace the insert tags
+        $GLOBALS['objPage'] = $page;
+
+        $title = implode(
+            '%s',
+            array_map(
+                static function ($strVal)
+                {
+                    return str_replace('%', '%%', self::replaceInsertTags($strVal));
+                },
+                explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2)
+            )
+        );
+
+        $GLOBALS['objPage'] = $origObjPage;
+
+        return $title;
     }
 
     /**
