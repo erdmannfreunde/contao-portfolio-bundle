@@ -49,13 +49,21 @@
         <source>Here you can add the clients name.</source>
         <target>Hier können Sie den Kunden hinzufügen.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.pageTitle.0">
+        <source>Meta title</source>
+        <target>Meta-Titel</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.pageTitle.1">
+        <source>Here you can add a custom meta title to overwrite the default page title.</source>
+        <target>Hier können Sie einen individuellen Meta-Titel eingeben, um den Standard-Seitentitel zu überschreiben.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.description.0">
-        <source>Description</source>
-        <target>Beschreibung</target>
+        <source>Meta description</source>
+        <target>Meta-Beschreibung</target>
       </trans-unit>
       <trans-unit id="tl_portfolio.description.1">
-        <source>Here you can add a short description.</source>
-        <target>Hier können Sie eine kurze Beschreibung hinzufügen.</target>
+        <source>Here you can add a custom meta description to overwrite the default page description.</source>
+        <target>Hier können Sie eine individuelle Meta-Beschreibung eingeben, um die Standard-Seitenbeschreibung zu überschreiben.</target>
       </trans-unit>
       <trans-unit id="tl_portfolio.date.0">
         <source>Date</source>
