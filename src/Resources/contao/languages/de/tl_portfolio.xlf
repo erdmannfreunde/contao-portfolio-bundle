@@ -49,6 +49,10 @@
         <source>Here you can add the clients name.</source>
         <target>Hier können Sie den Kunden hinzufügen.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.meta_legend">
+        <source>Meta data</source>
+        <target>Metadaten</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.pageTitle.0">
         <source>Meta title</source>
         <target>Meta-Titel</target>
