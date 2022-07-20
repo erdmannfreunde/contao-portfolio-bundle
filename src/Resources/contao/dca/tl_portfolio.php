@@ -179,7 +179,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'pageTitle' => [
-
+        
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
