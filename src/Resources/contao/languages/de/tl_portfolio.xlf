@@ -61,6 +61,14 @@
         <source>Here you can add a custom meta title to overwrite the default page title.</source>
         <target>Hier können Sie einen individuellen Meta-Titel eingeben, um den Standard-Seitentitel zu überschreiben.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.robots.0">
+        <source>Robots tag</source>
+        <target>Robots-Tag</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.robots.1">
+        <source>Here you can define a custom robots tag to overwrite the default page settings.</source>
+        <target>Hier können Sie individuelle Robots-Tag auswählen, um die Standard-Seiteneinstellungen zu überschreiben.</target>
+      </trans-unit>
       <trans-unit id="tl_portfolio.description.0">
         <source>Meta description</source>
         <target>Meta-Beschreibung</target>

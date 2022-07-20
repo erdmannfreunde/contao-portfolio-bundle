@@ -111,7 +111,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
     // Palettes
     'palettes'    => [
         '__selector__' => ['addImage', 'source', 'overwriteMeta'],
-        'default'      => '{title_legend},headline,alias,categories,client;{meta_legend},pageTitle,description,serpPreview;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
+        'default'      => '{title_legend},headline,alias,categories,client;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
     ],
 
     // Subpalettes
@@ -179,12 +179,20 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'pageTitle' => [
-        
+
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
             'eval'                    => array('maxlength'=>255, 'decodeEntities'=>true, 'tl_class'=>'w50'),
             'sql'                     => "varchar(255) NOT NULL default ''"
+        ],
+        'robots' => [
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'select',
+            'options'                 => ['index,follow', 'index,nofollow', 'noindex,follow', 'noindex,nofollow'],
+            'eval'                    => ['tl_class' =>'w50', 'includeBlankOption' => true],
+            'sql'                     => "varchar(32) NOT NULL default ''"
         ],
         'description' => [
             'exclude'                 => true,
