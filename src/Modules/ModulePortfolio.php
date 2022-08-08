@@ -131,9 +131,12 @@ abstract class ModulePortfolio extends \Module
 
         if ($objItem->categories) {
             $objTemplate->categories = '';
+            $objCategories = [];
+            $objTemplate->category_models = [];
             $categories = StringUtil::deserialize($objItem->categories);
             foreach ($categories as $category) {
                 $objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
+                $objTemplate->category_models[] = $objPortfolioCategoryModel;
                 $objCategories[] = $objPortfolioCategoryModel->alias;
                 if (!$objTemplate->category_titles) {
                     $objTemplate->category_titles = '<ul class="level_1"><li>' . $objPortfolioCategoryModel->title . '</li>';
