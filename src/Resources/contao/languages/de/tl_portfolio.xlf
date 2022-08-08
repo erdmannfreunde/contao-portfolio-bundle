@@ -266,8 +266,8 @@
         <target>Bild-Einstellungen</target>
       </trans-unit>
       <trans-unit id="tl_portfolio.teaser_legend">
-        <source>Subheadline and teaser</source>
-        <target>Unterüberschrift und Teaser</target>
+        <source>Teaser</source>
+        <target>Teaser</target>
       </trans-unit>
       <trans-unit id="tl_portfolio.text_legend">
         <source>portfolio text</source>
