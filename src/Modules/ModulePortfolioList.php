@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
- * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @copyright  Copyright (c) Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Modules;
 
-use Contao\StringUtil;
+use Contao\Config;
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Environment;
 use Contao\Input;
 use Contao\Pagination;
-use Contao\Config;
-use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\StringUtil;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
@@ -37,19 +37,17 @@ class ModulePortfolioList extends ModulePortfolio
 
     /**
      * Display a wildcard in the back end.
-     *
-     * @return string
      */
     public function generate(): string
     {
         if (TL_MODE === 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### '. $GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
-            $objTemplate->title    = $this->headline;
-            $objTemplate->id       = $this->id;
-            $objTemplate->link     = $this->name;
-            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }
@@ -59,6 +57,7 @@ class ModulePortfolioList extends ModulePortfolio
 
     /**
      * Generate the module.
+     *
      * @throws \Exception
      */
     protected function compile(): void
@@ -70,8 +69,8 @@ class ModulePortfolioList extends ModulePortfolio
 
         $objCategories = PortfolioCategoryModel::findAll([
             'column' => 'published',
-            'value'  => 1,
-            'order'  => 'sorting ASC',
+            'value' => 1,
+            'order' => 'sorting ASC',
         ]);
 
         if (null !== $objCategories && $this->portfolio_filter) {
@@ -87,24 +86,20 @@ class ModulePortfolioList extends ModulePortfolio
         }
 
         // Handle featured portfolio-items
-        if ($this->portfolio_featured == 'featured')
-        {
+        if ('featured' === $this->portfolio_featured) {
             $blnFeatured = true;
-        }
-        elseif ($this->portfolio_featured == 'unfeatured')
-        {
+        } elseif ('unfeatured' === $this->portfolio_featured) {
             $blnFeatured = false;
-        }
-        else
-        {
+        } else {
             $blnFeatured = null;
         }
 
         $arrColumns = ['tl_portfolio.published=?'];
-        $arrValues  = ['1'];
+        $arrValues = ['1'];
         $arrOptions = [
-            'order' => 'tl_portfolio.sorting ASC'
+            'order' => 'tl_portfolio.sorting ASC',
         ];
+
         if (!$this->filter_categories && !empty($limit)) {
             $arrOptions['limit'] = $limit;
         }
@@ -112,13 +107,13 @@ class ModulePortfolioList extends ModulePortfolio
         // Handle featured/unfeatured items
         if ('featured' === $this->portfolio_featured || 'unfeatured' === $this->portfolio_featured) {
             $arrColumns[] = 'tl_portfolio.featured=?';
-            $arrValues[]  = 'featured' === $this->portfolio_featured ? '1' : '';
+            $arrValues[] = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
         $arrPids = StringUtil::deserialize($this->portfolio_archives);
-        $arrColumns[] = 'tl_portfolio.pid IN(' . implode(',', array_map('\intval', $arrPids)) . ')';
+        $arrColumns[] = 'tl_portfolio.pid IN('.implode(',', array_map('\intval', $arrPids)).')';
 
-        $arrCategoryIds = array();
+        $arrCategoryIds = [];
 
         // Pre-filter items based on filter_categories
         if ($this->filter_categories) {
@@ -129,30 +124,26 @@ class ModulePortfolioList extends ModulePortfolio
         // Get the total number of items
         $intTotal = $this->countItems($arrPids, $blnFeatured, $arrCategoryIds);
 
-        if ($intTotal < 1)
-        {
+        if ($intTotal < 1) {
             return;
         }
 
         $total = $intTotal - $offset;
 
         // Split the results
-        if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage))
-        {
+        if ($this->perPage > 0 && (!isset($limit) || $this->numberOfItems > $this->perPage)) {
             // Adjust the overall limit
-            if (isset($limit))
-            {
+            if (isset($limit)) {
                 $total = min($limit, $total);
             }
 
             // Get the current page
-            $id = 'page_n' . $this->id;
+            $id = 'page_n'.$this->id;
             $page = Input::get($id) ?? 1;
 
             // Do not index or cache the page if the page number is outside the range
-            if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
-            {
-                throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
+                throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
             }
 
             // Set limit and offset
@@ -161,11 +152,9 @@ class ModulePortfolioList extends ModulePortfolio
             $skip = (int) $this->skipFirst;
 
             // Overall limit
-            if ($offset + $limit > $total + $skip)
-            {
+            if ($offset + $limit > $total + $skip) {
                 $limit = $total + $skip - $offset;
             }
-
 
             // Add the pagination menu
             $objPagination = new Pagination($total, $this->perPage, Config::get('maxPaginationLinks'), $id);
@@ -174,19 +163,18 @@ class ModulePortfolioList extends ModulePortfolio
 
         $objItems = $this->fetchItems($arrPids, $blnFeatured, ($limit ?: 0), $offset, $arrCategoryIds);
 
-
         if (null !== $objItems) {
             $this->Template->items = $this->parseItems($objItems);
         }
     }
 
     /**
-     * Count the total matching items
+     * Count the total matching items.
      *
-     * @param array   $portfolioArchives
-     * @param boolean $blnFeatured
+     * @param array $portfolioArchives
+     * @param bool  $blnFeatured
      *
-     * @return integer
+     * @return int
      */
     protected function countItems($portfolioArchives, $blnFeatured, $arrCategories)
     {
@@ -194,12 +182,12 @@ class ModulePortfolioList extends ModulePortfolio
     }
 
     /**
-     * Fetch the matching items
+     * Fetch the matching items.
      *
-     * @param array   $portfolioArchives
-     * @param boolean $blnFeatured
-     * @param integer $limit
-     * @param integer $offset
+     * @param array $portfolioArchives
+     * @param bool  $blnFeatured
+     * @param int   $limit
+     * @param int   $offset
      *
      * @return Collection|NewsModel|null
      */
@@ -207,6 +195,6 @@ class ModulePortfolioList extends ModulePortfolio
     {
         $order .= 'tl_portfolio.sorting ASC';
 
-        return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, array('order'=>$order), $arrCategories);
+        return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, ['order' => $order], $arrCategories);
     }
 }

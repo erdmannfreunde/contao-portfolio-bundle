@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
- * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @copyright  Copyright (c) Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
@@ -43,22 +43,20 @@ class ModulePortfolioReader extends ModulePortfolio
     {
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
-        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
-        {
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $objTemplate = new BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### '.utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['portfolioreader'][0]).' ###';
-            $objTemplate->title    = $this->headline;
-            $objTemplate->id       = $this->id;
-            $objTemplate->link     = $this->name;
-            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }
 
         // Set the item from the auto_item parameter
-        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem'))
-        {
+        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem')) {
             Input::setGet('items', Input::get('auto_item'));
         }
 
@@ -66,16 +64,15 @@ class ModulePortfolioReader extends ModulePortfolio
         if (!Input::get('items')) {
             global $objPage;
             $objPage->noSearch = 1;
-            $objPage->cache    = 0;
+            $objPage->cache = 0;
 
             return '';
         }
 
         $this->portfolio_archives = $this->sortOutProtected(StringUtil::deserialize($this->portfolio_archives));
 
-        if (empty($this->portfolio_archives) || !\is_array($this->portfolio_archives))
-        {
-            throw new InternalServerErrorException('The news reader ID ' . $this->id . ' has no archives specified.', $this->id);
+        if (empty($this->portfolio_archives) || !\is_array($this->portfolio_archives)) {
+            throw new InternalServerErrorException('The news reader ID '.$this->id.' has no archives specified.', $this->id);
         }
 
         return parent::generate();
@@ -84,13 +81,13 @@ class ModulePortfolioReader extends ModulePortfolio
     /**
      * Generate the module.
      */
-    protected function compile()
+    protected function compile(): void
     {
         global $objPage;
 
-        $this->Template->items   = '';
+        $this->Template->items = '';
         $this->Template->referer = 'javascript:history.go(-1)';
-        $this->Template->back    = $GLOBALS['TL_LANG']['MSC']['goBack'];
+        $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
 
         // Get the portfolio item
         $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
@@ -98,7 +95,7 @@ class ModulePortfolioReader extends ModulePortfolio
         if (null === $objItem) {
             // Do not index or cache the page
             $objPage->noSearch = 1;
-            $objPage->cache    = 0;
+            $objPage->cache = 0;
 
             // Send a 404 header
             header('HTTP/1.1 404 Not Found');
@@ -107,31 +104,24 @@ class ModulePortfolioReader extends ModulePortfolio
             return;
         }
 
-        $arrItem               = $this->parseItem($objItem);
+        $arrItem = $this->parseItem($objItem);
         $this->Template->items = $arrItem;
 
         // Overwrite the page title (see #2853 and #4955 and #87)
-        if ($objItem->pageTitle)
-        {
+        if ($objItem->pageTitle) {
             $objPage->pageTitle = $objItem->pageTitle;
-        }
-        elseif ($objItem->headline)
-        {
+        } elseif ($objItem->headline) {
             $objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($objItem->headline));
         }
 
         // Overwrite the page description
-        if ($objItem->description)
-        {
+        if ($objItem->description) {
             $objPage->description = $objItem->description;
-        }
-        elseif ($objItem->teaser)
-        {
+        } elseif ($objItem->teaser) {
             $objPage->description = $this->prepareMetaDescription($objItem->teaser);
         }
 
-        if ($objItem->robots)
-        {
+        if ($objItem->robots) {
             $objPage->robots = $objItem->robots;
         }
     }
