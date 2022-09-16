@@ -1,3 +1,5 @@
 /.idea
 /vendor
 /composer.lock
+/tools/*/vendor
+/tools/ecs/composer.lock

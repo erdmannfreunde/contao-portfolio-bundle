@@ -1,0 +1,19 @@
+name: contao-portfolio
+
+services:
+    appserver:
+        type: php:7.4
+        via: cli
+
+tooling:
+    composer:
+        service: appserver
+        cmd: composer
+
+    ecs-init:
+        service: appserver
+        cmd: composer install -d tools/ecs
+
+    ecs:
+        service: appserver
+        cmd: composer ecs

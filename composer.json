@@ -22,8 +22,7 @@
     "contao/core-bundle": "~4.9"
   },
   "require-dev": {
-    "contao/manager-plugin": "^2.0",
-    "friendsofphp/php-cs-fixer": "^2.12"
+    "contao/manager-plugin": "^2.0"
   },
   "autoload": {
     "psr-4": {
@@ -41,5 +40,17 @@
   },
   "extra": {
     "contao-manager-plugin": "EuF\\PortfolioBundle\\ContaoManager\\Plugin"
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "contao/manager-plugin": true
+    }
+  },
+  "scripts": {
+    "ecs": [
+      "@php tools/ecs/vendor/bin/ecs check src/ --fix --ansi",
+      "@php tools/ecs/vendor/bin/ecs check src/ --config ecs_template.php --fix --ansi"
+    ]
   }
 }
