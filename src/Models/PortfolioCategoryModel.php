@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Models;
 
+use Contao\Model;
+
 /**
  * Reads and writes portfolio items.
  */
-class PortfolioCategoryModel extends \Model
+class PortfolioCategoryModel extends Model
 {
     /**
      * Table name.

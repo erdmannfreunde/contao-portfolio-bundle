@@ -15,7 +15,9 @@ namespace EuF\PortfolioBundle\Modules;
 use Contao\ContentModel;
 use Contao\Date;
 use Contao\FilesModel;
+use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Module;
 use Contao\StringUtil;
 use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
@@ -26,7 +28,7 @@ use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
  *
  * Parent class for portfolio modules.
  */
-abstract class ModulePortfolio extends \Module
+abstract class ModulePortfolio extends Module
 {
     /**
      * Sort out protected archives.
@@ -76,7 +78,7 @@ abstract class ModulePortfolio extends \Module
     {
         global $objPage;
 
-        $objTemplate = new \FrontendTemplate($this->portfolio_template);
+        $objTemplate = new FrontendTemplate($this->portfolio_template);
         $objTemplate->setData($objItem->row());
 
         $objTemplate->class = ('' !== $objItem->cssClass ? ' '.$objItem->cssClass : '').$strClass;

@@ -10,6 +10,8 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\StringUtil;
+
 /*
  * Table tl_portfolio_category
  */

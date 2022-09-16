@@ -13,13 +13,14 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Models;
 
 use Contao\Date;
+use Contao\Model;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 
 /**
  * Reads and writes portfolio items.
  */
-class PortfolioModel extends \Model
+class PortfolioModel extends Model
 {
     /**
      * Table name.

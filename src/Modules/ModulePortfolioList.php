@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Modules;
 
+use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Environment;
@@ -41,7 +42,7 @@ class ModulePortfolioList extends ModulePortfolio
     public function generate(): string
     {
         if (TL_MODE === 'BE') {
-            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate = new BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
             $objTemplate->title = $this->headline;
