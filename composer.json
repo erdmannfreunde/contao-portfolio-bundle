@@ -18,7 +18,7 @@
         }
   ],
   "require": {
-    "php": ">=7.3",
+    "php": ">=7.4",
     "contao/core-bundle": "~4.9"
   },
   "require-dev": {
