@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
- * @copyright  Copyright (c) 2020, Erdmann & Freunde
+ * @copyright  Copyright (c) Erdmann & Freunde
  * @author     Erdmann & Freunde <https://erdmann-freunde.de>
  * @license    MIT
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
@@ -15,52 +15,44 @@ namespace EuF\PortfolioBundle\Modules;
 use Contao\ContentModel;
 use Contao\Date;
 use Contao\FilesModel;
+use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Module;
 use Contao\StringUtil;
+use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
-use EuF\PortfolioBundle\Classes\Portfolio;
 
 /**
  * Class ModulePortfolio.
  *
  * Parent class for portfolio modules.
  */
-abstract class ModulePortfolio extends \Module
+abstract class ModulePortfolio extends Module
 {
     /**
-     * Sort out protected archives
-     *
-     * @param array $arrArchives
-     *
-     * @return array
+     * Sort out protected archives.
      */
     protected function sortOutProtected(array $arrArchives): array
     {
-        if (empty($arrArchives) || !\is_array($arrArchives))
-        {
+        if (empty($arrArchives) || !\is_array($arrArchives)) {
             return $arrArchives;
         }
 
         $this->import(FrontendUser::class, 'User');
         $objArchive = PortfolioArchiveModel::findMultipleByIds($arrArchives);
-        $arrArchives = array();
+        $arrArchives = [];
 
-        if ($objArchive !== null)
-        {
-            while ($objArchive->next())
-            {
-                if ($objArchive->protected)
-                {
-                    if (!FE_USER_LOGGED_IN || !\is_array($this->User->groups))
-                    {
+        if (null !== $objArchive) {
+            while ($objArchive->next()) {
+                if ($objArchive->protected) {
+                    if (!FE_USER_LOGGED_IN || !\is_array($this->User->groups)) {
                         continue;
                     }
 
                     $groups = StringUtil::deserialize($objArchive->groups);
 
-                    if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups)))
-                    {
+                    if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups))) {
                         continue;
                     }
                 }
@@ -76,21 +68,20 @@ abstract class ModulePortfolio extends \Module
      * Parse an item and return it as string.
      *
      * @param PortfolioModel $objItem
-     * @param bool $blnAddArchive
-     * @param mixed $strClass
-     * @param mixed $intCount
+     * @param bool           $blnAddArchive
+     * @param mixed          $strClass
+     * @param mixed          $intCount
      *
-     * @return string
      * @throws \Exception
      */
     protected function parseItem($objItem, $blnAddArchive = false, $strClass = '', $intCount = 0): string
     {
         global $objPage;
 
-        $objTemplate = new \FrontendTemplate($this->portfolio_template);
+        $objTemplate = new FrontendTemplate($this->portfolio_template);
         $objTemplate->setData($objItem->row());
 
-        $objTemplate->class = (('' !== $objItem->cssClass) ? ' ' . $objItem->cssClass : '') . $strClass;
+        $objTemplate->class = ('' !== $objItem->cssClass ? ' '.$objItem->cssClass : '').$strClass;
         $objTemplate->headline = $objItem->headline;
         $objTemplate->linkHeadline = $this->generateLink($objItem->headline, $objItem, $blnAddArchive);
         $objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objItem, $blnAddArchive, true);
@@ -113,16 +104,14 @@ abstract class ModulePortfolio extends \Module
         } // Compile the portfolio text
         else {
             $objElement = ContentModel::findPublishedByPidAndTable($objItem->id, 'tl_portfolio');
+
             if (null !== $objElement) {
                 while ($objElement->next()) {
                     $objTemplate->text .= self::getContentElement($objElement->current());
                 }
             }
 
-            $objTemplate->hasText = static function () use ($objItem)
-            {
-                return ContentModel::countPublishedByPidAndTable($objItem->id, 'tl_portfolio') > 0;
-            };
+            $objTemplate->hasText = static fn () => ContentModel::countPublishedByPidAndTable($objItem->id, 'tl_portfolio') > 0;
         }
 
         // Add the meta information
@@ -134,14 +123,16 @@ abstract class ModulePortfolio extends \Module
             $objCategories = [];
             $objTemplate->category_models = [];
             $categories = StringUtil::deserialize($objItem->categories);
+
             foreach ($categories as $category) {
                 $objPortfolioCategoryModel = PortfolioCategoryModel::findByPk($category);
                 $objTemplate->category_models[] = $objPortfolioCategoryModel;
                 $objCategories[] = $objPortfolioCategoryModel->alias;
+
                 if (!$objTemplate->category_titles) {
-                    $objTemplate->category_titles = '<ul class="level_1"><li>' . $objPortfolioCategoryModel->title . '</li>';
+                    $objTemplate->category_titles = '<ul class="level_1"><li>'.$objPortfolioCategoryModel->title.'</li>';
                 } else {
-                    $objTemplate->category_titles .= '<li>' . $objPortfolioCategoryModel->title . '</li>';
+                    $objTemplate->category_titles .= '<li>'.$objPortfolioCategoryModel->title.'</li>';
                 }
             }
             $objTemplate->category_titles .= '</ul>';
@@ -154,7 +145,7 @@ abstract class ModulePortfolio extends \Module
         if ($objItem->addImage && '' !== $objItem->singleSRC) {
             $objModel = FilesModel::findByUuid($objItem->singleSRC);
 
-            if (null !== $objModel && is_file(TL_ROOT . '/' . $objModel->path)) {
+            if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
                 // Do not override the field now that we have a model registry (see #6303)
                 $arrArticle = $objItem->row();
 
@@ -193,12 +184,11 @@ abstract class ModulePortfolio extends \Module
     }
 
     /**
-     * Parse one or more items and return them as array
+     * Parse one or more items and return them as array.
      *
-     * @param PortfolioModel $arrItems
-     * @param boolean $blnAddArchive
+     * @param PortfolioModel $objArticles
+     * @param bool           $blnAddArchive
      *
-     * @return array
      * @throws \Exception
      */
     protected function parseItems($objArticles, $blnAddArchive = false): array
@@ -223,7 +213,7 @@ abstract class ModulePortfolio extends \Module
         FilesModel::findMultipleByUuids($uuids);
 
         foreach ($objArticles as $objArticle) {
-            $arrArticles[] = $this->parseItem($objArticle, $blnAddArchive, ((++$count === 1) ? ' first' : '') . (($count === $limit) ? ' last' : '') . (($count % 2 === 0) ? ' odd' : ' even'), $count);
+            $arrArticles[] = $this->parseItem($objArticle, $blnAddArchive, (1 === ++$count ? ' first' : '').($count === $limit ? ' last' : '').(0 === $count % 2 ? ' odd' : ' even'), $count);
         }
 
         return $arrArticles;
@@ -237,18 +227,19 @@ abstract class ModulePortfolio extends \Module
      * @param mixed $blnAddArchive
      * @param mixed $blnIsReadMore
      *
-     * @return string
      * @throws \Exception
      */
     protected function generateLink($strLink, $objItem, $blnAddArchive = false, $blnIsReadMore = false): string
     {
         // Internal link
         if ('external' !== $objItem->source) {
-            return sprintf('<a href="%s" title="%s">%s%s</a>',
+            return sprintf(
+                '<a href="%s" title="%s">%s%s</a>',
                 Portfolio::generatePortfolioUrl($objItem, $blnAddArchive),
                 StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->headline), true),
                 $strLink,
-                ($blnIsReadMore ? ' <span class="invisible">' . $objItem->headline . '</span>' : ''));
+                ($blnIsReadMore ? ' <span class="invisible">'.$objItem->headline.'</span>' : '')
+            );
         }
 
         // Ampersand URIs
@@ -257,15 +248,18 @@ abstract class ModulePortfolio extends \Module
         global $objPage;
 
         $attributes = '';
+
         if ($objItem->target) {
-            $attributes = (('xhtml' === $objPage->outputFormat) ? ' onclick="return !window.open(this.href)"' : ' target="_blank"');
+            $attributes = ('xhtml' === $objPage->outputFormat ? ' onclick="return !window.open(this.href)"' : ' target="_blank"');
         }
 
         // External link
-        return sprintf('<a href="%s" title="%s"%s>%s</a>',
+        return sprintf(
+            '<a href="%s" title="%s"%s>%s</a>',
             $strArticleUrl,
             StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $strArticleUrl)),
             $attributes,
-            $strLink);
+            $strLink
+        );
     }
 }

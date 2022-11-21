@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Contao Portfolio Bundle for Contao Open Source CMS.
+ * @copyright  Copyright (c) Erdmann & Freunde
+ * @author     Erdmann & Freunde <https://erdmann-freunde.de>
+ * @license    MIT
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
+ */
+
 namespace EuF\PortfolioBundle\Migration\Version410;
 
 use Contao\CoreBundle\Migration\AbstractMigration;
@@ -14,7 +24,8 @@ class ImgSizeMigration extends AbstractMigration
      */
     private $connection;
 
-    public function __construct(Connection $connection) {
+    public function __construct(Connection $connection)
+    {
         $this->connection = $connection;
     }
 
@@ -32,7 +43,6 @@ class ImgSizeMigration extends AbstractMigration
     }
 
     /**
-     * @return MigrationResult
      * @throws Exception
      */
     public function run(): MigrationResult

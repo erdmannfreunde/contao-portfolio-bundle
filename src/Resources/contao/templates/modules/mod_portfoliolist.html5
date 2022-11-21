@@ -1,25 +1,25 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-  <?php if($this->categories):?>
+  <?php if ($this->categories):?>
   <nav class="portfolio__filter block">
   	<ul class="level_1">
-      <?php if($this->portfolio_filter_reset): ?>
+      <?php if ($this->portfolio_filter_reset): ?>
         <li><button class="active" data-category="all"><?= $this->portfolio_filter_reset ?></button></li>
       <?php endif; ?>
-		<?php foreach($this->categories as $category): ?>
-  		<li><button data-category="<?php echo $category->alias; ?>"><?php echo $category->title; ?></button></li>
+		<?php foreach ($this->categories as $category): ?>
+  		<li><button data-category="<?= $category->alias; ?>"><?= $category->title; ?></button></li>
 		<?php endforeach; ?>
     </ul>
   </nav>
 	<?php endif; ?>
 
     <?php if (empty($this->items)): ?>
-        <p class="empty"><?php echo $this->empty; ?></p>
+        <p class="empty"><?= $this->empty; ?></p>
     <?php else: ?>
       <div class="projects__items portfolio__items">
-        <?php echo implode('', $this->items); ?>
-        <?php echo $this->pagination; ?>
+        <?= implode('', $this->items); ?>
+        <?= $this->pagination; ?>
       </div>
     <?php endif; ?>
 

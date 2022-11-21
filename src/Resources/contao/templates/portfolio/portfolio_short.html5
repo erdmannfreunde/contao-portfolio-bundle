@@ -1,10 +1,10 @@
 
-<div class="layout_short block<?php echo $this->class; ?>" data-category="<?php echo $this->categories ?>">
+<div class="layout_short block<?= $this->class; ?>" data-category="<?= $this->categories ?>">
   <div class="inside">
     <?php if (strlen($this->text)) : ?>
-      <?php echo $this->linkHeadline; ?>
+      <?= $this->linkHeadline; ?>
     <?php else: ?>
-      <span><?php echo $this->headline; ?></span>
+      <span><?= $this->headline; ?></span>
     <?php endif; ?>
 	  <?php if ($this->addImage): ?>
         <?php $this->insert('image', $this->arrData); ?>
