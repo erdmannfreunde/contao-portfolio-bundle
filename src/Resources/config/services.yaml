@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    EuF\PortfolioBundle\EventListener\:
+      resource: '../../EventListener/*'
+
+    EuF\PortfolioBundle\EventListener\BackendAssetsListener:
+      tags:
+        - { name: 'kernel.event_listener', event: 'kernel.request' }
+
+    EuF\PortfolioBundle\Picker\:
+      resource: '../../Picker/*'
