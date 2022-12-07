@@ -137,7 +137,9 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'sorting'       => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'label'     => &$GLOBALS['TL_LANG']['MSC']['sorting'],
+            'sorting'   => true,
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
         ],
         'headline'      => [
             'label'     => &$GLOBALS['TL_LANG']['tl_portfolio']['headline'],
