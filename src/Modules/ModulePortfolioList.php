@@ -194,7 +194,7 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function fetchItems($portfolioArchives, $blnFeatured, $limit, $offset, $arrCategories)
     {
-        $order .= 'tl_portfolio.sorting ASC';
+        $order = 'tl_portfolio.sorting ASC';
 
         return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, ['order' => $order], $arrCategories);
     }
