@@ -17,6 +17,7 @@ use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Environment;
 use Contao\Input;
+use Contao\Model\Collection;
 use Contao\Pagination;
 use Contao\StringUtil;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
@@ -190,11 +191,11 @@ class ModulePortfolioList extends ModulePortfolio
      * @param int   $limit
      * @param int   $offset
      *
-     * @return Collection|NewsModel|null
+     * @return Collection|PortfolioModel[]|PortfolioModel|null
      */
     protected function fetchItems($portfolioArchives, $blnFeatured, $limit, $offset, $arrCategories)
     {
-        $order .= 'tl_portfolio.sorting ASC';
+        $order = 'tl_portfolio.sorting ASC';
 
         return PortfolioModel::findPublishedByPids($portfolioArchives, $blnFeatured, $limit, $offset, ['order' => $order], $arrCategories);
     }
