@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 System::loadLanguageFile('tl_content');
@@ -29,6 +30,9 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
         'enableVersioning'  => true,
         'onsubmit_callback' => [
             ['tl_portfolio', 'adjustTime'],
+        ],
+        'oninvalidate_cache_tags_callback' => [
+            ['tl_portfolio', 'addSitemapCacheInvalidationTag'],
         ],
         'sql'               => [
             'keys' => [
@@ -181,7 +185,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'pageTitle' => [
-        
+
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -986,5 +990,29 @@ class tl_portfolio extends Backend
             ->execute($intId);
 
         $objVersions->create();
+    }
+
+    /**
+     * @param DataContainer $dc
+     *
+     * @return array
+     */
+    public function addSitemapCacheInvalidationTag($dc, array $tags)
+    {
+        $archiveModel = PortfolioArchiveModel::findByPk($dc->activeRecord->pid);
+
+        if ($archiveModel === null)
+        {
+            return $tags;
+        }
+
+        $pageModel = PageModel::findWithDetails($archiveModel->jumpTo);
+
+        if ($pageModel === null)
+        {
+            return $tags;
+        }
+
+        return array_merge($tags, array('contao.sitemap.' . $pageModel->rootId));
     }
 }
