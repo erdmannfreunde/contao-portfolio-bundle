@@ -191,7 +191,7 @@ class ModulePortfolioList extends ModulePortfolio
      * @param int   $limit
      * @param int   $offset
      *
-     * @return Collection|PortfolioModel[]|PortfolioModel|null
+     * @return Collection|array<PortfolioModel>|PortfolioModel|null
      */
     protected function fetchItems($portfolioArchives, $blnFeatured, $limit, $offset, $arrCategories)
     {
