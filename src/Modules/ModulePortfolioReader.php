@@ -95,7 +95,7 @@ class ModulePortfolioReader extends ModulePortfolio
         $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
 
         if (null === $objItem) {
-            throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
         $arrItem = $this->parseItem($objItem);
