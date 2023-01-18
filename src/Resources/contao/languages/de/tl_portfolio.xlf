@@ -397,6 +397,14 @@
         <source>Show the news item in a featured portfolio list.</source>
         <target>Den Beitrag in einer Liste hervorgehobener Portfolios anzeigen.</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio.languageMain.0">
+        <source>Master item</source>
+        <target>Hauptbeitrag</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio.languageMain.1">
+        <source>Choose the item in the master archive equaling this item.</source>
+        <target>Bitte wählen Sie den Beitrag im Hauptarchiv, welcher diesem entspricht.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
