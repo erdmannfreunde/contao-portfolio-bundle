@@ -20,6 +20,7 @@ use Contao\Input;
 use Contao\Model\Collection;
 use Contao\Pagination;
 use Contao\StringUtil;
+use Contao\System;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
@@ -49,7 +50,7 @@ class ModulePortfolioList extends ModulePortfolio
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]));
 
             return $objTemplate->parse();
         }

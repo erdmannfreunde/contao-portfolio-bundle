@@ -31,7 +31,10 @@ class ImgSizeMigration extends AbstractMigration
 
     public function shouldRun(): bool
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager =
+            method_exists(Connection::class, 'createSchemaManager')
+                ? $this->connection->createSchemaManager()
+                : $this->connection->getSchemaManager();
 
         if (!$schemaManager->tablesExist(['tl_portfolio'])) {
             return false;
