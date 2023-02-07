@@ -105,6 +105,34 @@
         <source>Access protection</source>
         <target>Zugriffsschutz</target>
       </trans-unit>
+      <trans-unit id="tl_portfolio_archive.master.0">
+        <source>Master category</source>
+        <target>Hauptkategorie</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.master.1">
+        <source>Please define the master category to allow language switching.</source>
+        <target>Wählen Sie die Hauptkategorie um Sprachwechsel zu ermöglichen.</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.language.0">
+        <source>Language</source>
+        <target>Sprache</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.language.1">
+        <source>Please enter the page language according to the ISO-639-1 standard (e.g. &quot;en&quot; for English or &quot;en-US&quot; for American English).</source>
+        <target>Bitte geben Sie die Sprache gemäss ISO-639-1 Standard ein (z.B. &quot;en&quot; für Englisch oder &quot;en-US&quot; für amerikanisches Englisch).</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.language_legend">
+        <source>Language settings</source>
+        <target>Spracheinstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.isMaster">
+        <source>This is a master category</source>
+        <target>Dies ist eine Hauptkategorie</target>
+      </trans-unit>
+      <trans-unit id="tl_portfolio_archive.isSlave">
+        <source>Master category is &quot;%s&quot;</source>
+        <target>Die Hauptkategorie ist &quot;%s&quot;</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
