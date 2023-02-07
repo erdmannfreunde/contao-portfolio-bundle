@@ -15,6 +15,8 @@ namespace EuF\PortfolioBundle\Modules;
 use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
+use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\Environment;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
@@ -93,15 +95,7 @@ class ModulePortfolioReader extends ModulePortfolio
         $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
 
         if (null === $objItem) {
-            // Do not index or cache the page
-            $objPage->noSearch = 1;
-            $objPage->cache = 0;
-
-            // Send a 404 header
-            header('HTTP/1.1 404 Not Found');
-            $this->Template->items = '<p class="error">'.sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], Input::get('items')).'</p>';
-
-            return;
+            throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
         $arrItem = $this->parseItem($objItem);
