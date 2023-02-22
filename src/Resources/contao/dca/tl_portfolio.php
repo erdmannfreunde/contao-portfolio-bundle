@@ -28,7 +28,6 @@ System::loadLanguageFile('tl_content');
 $GLOBALS['TL_DCA']['tl_portfolio'] = [
     // Config
     'config'      => [
-        'dataContainer'     => 'Table',
         'ptable'            => 'tl_portfolio_archive',
         'ctable'            => ['tl_content'],
         'switchToEdit'      => true,
