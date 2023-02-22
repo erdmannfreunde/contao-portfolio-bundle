@@ -160,7 +160,7 @@ abstract class ModulePortfolio extends Module
                 }
 
                 $arrArticle['singleSRC'] = $objModel->path;
-                \Controller::addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+                \Contao\Controller::addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
 
                 // Link to the portfolio reader if no image link has been defined (see #30)
                 if (!$objTemplate->fullsize && !$objTemplate->imageUrl && $objTemplate->text) {
