@@ -21,6 +21,7 @@ use Contao\Backend;
 use Contao\System;
 use Contao\Config;
 use Contao\BackendUser;
+use Contao\DC_Table;
 
 
 System::loadLanguageFile('tl_content');
@@ -28,6 +29,7 @@ System::loadLanguageFile('tl_content');
 $GLOBALS['TL_DCA']['tl_portfolio'] = [
     // Config
     'config'      => [
+        'dataContainer'     => DC_Table::class,
         'ptable'            => 'tl_portfolio_archive',
         'ctable'            => ['tl_content'],
         'switchToEdit'      => true,
