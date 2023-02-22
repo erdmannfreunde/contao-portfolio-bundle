@@ -25,6 +25,7 @@ use Contao\DC_Table;
 use Contao\StringUtil;
 use Contao\Input;
 use Contao\Image;
+use Contao\Date;
 
 
 System::loadLanguageFile('tl_content');
