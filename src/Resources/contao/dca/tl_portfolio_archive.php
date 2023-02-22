@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Contao\Backend;
 use Contao\DataContainer;
-use Contao\System
+use Contao\System;
 
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
