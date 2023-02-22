@@ -94,7 +94,7 @@ abstract class ModulePortfolio extends Module
         // Clean the RTE output
         if ($objItem->teaser) {
             $objTemplate->hasTeaser = true;
-            $objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
+            $objTemplate->teaser = $objItem->teaser;
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
         }
 
