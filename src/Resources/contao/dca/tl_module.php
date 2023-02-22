@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Contao\Backend;
+use Contao\DataContainer;
+
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
  * @copyright  Copyright (c) Erdmann & Freunde
@@ -87,7 +90,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_readerModule'] = [
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_module_portfolio extends \Backend
+class tl_module_portfolio extends Backend
 {
     /**
      * Import the back end user object.
