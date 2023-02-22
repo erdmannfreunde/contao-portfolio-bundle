@@ -20,7 +20,6 @@ use Contao\DataContainer;
 $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
     // Config
     'config' => [
-        'dataContainer' => 'Table',
         'enableVersioning' => true,
 
         'sql' => [
