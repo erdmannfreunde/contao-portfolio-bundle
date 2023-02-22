@@ -21,6 +21,7 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\StringUtil;
 use Contao\Input;
+use Contao\Image;
 
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
