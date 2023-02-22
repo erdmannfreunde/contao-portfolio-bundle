@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Contao\Backend;
-use Contao\DataContainer;
 
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
