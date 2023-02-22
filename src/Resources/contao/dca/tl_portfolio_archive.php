@@ -18,8 +18,9 @@ use Contao\DataContainer;
 use Contao\System;
 use Contao\DC_Table;
 use Contao\BackendUser;
-use Contao\CoreBundle\Security\ContaoCorePermissions
-    ;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\StringUtil;
+
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
     'config' => [
