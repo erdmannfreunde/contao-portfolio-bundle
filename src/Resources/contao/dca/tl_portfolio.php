@@ -19,6 +19,9 @@ use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Contao\Backend;
 use Contao\System;
+use Contao\Config;
+use Contao\BackendUser;
+
 
 System::loadLanguageFile('tl_content');
 
