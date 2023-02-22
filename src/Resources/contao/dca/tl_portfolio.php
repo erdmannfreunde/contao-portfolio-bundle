@@ -291,7 +291,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
             'exclude'   => true,
             'inputType' => 'trbl',
-            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'options'   => array('px', '%', 'em', 'rem', 'vw', 'vh', 'vmin', 'vmax', 'ex', 'pt', 'pc', 'in', 'cm', 'mm'),
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
