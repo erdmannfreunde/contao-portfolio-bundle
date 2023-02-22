@@ -17,8 +17,9 @@ use Contao\Backend;
 use Contao\DataContainer;
 use Contao\System;
 use Contao\DC_Table;
-use COntao\BackendUser;
-
+use Contao\BackendUser;
+use Contao\CoreBundle\Security\ContaoCorePermissions
+    ;
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
     'config' => [
@@ -375,9 +376,10 @@ class tl_portfolio_archive extends Backend
      *
      * @return string
      */
-    public function editHeader(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
+   public function editHeader(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        return $this->User->canEditFieldsOf('tl_portfolio_archive') ? '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        $security = System::getContainer()->get('security.helper');
+        return $security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_portfolio_archive') ? '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
