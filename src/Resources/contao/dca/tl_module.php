@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Contao\Backend;
+use Contao\BackendUser;
 
 /*
  * Contao Portfolio Bundle for Contao Open Source CMS.
@@ -97,7 +98,7 @@ class tl_module_portfolio extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
