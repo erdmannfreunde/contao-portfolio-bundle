@@ -14,6 +14,7 @@ use Contao\StringUtil;
 use Contao\Backend;
 use Contao\DataContainer;
 use Contao\DC_Table;
+use Contao\BackendUser;
 
 /*
  * Table tl_portfolio_category
@@ -141,7 +142,7 @@ class tl_portfolio_category extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
