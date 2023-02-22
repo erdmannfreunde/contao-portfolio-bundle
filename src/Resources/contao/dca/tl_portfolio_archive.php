@@ -20,7 +20,6 @@ use Contao\System;
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
     'config' => [
-        'dataContainer'               => 'Table',
         'ctable'                      => ['tl_portfolio'],
         'switchToEdit'                => true,
         'enableVersioning'            => true,
