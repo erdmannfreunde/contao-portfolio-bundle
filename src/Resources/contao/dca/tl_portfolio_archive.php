@@ -17,6 +17,7 @@ use Contao\Backend;
 use Contao\DataContainer;
 use Contao\System;
 use Contao\DC_Table;
+use COntao\BackendUser;
 
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
@@ -181,7 +182,7 @@ class tl_portfolio_archive extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
