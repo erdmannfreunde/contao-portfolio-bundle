@@ -87,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['portfolio_readerModule'] = [
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_module_portfolio extends Backend
+class tl_module_portfolio extends \Backend
 {
     /**
      * Import the back end user object.
