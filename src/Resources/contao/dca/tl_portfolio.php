@@ -23,6 +23,7 @@ use Contao\Config;
 use Contao\BackendUser;
 use Contao\DC_Table;
 use Contao\StringUtil;
+use Contao\Input;
 
 
 System::loadLanguageFile('tl_content');
