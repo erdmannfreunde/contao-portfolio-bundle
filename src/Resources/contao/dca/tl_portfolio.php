@@ -22,6 +22,7 @@ use Contao\System;
 use Contao\Config;
 use Contao\BackendUser;
 use Contao\DC_Table;
+use Contao\StringUtil;
 
 
 System::loadLanguageFile('tl_content');
