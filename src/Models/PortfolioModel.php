@@ -87,7 +87,7 @@ class PortfolioModel extends Model
             $arrColumns[] = "$t.featured=''";
         }
 
-        if (!BE_USER_LOGGED_IN || $this->isBackend()) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode() || $this->isBackend()) {
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
         }
