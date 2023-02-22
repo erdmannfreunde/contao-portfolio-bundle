@@ -148,19 +148,25 @@ abstract class ModulePortfolio extends Module
 
             if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir').'/'.$objModel->path)) {
                 // Do not override the field now that we have a model registry (see #6303)
-                $arrArticle = $objItem->row();
-
-                // Override the default image size
-                if ('' !== $this->imgSize) {
-                    $size = StringUtil::deserialize($this->imgSize);
-
-                    if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
-                        $arrArticle['size'] = $this->imgSize;
-                    }
+              $figureBuilder = System::getContainer()
+                ->get('contao.image.studio')
+                ->createFigureBuilder()
+                ->from($objModel->path)
+                
+            ;
+              // Override the default image size
+              if ('' !== $this->imgSize) {
+                $size = StringUtil::deserialize($this->imgSize);
+            
+                if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
+                    $figureBuilder->setSize($this->imgSize);
                 }
-
-                $arrArticle['singleSRC'] = $objModel->path;
-                \Contao\Controller::addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+              }
+                
+                if (null !== ($figure = $figureBuilder->buildIfResourceExists()))
+                {
+                    $figure->applyLegacyTemplateData($objTemplate);
+                }
 
                 // Link to the portfolio reader if no image link has been defined (see #30)
                 if (!$objTemplate->fullsize && !$objTemplate->imageUrl && $objTemplate->text) {
