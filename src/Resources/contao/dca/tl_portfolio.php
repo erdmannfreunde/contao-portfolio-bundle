@@ -423,7 +423,7 @@ class tl_portfolio extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
