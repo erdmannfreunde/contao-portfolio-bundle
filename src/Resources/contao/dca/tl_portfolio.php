@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Contao\Backend;
+use Contao\System;
 
 System::loadLanguageFile('tl_content');
 
