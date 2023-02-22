@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 use Contao\StringUtil;
 use Contao\Backend;
+use Contao\DataContainer;
 
 /*
  * Table tl_portfolio_category
