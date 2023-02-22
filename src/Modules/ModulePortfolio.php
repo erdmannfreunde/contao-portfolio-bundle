@@ -22,6 +22,7 @@ use Contao\StringUtil;
 use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use Contao\System;
 
 /**
  * Class ModulePortfolio.
@@ -145,7 +146,7 @@ abstract class ModulePortfolio extends Module
         if ($objItem->addImage && '' !== $objItem->singleSRC) {
             $objModel = FilesModel::findByUuid($objItem->singleSRC);
 
-            if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
+            if (null !== $objModel && is_file(System::getContainer()->getParameter('kernel.project_dir').'/'.$objModel->path)) {
                 // Do not override the field now that we have a model registry (see #6303)
                 $arrArticle = $objItem->row();
 
