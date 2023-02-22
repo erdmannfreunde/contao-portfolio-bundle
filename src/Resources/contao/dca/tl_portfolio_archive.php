@@ -16,10 +16,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Contao\Backend;
 use Contao\DataContainer;
 use Contao\System;
+use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
     // Config
     'config' => [
+        'dataContainer'               => DC_Table::class,
         'ctable'                      => ['tl_portfolio'],
         'switchToEdit'                => true,
         'enableVersioning'            => true,
