@@ -38,12 +38,16 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected $strTemplate = 'mod_portfoliolist';
 
+    public function isBackend(){
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+		return $request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request);
+    }
     /**
      * Display a wildcard in the back end.
      */
     public function generate(): string
     {
-        if (TL_MODE === 'BE') {
+        if ($this->isBackend()) {
             $objTemplate = new BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
