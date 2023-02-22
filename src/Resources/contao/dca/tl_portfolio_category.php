@@ -13,6 +13,7 @@ declare(strict_types=1);
 use Contao\StringUtil;
 use Contao\Backend;
 use Contao\DataContainer;
+use Contao\DC_Table;
 
 /*
  * Table tl_portfolio_category
@@ -21,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
     // Config
     'config' => [
         'enableVersioning' => true,
-
+        'dataContainer'               => DC_Table::class,
         'sql' => [
             'keys' => [
                 'id' => 'primary',
