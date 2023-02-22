@@ -16,6 +16,7 @@ use Contao\Date;
 use Contao\Model;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 
 /**
  * Reads and writes portfolio items.
