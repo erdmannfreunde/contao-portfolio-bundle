@@ -28,6 +28,11 @@ class PortfolioModel extends Model
      * @var string
      */
     protected static $strTable = 'tl_portfolio';
+    
+    public function isBackend(){
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+		return $request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request);
+    }
 
     /**
      * Find a published portfolio item from one or more portfolio archives by its ID or alias.
@@ -82,7 +87,7 @@ class PortfolioModel extends Model
             $arrColumns[] = "$t.featured=''";
         }
 
-        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
+        if (!BE_USER_LOGGED_IN || $this->isBackend()) {
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
         }
