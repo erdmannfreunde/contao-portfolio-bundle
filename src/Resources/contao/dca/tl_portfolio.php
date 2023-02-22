@@ -24,6 +24,7 @@ use Contao\BackendUser;
 use Contao\DC_Table;
 use Contao\StringUtil;
 use Contao\Input;
+use Contao\Image;
 
 
 System::loadLanguageFile('tl_content');
