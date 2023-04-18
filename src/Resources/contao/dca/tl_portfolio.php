@@ -709,7 +709,7 @@ class tl_portfolio extends Backend
      *
      * @return array
      */
-    public function getSourceOptions(DataContainer $dc): array
+    public function getSourceOptions(DC_Table $table): array
     {
         if ($this->User->isAdmin) {
             return ['default', 'internal', 'article', 'external'];
@@ -733,8 +733,8 @@ class tl_portfolio extends Backend
         }
 
         // Add the option currently set
-        if ($dc->activeRecord && '' !== $dc->activeRecord->source) {
-            $arrOptions[] = $dc->activeRecord->source;
+        if ($table && '' !== $table->source) {
+            $arrOptions[] = $table->source;
             $arrOptions   = array_unique($arrOptions);
         }
 
