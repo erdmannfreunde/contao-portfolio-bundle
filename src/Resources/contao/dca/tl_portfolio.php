@@ -72,32 +72,32 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'edit'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['edit'],
                 'href'  => 'table=tl_content',
-                'icon'  => 'edit.gif',
+                'icon'  => 'edit.svg',
             ],
             'editheader' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['editmeta'],
                 'href'  => 'act=edit',
-                'icon'  => 'header.gif',
+                'icon'  => 'header.svg',
             ],
             'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['copy'],
                 'href'  => 'act=paste&amp;mode=copy',
-                'icon'  => 'copy.gif',
+                'icon'  => 'copy.svg',
             ],
             'cut'        => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['cut'],
                 'href'  => 'act=paste&amp;mode=cut',
-                'icon'  => 'cut.gif',
+                'icon'  => 'cut.svg',
             ],
             'delete'     => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_portfolio']['delete'],
                 'href'       => 'act=delete',
-                'icon'       => 'delete.gif',
+                'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle'     => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_portfolio']['toggle'],
-                'icon'            => 'visible.gif',
+                'icon'            => 'visible.svg',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
                 'button_callback' => ['tl_portfolio', 'toggleIcon'],
             ],
@@ -110,7 +110,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'show'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['show'],
                 'href'  => 'act=show',
-                'icon'  => 'show.gif',
+                'icon'  => 'show.svg',
             ],
         ],
     ],
@@ -287,7 +287,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'exclude'   => true,
             'inputType' => 'trbl',
             //'options'   => $GLOBALS['TL_CSS_UNITS'] ?? [],
-            'options'   => ['px', '%', 'em', 'rem'],
+            'options'   => ['px', '%', 'em', 'rem', 'vw', 'vh'],
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
@@ -418,7 +418,7 @@ class tl_portfolio extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
@@ -904,7 +904,7 @@ class tl_portfolio extends Backend
      */
     public function pasteElement(DataContainer $dc, $row, $table, $cr, $arrClipboard): string
     {
-        $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
+        $imagePasteAfter = Image::getHtml('pasteafter.svg', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
 
         return '<a href="'.self::addToUrl('act='.$arrClipboard['mode'].'&mode=1&pid='.$row['id']).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
     }

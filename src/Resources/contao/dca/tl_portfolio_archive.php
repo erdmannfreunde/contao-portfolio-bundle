@@ -13,6 +13,7 @@ declare(strict_types=1);
 use Contao\Backend;
 use Contao\DC_Table;
 use Contao\PageModel;
+use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
@@ -174,7 +175,7 @@ class tl_portfolio_archive extends Backend
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
