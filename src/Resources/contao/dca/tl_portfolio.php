@@ -10,20 +10,24 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
-/*
- * Load tl_content language file
- */
-
-use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\Input;
+use Contao\Config;
+use Contao\System;
+use Contao\Backend;
+use Contao\Database;
+use Contao\DC_Table;
+use Contao\PageModel;
+use Contao\BackendUser;
+use Contao\DataContainer;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
+use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 System::loadLanguageFile('tl_content');
 
 $GLOBALS['TL_DCA']['tl_portfolio'] = [
-    // Config
     'config'      => [
-        'dataContainer'     => 'Table',
+        'dataContainer'     => DC_Table::class,
         'ptable'            => 'tl_portfolio_archive',
         'ctable'            => ['tl_content'],
         'switchToEdit'      => true,
@@ -43,9 +47,8 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
         ],
     ],
 
-    // List
-    'list'        => [
-        'sorting'           => [
+    'list' => [
+        'sorting' => [
             'mode'                    => 4,
             'fields'                  => ['sorting'],
             'panelLayout'             => 'filter;sort,search,limit',
@@ -53,12 +56,12 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'child_record_callback'   => ['tl_portfolio', 'listItems'],
             'paste_button_callback'   => ['tl_portfolio', 'pasteElement'],
         ],
-        'label'             => [
+        'label' => [
             'fields' => ['headline'],
             'format' => '%s',
         ],
         'global_operations' => [
-            'all'        => [
+            'all' => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
@@ -112,22 +115,19 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
         ],
     ],
 
-    // Palettes
     'palettes'    => [
         '__selector__' => ['addImage', 'source', 'overwriteMeta'],
-        'default'      => '{title_legend},headline,alias,categories,client;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
+        'default' => '{title_legend},headline,alias,categories,client;{meta_legend},pageTitle,robots,description,serpPreview;{teaser_legend},teaser;{date_legend},date;{image_legend},addImage;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop',
     ],
 
-    // Subpalettes
     'subpalettes' => [
-        'addImage'        => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
+        'addImage' => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
         'source_internal' => 'jumpTo',
-        'source_article'  => 'articleId',
+        'source_article' => 'articleId',
         'source_external' => 'url,target',
-        'overwriteMeta'   => 'alt,imageTitle,imageUrl,caption',
+        'overwriteMeta' => 'alt,imageTitle,imageUrl,caption',
     ],
 
-    // Fields
     'fields'      => [
         'id'            => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
@@ -286,7 +286,8 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
             'exclude'   => true,
             'inputType' => 'trbl',
-            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            //'options'   => $GLOBALS['TL_CSS_UNITS'] ?? [],
+            'options'   => ['px', '%', 'em', 'rem'],
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
@@ -467,7 +468,8 @@ class tl_portfolio extends Backend
             case 'copy':
                 if (Input::get('act') === 'cut' && Input::get('mode') === 1)
                 {
-                    $objArchive = $this->Database->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
+                    $objArchive = Database::getInstance()
+                        ->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
                         ->limit(1)
                         ->execute(Input::get('pid'));
 
@@ -494,17 +496,16 @@ class tl_portfolio extends Backend
             case 'delete':
             case 'toggle':
             case 'feature':
-                $objArchive = $this->Database->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
+                $objArchive = Database::getInstance()
+                    ->prepare("SELECT pid FROM tl_portfolio WHERE id=?")
                     ->limit(1)
                     ->execute($id);
 
-                if ($objArchive->numRows < 1)
-                {
+                if ($objArchive->numRows < 1) {
                     throw new AccessDeniedException('Invalid portfolio item ID ' . $id . '.');
                 }
 
-                if (!in_array($objArchive->pid, $root, true))
-                {
+                if (!in_array($objArchive->pid, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio item ID ' . $id . ' of portfolio archive ID ' . $objArchive->pid . '.');
                 }
                 break;
@@ -519,7 +520,8 @@ class tl_portfolio extends Backend
                     throw new AccessDeniedException('Not enough permissions to access portfolio archive ID ' . $id . '.');
                 }
 
-                $objArchive = $this->Database->prepare("SELECT id FROM tl_portfolio WHERE pid=?")
+                $objArchive = Database::getInstance()
+                    ->prepare("SELECT id FROM tl_portfolio WHERE pid=?")
                     ->execute($id);
 
                 /** @var SessionInterface $objSession */
@@ -576,7 +578,7 @@ class tl_portfolio extends Backend
         // Generate alias if there is none
         if (!$varValue)
         {
-            $varValue = Contao\System::getContainer()->get('contao.slug')->generate($dc->activeRecord->headline, EuF\PortfolioBundle\Models\PortfolioArchiveModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
+            $varValue = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->headline, EuF\PortfolioBundle\Models\PortfolioArchiveModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
         }
         elseif (preg_match('/^[1-9]\d*$/', $varValue))
         {

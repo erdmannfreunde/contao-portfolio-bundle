@@ -10,18 +10,20 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\Backend;
+use Contao\DC_Table;
+use Contao\PageModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 
 $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
-    // Config
     'config' => [
-        'dataContainer'               => 'Table',
-        'ctable'                      => ['tl_portfolio'],
-        'switchToEdit'                => true,
-        'enableVersioning'            => true,
-        'markAsCopy'                  => 'title',
+        'dataContainer' => DC_Table::class,
+        'ctable' => ['tl_portfolio'],
+        'switchToEdit' => true,
+        'enableVersioning' => true,
+        'markAsCopy' => 'title',
         'onload_callback' => array
         (
             array('tl_portfolio_archive', 'checkPermission')
@@ -38,24 +40,23 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
         (
             array('tl_portfolio_archive', 'addSitemapCacheInvalidationTag'),
         ),
-        'sql'                         => [
+        'sql' => [
             'keys' => [
                 'id' => 'primary',
             ],
         ],
     ],
 
-    // List
     'list' => [
         'sorting' => [
-            'mode'                    => 1,
-            'fields'                  => ['title'],
-            'flag'                    => 1,
-            'panelLayout'             => 'search,limit',
+            'mode' => DC_Table::MODE_SORTED,
+            'fields' => ['title'],
+            'flag' => 1,
+            'panelLayout' => 'search,limit',
         ],
         'label' => [
-            'fields'                  => ['title'],
-            'format'                  => '%s',
+            'fields' => ['title'],
+            'format' => '%s',
         ],
         'global_operations' => [
             'categories' => [
@@ -104,19 +105,15 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
         ],
     ],
 
-    // Palettes
     'palettes' => [
-        '__selector__'                => ['protected'],
-        'default'                     => '{title_legend},title,jumpTo;{protected_legend:hide},protected;',
+        '__selector__' => ['protected'],
+        'default' => '{title_legend},title,jumpTo;{protected_legend:hide},protected;',
     ],
 
-
-    // Subpalettes
     'subpalettes' => [
-        'protected'                   => 'groups',
+        'protected' => 'groups',
     ],
 
-    // Fields
     'fields' => [
         'id' => [
             'sql'                     => 'int(10) unsigned NOT NULL auto_increment',
@@ -188,34 +185,28 @@ class tl_portfolio_archive extends Backend
      */
     public function checkPermission(): void
     {
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
         // Set root IDs
-        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
-        {
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio)) {
             $root = array(0);
-        }
-        else
-        {
+        } else {
             $root = $this->User->portfolio;
         }
 
         $GLOBALS['TL_DCA']['tl_portfolio_archive']['list']['sorting']['root'] = $root;
 
         // Check permissions to add archives
-        if (!$this->User->hasAccess('create', 'portfoliop'))
-        {
+        if (!$this->User->hasAccess('create', 'portfoliop')) {
             $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['closed'] = true;
             $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCreatable'] = true;
             $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCopyable'] = true;
         }
 
         // Check permissions to delete calendars
-        if (!$this->User->hasAccess('delete', 'portfoliop'))
-        {
+        if (!$this->User->hasAccess('delete', 'portfoliop')) {
             $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notDeletable'] = true;
         }
 
@@ -223,15 +214,13 @@ class tl_portfolio_archive extends Backend
         $objSession = System::getContainer()->get('session');
 
         // Check current action
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'select':
                 // Allow
                 break;
 
             case 'create':
-                if (!$this->User->hasAccess('create', 'portfoliop'))
-                {
+                if (!$this->User->hasAccess('create', 'portfoliop')) {
                     throw new AccessDeniedException('Not enough permissions to create portfolio archives.');
                 }
                 break;
@@ -240,8 +229,7 @@ class tl_portfolio_archive extends Backend
             case 'copy':
             case 'delete':
             case 'show':
-                if (!in_array(Input::get('id'), $root, true) || (Input::get('act') === 'delete' && !$this->User->hasAccess('delete', 'portfoliop')))
-                {
+                if (!in_array(Input::get('id'), $root, true) || (Input::get('act') === 'delete' && !$this->User->hasAccess('delete', 'portfoliop'))) {
                     throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' portfolio archive ID ' . Input::get('id') . '.');
                 }
                 break;

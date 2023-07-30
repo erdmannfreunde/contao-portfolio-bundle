@@ -24,7 +24,11 @@ class PortfolioPickerProvider extends AbstractInsertTagPickerProvider implements
 {
     private Security $security;
 
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
+    public function __construct(
+        FactoryInterface $menuFactory,
+        RouterInterface $router,
+        ?TranslatorInterface $translator,
+        Security $security)
     {
         parent::__construct($menuFactory, $router, $translator);
 
@@ -38,7 +42,7 @@ class PortfolioPickerProvider extends AbstractInsertTagPickerProvider implements
 
     public function supportsContext($context): bool
     {
-        return \in_array($context, ['portfolio', 'link'], true) && $this->security->isGranted('contao_user.modules', 'portfolio');
+        return in_array($context, ['portfolio', 'link'], true) && $this->security->isGranted('contao_user.modules', 'portfolio');
     }
 
     public function supportsValue(PickerConfig $config): bool
@@ -50,7 +54,7 @@ class PortfolioPickerProvider extends AbstractInsertTagPickerProvider implements
         return $this->isMatchingInsertTag($config);
     }
 
-    public function getDcaTable(): string
+    public function getDcaTable(PickerConfig $config = null): string
     {
         return 'tl_portfolio';
     }

@@ -10,15 +10,15 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\DC_Table;
+use Contao\Backend;
+use Contao\Database;
 use Contao\StringUtil;
+use Contao\DataContainer;
 
-/*
- * Table tl_portfolio_category
- */
 $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
-    // Config
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
 
         'sql' => [
@@ -31,7 +31,6 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
         'backlink' => 'do=portfolio',
     ],
 
-    // List
     'list' => [
         'sorting' => [
             'mode' => 1,
@@ -81,12 +80,10 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
         ],
     ],
 
-    // Palettes
     'palettes' => [
         'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
     ],
 
-    // Fields
     'fields' => [
         'id' => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
@@ -159,7 +156,8 @@ class tl_portfolio_category extends Backend
             $varValue = StringUtil::generateAlias($dc->activeRecord->title);
         }
 
-        $objAlias = $this->Database->prepare('SELECT id FROM tl_portfolio_category WHERE alias=?')
+        $objAlias = Database::getInstance()
+            ->prepare('SELECT id FROM tl_portfolio_category WHERE alias=?')
             ->execute($varValue)
         ;
 

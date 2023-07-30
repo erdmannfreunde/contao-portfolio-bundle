@@ -10,6 +10,9 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\Backend;
+use Contao\Database;
+
 $GLOBALS['TL_DCA']['tl_module']['palettes']['portfoliolist'] = '{title_legend},name,headline,type;{config_legend},portfolio_archives,portfolio_readerModule,portfolio_featured,numberOfItems,filter_categories,perPage;{nav_legend},portfolio_filter,portfolio_filter_reset;{redirect_legend},jumpTo;{template_legend:hide},portfolio_template,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['portfolioreader'] = '{title_legend},name,headline,type;{config_legend},portfolio_archives;{template_legend:hide},portfolio_template,customTpl;{protected_legend:hide},{image_legend:hide},imgSize;protected;{expert_legend:hide},guests,cssID,space';
 
@@ -116,7 +119,8 @@ class tl_module_portfolio extends Backend
         }
 
         $arrArchives = [];
-        $objArchives = $this->Database->execute('SELECT id, title FROM tl_portfolio_archive ORDER BY title');
+        $objArchives = Database::getInstance()
+            ->execute('SELECT id, title FROM tl_portfolio_archive ORDER BY title');
 
         while ($objArchives->next()) {
             if ($this->User->hasAccess($objArchives->id, 'portfolio')) {
@@ -133,7 +137,8 @@ class tl_module_portfolio extends Backend
     public function getReaderModules(): array
     {
         $arrModules = [];
-        $objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='portfolioreader' ORDER BY t.name, m.name");
+        $objModules = Database::getInstance()
+            ->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='portfolioreader' ORDER BY t.name, m.name");
 
         while ($objModules->next()) {
             $arrModules[$objModules->theme][$objModules->id] = $objModules->name.' (ID '.$objModules->id.')';
