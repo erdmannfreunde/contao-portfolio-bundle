@@ -10,9 +10,13 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\Input;
+use Contao\Image;
+use Contao\System;
 use Contao\Backend;
 use Contao\DC_Table;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -74,16 +78,16 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
             ],
         ],
         'operations' => [
-            'edit' => [
-                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['edit'],
-                'href'                => 'table=tl_portfolio',
-                'icon'                => 'edit.svg',
-            ],
             'editheader' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['editheader'],
                 'href'                => 'act=edit',
-                'icon'                => 'header.svg',
+                'icon'                => 'edit.svg',
                 'button_callback'     => ['tl_portfolio_archive', 'editHeader'],
+            ],
+            'edit' => [
+                'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['edit'],
+                'href'                => 'table=tl_portfolio',
+                'icon'                => 'children.svg',
             ],
             'copy' => [
                 'label'               => &$GLOBALS['TL_LANG']['tl_portfolio_archive']['copy'],
@@ -169,9 +173,6 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
  */
 class tl_portfolio_archive extends Backend
 {
-    /**
-     * Import the back end user object.
-     */
     public function __construct()
     {
         parent::__construct();
@@ -180,9 +181,6 @@ class tl_portfolio_archive extends Backend
 
     /**
      * Check permissions to edit table tl_portfolio_archive
-     *
-     * @throws AccessDeniedException
-     * @return void
      */
     public function checkPermission(): void
     {
@@ -263,25 +261,20 @@ class tl_portfolio_archive extends Backend
 
     /**
      * Add the new archive to the permissions
-     *
-     * @param $insertId
      */
     public function adjustPermissions($insertId): void
     {
         // The oncreate_callback passes $insertId as second argument
-        if (func_num_args() === 4)
-        {
+        if (func_num_args() === 4) {
             $insertId = func_get_arg(1);
         }
 
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
         // Set root IDs
-        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
-        {
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio)) {
             $root = array(0);
         }
         else
@@ -290,8 +283,7 @@ class tl_portfolio_archive extends Backend
         }
 
         // The archive is enabled already
-        if (in_array($insertId, $root, true))
-        {
+        if (in_array($insertId, $root, true)) {
             return;
         }
 
@@ -305,38 +297,39 @@ class tl_portfolio_archive extends Backend
             // Add the permissions on group level
             if ($this->User->inherit !== 'custom')
             {
-                $objGroup = $this->Database->execute("SELECT id, portfolio, portfoliop FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
+                $objGroup = $this->Database::getInstance()
+                    ->execute("SELECT id, portfolio, portfoliop FROM tl_user_group WHERE id IN(" . implode(',', array_map('\intval', $this->User->groups)) . ")");
 
                 while ($objGroup->next())
                 {
                     $arrPortfoliop = StringUtil::deserialize($objGroup->portfoliop);
 
-                    if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop, true))
-                    {
+                    if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop, true)) {
                         $arrPortfolio = StringUtil::deserialize($objGroup->portfolio, true);
                         $arrPortfolio[] = $insertId;
 
-                        $this->Database->prepare("UPDATE tl_user_group SET portfolio=? WHERE id=?")
+                        $this->Database::getInstance()
+                            ->prepare("UPDATE tl_user_group SET portfolio=? WHERE id=?")
                             ->execute(serialize($arrPortfolio), $objGroup->id);
                     }
                 }
             }
 
             // Add the permissions on user level
-            if ($this->User->inherit !== 'group')
-            {
-                $objUser = $this->Database->prepare("SELECT portfolio, portfoliop FROM tl_user WHERE id=?")
+            if ($this->User->inherit !== 'group') {
+                $objUser = $this->Database::getInstance()
+                    ->prepare("SELECT portfolio, portfoliop FROM tl_user WHERE id=?")
                     ->limit(1)
                     ->execute($this->User->id);
 
                 $arrPortfoliop = StringUtil::deserialize($objUser->portfoliop);
 
-                if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop, true))
-                {
+                if (is_array($arrPortfoliop) && in_array('create', $arrPortfoliop, true)) {
                     $arrPortfolio = StringUtil::deserialize($objUser->portfolio, true);
                     $arrPortfolio[] = $insertId;
 
-                    $this->Database->prepare("UPDATE tl_user SET portfolio=? WHERE id=?")
+                    $this->Database::getInstance()
+                        ->prepare("UPDATE tl_user SET portfolio=? WHERE id=?")
                         ->execute(serialize($arrPortfolio), $this->User->id);
                 }
             }
@@ -349,32 +342,19 @@ class tl_portfolio_archive extends Backend
 
     /**
      * Return the edit header button.
-     *
-     * @param array $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
      */
     public function editHeader(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        return $this->User->canEditFieldsOf('tl_portfolio_archive') ? '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        //return $this->User->canEditFieldsOf('tl_portfolio_archive') ? '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        //if (!$this->User->canEditFieldsOf('tl_portfolio_archive')) {
+        //    return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        //}
+
+        return '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a>';
     }
 
     /**
      * Return the copy archive button.
-     *
-     * @param array $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
      */
     public function copyArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
@@ -383,33 +363,17 @@ class tl_portfolio_archive extends Backend
 
     /**
      * Return the delete archive button.
-     *
-     * @param array $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
      */
     public function deleteArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
         return $this->User->hasAccess('delete', 'portfoliop') ? '<a href="'.self::addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
-    /**
-     * @param DataContainer $dc
-     *
-     * @param array $tags
-     * @return array
-     */
     public function addSitemapCacheInvalidationTag($dc, array $tags): array
     {
         $pageModel = PageModel::findWithDetails($dc->activeRecord->jumpTo);
 
-        if ($pageModel === null)
-        {
+        if ($pageModel === null) {
             return $tags;
         }
 

@@ -10,6 +10,8 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\Date;
+use Contao\Image;
 use Contao\Input;
 use Contao\Config;
 use Contao\System;
@@ -17,6 +19,7 @@ use Contao\Backend;
 use Contao\Database;
 use Contao\DC_Table;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\BackendUser;
 use Contao\DataContainer;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
@@ -286,7 +289,6 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
             'exclude'   => true,
             'inputType' => 'trbl',
-            //'options'   => $GLOBALS['TL_CSS_UNITS'] ?? [],
             'options'   => ['px', '%', 'em', 'rem', 'vw', 'vh'],
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
@@ -428,14 +430,12 @@ class tl_portfolio extends Backend
      */
     public function checkPermission(): void
     {
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
         // Set the root IDs
-        if (empty($this->User->portfolio) || !is_array($this->User->portfolio))
-        {
+        if (empty($this->User->portfolio) || !is_array($this->User->portfolio)) {
             $root = array(0);
         }
         else
@@ -572,7 +572,9 @@ class tl_portfolio extends Backend
     {
         $aliasExists = function (string $alias) use ($dc): bool
         {
-            return $this->Database->prepare("SELECT id FROM tl_portfolio WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
+            return Database::getInstance()
+                    ->prepare("SELECT id FROM tl_portfolio WHERE alias=? AND id!=?")
+                    ->execute($alias, $dc->id)->numRows > 0;
         };
 
         // Generate alias if there is none
@@ -614,22 +616,19 @@ class tl_portfolio extends Backend
     public function getTitleTag( EuF\PortfolioBundle\Models\PortfolioModel $model)
     {
         /** @var EuF\PortfolioBundle\Models\PortfolioArchiveModel $archive */
-        if (!$archive = $model->getRelated('pid'))
-        {
+        if (!$archive = $model->getRelated('pid')) {
             return '';
         }
 
         /** @var Contao\PageModel $page */
-        if (!$page = $archive->getRelated('jumpTo'))
-        {
+        if (!$page = $archive->getRelated('jumpTo')) {
             return '';
         }
 
         $page->loadDetails();
 
         /** @var Contao\LayoutModel $layout */
-        if (!$layout = $page->getRelated('layout'))
-        {
+        if (!$layout = $page->getRelated('layout')) {
             return '';
         }
 
@@ -641,8 +640,7 @@ class tl_portfolio extends Backend
         $title = implode(
             '%s',
             array_map(
-                static function ($strVal)
-                {
+                static function ($strVal) {
                     return str_replace('%', '%%', self::replaceInsertTags($strVal));
                 },
                 explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2)
@@ -676,7 +674,8 @@ class tl_portfolio extends Backend
                 return $arrAlias;
             }
 
-            $objAlias = $this->Database->prepare('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('intval', array_unique($arrPids))).') ORDER BY parent, a.sorting')
+            $objAlias = Database::getInstance()
+                ->prepare('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid WHERE a.pid IN('.implode(',', array_map('intval', array_unique($arrPids))).') ORDER BY parent, a.sorting')
                 ->execute($dc->id);
         } else {
             $objAlias = $this->Database->prepare('SELECT a.id, a.title, a.inColumn, p.title AS parent FROM tl_article a LEFT JOIN tl_page p ON p.id=a.pid ORDER BY parent, a.sorting')
@@ -765,20 +764,18 @@ class tl_portfolio extends Backend
     {
         if (Input::get('tid'))
         {
-            $this->toggleVisibility(Contao\Input::get('tid'), (Contao\Input::get('state') == 1), (func_num_args() <= 12 ? null : func_get_arg(12)));
+            $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (func_num_args() <= 12 ? null : func_get_arg(12)));
             self::redirect(self::getReferer());
         }
 
         // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_portfolio::published', 'alexf'))
-        {
+        if (!$this->User->hasAccess('tl_portfolio::published', 'alexf')) {
             return '';
         }
 
         $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
-        if (!$row['published'])
-        {
+        if (!$row['published']) {
             $icon = 'invisible.svg';
         }
 
@@ -798,8 +795,7 @@ class tl_portfolio extends Backend
         Input::setGet('id', $intId);
         Input::setGet('act', 'toggle');
 
-        if ($dc)
-        {
+        if ($dc) {
             $dc->id = $intId; // see #8043
         }
 
@@ -826,7 +822,8 @@ class tl_portfolio extends Backend
             throw new AccessDeniedException('Not enough permissions to publish/unpublish portfolio item ID ' . $intId . '.');
         }
 
-        $objRow = $this->Database->prepare("SELECT * FROM tl_portfolio WHERE id=?")
+        $objRow = Database::getInstance()
+            ->prepare("SELECT * FROM tl_portfolio WHERE id=?")
             ->limit(1)
             ->execute($intId);
 
@@ -864,11 +861,11 @@ class tl_portfolio extends Backend
         $time = time();
 
         // Update the database
-        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+        Database::getInstance()
+            ->prepare("UPDATE tl_portfolio SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
             ->execute($intId);
 
-        if ($dc)
-        {
+        if ($dc) {
             $dc->activeRecord->tstamp = $time;
             $dc->activeRecord->published = ($blnVisible ? '1' : '');
         }
@@ -923,22 +920,19 @@ class tl_portfolio extends Backend
      */
     public function iconFeatured(array $row, ?string $href, string $label, string $title, string $icon, string $attributes): string
     {
-        if (Input::get('fid'))
-        {
+        if (Input::get('fid')) {
             $this->toggleFeatured(Input::get('fid'), (Input::get('state') === 1), (@func_get_arg(12) ?: null));
             self::redirect(self::getReferer());
         }
 
         // Check permissions AFTER checking the fid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf'))
-        {
+        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf')) {
             return '';
         }
 
         $href .= '&amp;fid=' . $row['id'] . '&amp;state=' . ($row['featured'] ? '' : 1);
 
-        if (!$row['featured'])
-        {
+        if (!$row['featured']) {
             $icon = 'featured_.svg';
         }
 
@@ -962,8 +956,7 @@ class tl_portfolio extends Backend
         $this->checkPermission();
 
         // Check permissions to feature
-        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf'))
-        {
+        if (!$this->User->hasAccess('tl_portfolio::featured', 'alexf')) {
             throw new AccessDeniedException('Not enough permissions to feature/unfeature portfolio item ID ' . $intId . '.');
         }
 
@@ -988,7 +981,8 @@ class tl_portfolio extends Backend
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE tl_portfolio SET tstamp=" . time() . ", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+        Database::getInstance()
+            ->prepare("UPDATE tl_portfolio SET tstamp=" . time() . ", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
             ->execute($intId);
 
         $objVersions->create();

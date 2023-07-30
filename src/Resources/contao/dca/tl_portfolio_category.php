@@ -14,7 +14,7 @@ use Contao\DC_Table;
 use Contao\Backend;
 use Contao\Database;
 use Contao\StringUtil;
-use Cotnao\BackendUser;
+use Contao\BackendUser;
 use Contao\DataContainer;
 
 $GLOBALS['TL_DCA']['tl_portfolio_category'] = [

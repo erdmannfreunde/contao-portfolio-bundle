@@ -43,9 +43,10 @@ class ModulePortfolioList extends ModulePortfolio
      */
     public function generate(): string
     {
-        if (TL_MODE === 'BE') {
-            $objTemplate = new BackendTemplate('be_wildcard');
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+            $objTemplate = new BackendTemplate('be_wildcard');
             $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD']['portfoliolist'][0].' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
