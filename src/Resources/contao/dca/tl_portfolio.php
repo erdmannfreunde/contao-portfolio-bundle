@@ -71,16 +71,16 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
-        'operations'        => [
-            'edit'       => [
-                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['edit'],
-                'href'  => 'table=tl_content',
-                'icon'  => 'edit.svg',
-            ],
+        'operations' => [
             'editheader' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['editmeta'],
                 'href'  => 'act=edit',
-                'icon'  => 'header.svg',
+                'icon'  => 'edit.svg',
+            ],
+            'edit' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['edit'],
+                'href'  => 'table=tl_content',
+                'icon'  => 'children.svg',
             ],
             'copy'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio']['copy'],
@@ -211,11 +211,16 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'sql'                     => "text NULL"
         ],
         'serpPreview' => [
-            'label'                   => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
-            'exclude'                 => true,
-            'inputType'               => 'serpPreview',
-            'eval'                    => array('url_callback'=>array('tl_portfolio', 'getSerpUrl'), 'title_tag_callback'=>array('tl_portfolio', 'getTitleTag'), 'titleFields'=>array('pageTitle', 'headline'), 'descriptionFields'=>array('description', 'teaser')),
-            'sql'                     => null
+            'label' => &$GLOBALS['TL_LANG']['MSC']['serpPreview'],
+            'exclude' => true,
+            'inputType' => 'serpPreview',
+            'eval' => [
+                'url_callback' => ['tl_portfolio', 'getSerpUrl'],
+                'title_tag_callback' => ['tl_portfolio', 'getTitleTag'],
+                'titleFields' => ['pageTitle', 'headline'],
+                'descriptionFields' => ['description', 'teaser']
+            ],
+            'sql' => null
         ],
         'teaser'     => [
             'label'       => &$GLOBALS['TL_LANG']['tl_portfolio']['teaser'],
@@ -280,8 +285,8 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'inputType'        => 'imageSize',
             'reference'        => &$GLOBALS['TL_LANG']['MSC'],
             'eval'             => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback' => function () {
-                return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+            'options_callback' => static function () {
+                return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
             },
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
@@ -641,7 +646,7 @@ class tl_portfolio extends Backend
             '%s',
             array_map(
                 static function ($strVal) {
-                    return str_replace('%', '%%', self::replaceInsertTags($strVal));
+                    return str_replace('%', '%%', System::getContainer()->get('contao.insert_tag.parser')->replaceInline($strVal));
                 },
                 explode('{{page::pageTitle}}', $layout->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}', 2)
             )
@@ -997,15 +1002,13 @@ class tl_portfolio extends Backend
     {
         $archiveModel = PortfolioArchiveModel::findByPk($dc->activeRecord->pid);
 
-        if ($archiveModel === null)
-        {
+        if ($archiveModel === null) {
             return $tags;
         }
 
         $pageModel = PageModel::findWithDetails($archiveModel->jumpTo);
 
-        if ($pageModel === null)
-        {
+        if ($pageModel === null) {
             return $tags;
         }
 

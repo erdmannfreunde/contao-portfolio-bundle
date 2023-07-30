@@ -35,7 +35,7 @@ abstract class ModulePortfolio extends Module
      */
     protected function sortOutProtected(array $arrArchives): array
     {
-        if (empty($arrArchives) || !\is_array($arrArchives)) {
+        if (empty($arrArchives) || !is_array($arrArchives)) {
             return $arrArchives;
         }
 
@@ -46,13 +46,13 @@ abstract class ModulePortfolio extends Module
         if (null !== $objArchive) {
             while ($objArchive->next()) {
                 if ($objArchive->protected) {
-                    if (!FE_USER_LOGGED_IN || !\is_array($this->User->groups)) {
+                    if (!FE_USER_LOGGED_IN || !is_array($this->User->groups)) {
                         continue;
                     }
 
                     $groups = StringUtil::deserialize($objArchive->groups);
 
-                    if (empty($groups) || !\is_array($groups) || !\count(array_intersect($groups, $this->User->groups))) {
+                    if (empty($groups) || !is_array($groups) || !count(array_intersect($groups, $this->User->groups))) {
                         continue;
                     }
                 }
@@ -94,7 +94,8 @@ abstract class ModulePortfolio extends Module
         // Clean the RTE output
         if ($objItem->teaser) {
             $objTemplate->hasTeaser = true;
-            $objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
+            //$objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
+            $objTemplate->teaser = $objItem->teaser;
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
         }
 

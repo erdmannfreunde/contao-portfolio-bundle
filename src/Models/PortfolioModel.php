@@ -14,19 +14,12 @@ namespace EuF\PortfolioBundle\Models;
 
 use Contao\Date;
 use Contao\Model;
-use Contao\Model\Collection;
+use Contao\System;
 use Contao\StringUtil;
+use Contao\Model\Collection;
 
-/**
- * Reads and writes portfolio items.
- */
 class PortfolioModel extends Model
 {
-    /**
-     * Table name.
-     *
-     * @var string
-     */
     protected static $strTable = 'tl_portfolio';
 
     /**
@@ -82,7 +75,9 @@ class PortfolioModel extends Model
             $arrColumns[] = "$t.featured=''";
         }
 
-        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
+        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
         }
@@ -115,7 +110,7 @@ class PortfolioModel extends Model
      */
     public static function countPublishedByPids(array $arrPids, bool $blnFeatured = null, array $arrCategories = [], array $arrOptions = []): int
     {
-        if (empty($arrPids) || !\is_array($arrPids)) {
+        if (empty($arrPids) || !is_array($arrPids)) {
             return 0;
         }
 
