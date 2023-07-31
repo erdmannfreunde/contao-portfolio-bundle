@@ -124,7 +124,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
     ],
 
     'subpalettes' => [
-        'addImage' => 'singleSRC,size,floating,imagemargin,fullsize,overwriteMeta',
+        'addImage' => 'singleSRC,size,floating,fullsize,overwriteMeta',
         'source_internal' => 'jumpTo',
         'source_article' => 'articleId',
         'source_external' => 'url,target',
@@ -289,14 +289,6 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
                 return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
             },
             'sql'              => "varchar(128) COLLATE ascii_bin NOT NULL default ''",
-        ],
-        'imagemargin'   => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],
-            'exclude'   => true,
-            'inputType' => 'trbl',
-            'options'   => ['px', '%', 'em', 'rem', 'vw', 'vh'],
-            'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-            'sql'       => "varchar(128) NOT NULL default ''",
         ],
         'imageUrl'      => [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'],
