@@ -288,7 +288,7 @@ $GLOBALS['TL_DCA']['tl_portfolio'] = [
             'options_callback' => static function () {
                 return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
             },
-            'sql'              => "varchar(64) NOT NULL default ''",
+            'sql'              => "varchar(128) COLLATE ascii_bin NOT NULL default ''",
         ],
         'imagemargin'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'],

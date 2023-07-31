@@ -35,7 +35,7 @@ class InsertTagsListener
         $elements = explode('::', $insertTag);
         $key = strtolower($elements[0]);
 
-        if (\in_array($key, self::SUPPORTED_TAGS, true)) {
+        if (in_array($key, self::SUPPORTED_TAGS, true)) {
             return $this->replaceInsertTags($key, $elements[1], $flags);
         }
 
@@ -58,7 +58,7 @@ class InsertTagsListener
             /** @var Portfolio $adapter */
             $adapter = $this->framework->getAdapter(Portfolio::class);
 
-            return $adapter->generatePortfolioUrl($portfolio, false, \in_array('absolute', $flags, true));
+            return $adapter->generatePortfolioUrl($portfolio, false, in_array('absolute', $flags, true));
         }
 
         return '';

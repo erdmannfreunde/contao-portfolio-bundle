@@ -17,9 +17,12 @@ use Contao\Model;
 use Contao\System;
 use Contao\StringUtil;
 use Contao\Model\Collection;
+use Contao\CoreBundle\File\ModelMetadataTrait;
 
 class PortfolioModel extends Model
 {
+    use ModelMetadataTrait;
+
     protected static $strTable = 'tl_portfolio';
 
     /**

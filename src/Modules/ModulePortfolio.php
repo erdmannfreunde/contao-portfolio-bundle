@@ -12,22 +12,19 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Modules;
 
-use Contao\ContentModel;
 use Contao\Date;
-use Contao\FilesModel;
-use Contao\FrontendTemplate;
-use Contao\FrontendUser;
+use Contao\System;
 use Contao\Module;
 use Contao\StringUtil;
+use Contao\FilesModel;
+use Contao\Controller;
+use Contao\ContentModel;
+use Contao\FrontendUser;
+use Contao\FrontendTemplate;
 use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
 
-/**
- * Class ModulePortfolio.
- *
- * Parent class for portfolio modules.
- */
 abstract class ModulePortfolio extends Module
 {
     /**
@@ -94,7 +91,6 @@ abstract class ModulePortfolio extends Module
         // Clean the RTE output
         if ($objItem->teaser) {
             $objTemplate->hasTeaser = true;
-            //$objTemplate->teaser = StringUtil::toHtml5($objItem->teaser);
             $objTemplate->teaser = $objItem->teaser;
             $objTemplate->teaser = StringUtil::encodeEmail($objTemplate->teaser);
         }
@@ -146,7 +142,9 @@ abstract class ModulePortfolio extends Module
         if ($objItem->addImage && '' !== $objItem->singleSRC) {
             $objModel = FilesModel::findByUuid($objItem->singleSRC);
 
-            if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
+            $projectDir = System::getContainer()->getParameter('kernel.project_dir');
+
+            if (null !== $objModel && is_file($projectDir.'/'.$objModel->path)) {
                 // Do not override the field now that we have a model registry (see #6303)
                 $arrArticle = $objItem->row();
 
@@ -156,11 +154,20 @@ abstract class ModulePortfolio extends Module
 
                     if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                         $arrArticle['size'] = $this->imgSize;
+                        $size = $this->imgSize;
                     }
                 }
 
-                $arrArticle['singleSRC'] = $objModel->path;
-                $this->addImageToTemplate($objTemplate, $arrArticle, null, null, $objModel);
+                $figure = System::getContainer()
+                    ->get('contao.image.studio')
+                    ->createFigureBuilder()
+                    ->from($objModel)
+                    ->setSize($size)
+                    ->setOverwriteMetadata($objItem->getOverwriteMetadata())
+                    ->enableLightbox((bool) $objItem->fullsize)
+                    ->buildIfResourceExists();
+
+                $figure?->applyLegacyTemplateData($objTemplate);
 
                 // Link to the portfolio reader if no image link has been defined (see #30)
                 if (!$objTemplate->fullsize && !$objTemplate->imageUrl && $objTemplate->text) {

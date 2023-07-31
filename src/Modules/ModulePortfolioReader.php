@@ -22,32 +22,16 @@ use Contao\StringUtil;
 use Contao\System;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
-/**
- * Class ModulePortfolioReader.
- *
- * Front end module "portfolio reader".
- */
 class ModulePortfolioReader extends ModulePortfolio
 {
-    /**
-     * Template.
-     *
-     * @var string
-     */
     protected $strTemplate = 'mod_portfolioreader';
 
-    /**
-     * Display a wildcard in the back end.
-     *
-     * @return string
-     */
     public function generate()
     {
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
 
         if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
             $objTemplate = new BackendTemplate('be_wildcard');
-
             $objTemplate->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD']['portfolioreader'][0]).' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
@@ -80,9 +64,6 @@ class ModulePortfolioReader extends ModulePortfolio
         return parent::generate();
     }
 
-    /**
-     * Generate the module.
-     */
     protected function compile(): void
     {
         global $objPage;
