@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Environment;
 use Contao\Input;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use EuF\PortfolioBundle\Models\PortfolioModel;
@@ -69,8 +70,14 @@ class ModulePortfolioReader extends ModulePortfolio
         global $objPage;
 
         $this->Template->items = '';
-        $this->Template->referer = 'javascript:history.go(-1)';
-        $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
+
+        if ($this->overviewPage) {
+            $this->Template->referer = PageModel::findById($this->overviewPage)->getFrontendUrl();
+            $this->Template->back = $this->customLabel ?: $GLOBALS['TL_LANG']['MSC']['goBack'];
+        } else {
+            $this->Template->referer = 'javascript:history.go(-1)';
+            $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
+        }
 
         // Get the portfolio item
         $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
