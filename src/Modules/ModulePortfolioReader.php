@@ -43,7 +43,6 @@ class ModulePortfolioReader extends ModulePortfolio
             return $objTemplate->parse();
         }
 
-        // Set the item from the auto_item parameter
         if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem')) {
             Input::setGet('items', Input::get('auto_item'));
         }
@@ -68,10 +67,6 @@ class ModulePortfolioReader extends ModulePortfolio
 
     protected function compile(): void
     {
-        global $objPage;
-
-        $this->Template->items = '';
-
         if ($this->overviewPage) {
             $this->Template->referer = PageModel::findById($this->overviewPage)->getFrontendUrl();
             $this->Template->back = $this->customLabel ?: $GLOBALS['TL_LANG']['MSC']['goBack'];
@@ -80,7 +75,6 @@ class ModulePortfolioReader extends ModulePortfolio
             $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
         }
 
-        // Get the portfolio item
         $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
 
         if (null === $objItem) {
@@ -90,11 +84,9 @@ class ModulePortfolioReader extends ModulePortfolio
         $arrItem = $this->parseItem($objItem);
         $this->Template->items = $arrItem;
 
-        // Overwrite the page metadata (see #2853, #4955 and #87)
         $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
 
-        if ($responseContext && $responseContext->has(HtmlHeadBag::class))
-        {
+        if ($responseContext && $responseContext->has(HtmlHeadBag::class)) {
             $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
             $htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
 

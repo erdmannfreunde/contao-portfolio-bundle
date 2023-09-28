@@ -174,7 +174,6 @@ class Portfolio extends Frontend
                 self::$arrUrlCache[$strCacheKey] = preg_replace('/&(amp;)?/i', '&amp;', Environment::get('request'));
             } else {
                 $params = (Config::get('useAutoItem') ? '/' : '/items/').($objItem->alias ?: $objItem->id);
-
                 self::$arrUrlCache[$strCacheKey] = preg_replace('/&(amp;)?/i', '&amp;', $blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
         }
