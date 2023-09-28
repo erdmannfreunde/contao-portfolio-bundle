@@ -16,6 +16,7 @@ use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\Environment;
 use Contao\Input;
 use Contao\PageModel;
@@ -89,22 +90,29 @@ class ModulePortfolioReader extends ModulePortfolio
         $arrItem = $this->parseItem($objItem);
         $this->Template->items = $arrItem;
 
-        // Overwrite the page title (see #2853 and #4955 and #87)
-        if ($objItem->pageTitle) {
-            $objPage->pageTitle = $objItem->pageTitle;
-        } elseif ($objItem->headline) {
-            $objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($objItem->headline));
-        }
+        // Overwrite the page metadata (see #2853, #4955 and #87)
+        $responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
 
-        // Overwrite the page description
-        if ($objItem->description) {
-            $objPage->description = $objItem->description;
-        } elseif ($objItem->teaser) {
-            $objPage->description = $this->prepareMetaDescription($objItem->teaser);
-        }
+        if ($responseContext && $responseContext->has(HtmlHeadBag::class))
+        {
+            $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+            $htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
 
-        if ($objItem->robots) {
-            $objPage->robots = $objItem->robots;
+            if ($objItem->pageTitle) {
+                $htmlHeadBag->setTitle($objItem->pageTitle);
+            } elseif ($objItem->headline) {
+                $htmlHeadBag->setTitle($htmlDecoder->inputEncodedToPlainText($objItem->headline));
+            }
+
+            if ($objItem->description) {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->inputEncodedToPlainText($objItem->description));
+            } elseif ($objItem->teaser) {
+                $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($objItem->teaser));
+            }
+
+            if ($objItem->robots) {
+                $htmlHeadBag->setMetaRobots($objItem->robots);
+            }
         }
     }
 }
