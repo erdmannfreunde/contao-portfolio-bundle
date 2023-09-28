@@ -5,3 +5,7 @@ services:
   EuF\PortfolioBundle\Migration\Version410\ImgSizeMigration:
     arguments:
       - '@database_connection'
+
+  EuF\PortfolioBundle\Migration\Version500\BooleanFieldsMigration:
+    arguments:
+      - '@database_connection'

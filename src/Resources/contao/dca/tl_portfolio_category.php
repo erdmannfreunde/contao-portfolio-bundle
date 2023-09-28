@@ -121,7 +121,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['published'],
             'exclude' => true,
             'inputType' => 'checkbox',
-            'sql' => "char(1) NOT NULL default ''",
+            'sql' => ['type' => 'boolean', 'default' => false],
         ],
     ],
 ];

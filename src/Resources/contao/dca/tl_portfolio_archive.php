@@ -151,7 +151,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
             'filter'                  => true,
             'inputType'               => 'checkbox',
             'eval'                    => ['submitOnChange'=>true, 'isBoolean'=>true],
-            'sql'                     => "char(1) NOT NULL default ''"
+            'sql' => ['type' => 'boolean', 'default' => false],
         ),
         'groups' => array
         (

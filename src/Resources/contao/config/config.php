@@ -10,6 +10,13 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use EuF\PortfolioBundle\Classes\Portfolio;
+use EuF\PortfolioBundle\Models\PortfolioModel;
+use EuF\PortfolioBundle\Modules\ModulePortfolioList;
+use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
+use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use EuF\PortfolioBundle\Modules\ModulePortfolioReader;
+
 $GLOBALS['BE_MOD']['content']['portfolio'] = [
     'tables' => ['tl_portfolio_archive', 'tl_portfolio', 'tl_portfolio_category', 'tl_content'],
 ];
@@ -18,18 +25,18 @@ $GLOBALS['BE_MOD']['content']['portfolio'] = [
  * Front end modules
  */
 $GLOBALS['FE_MOD']['portfolio'] = [
-    'portfoliolist' => '\\EuF\\PortfolioBundle\\Modules\\ModulePortfolioList',
-    'portfolioreader' => '\\EuF\\PortfolioBundle\\Modules\\ModulePortfolioReader',
+    'portfoliolist' => ModulePortfolioList::class,
+    'portfolioreader' => ModulePortfolioReader::class,
 ];
 
-$GLOBALS['TL_MODELS']['tl_portfolio'] = '\\EuF\\PortfolioBundle\\Models\\PortfolioModel';
-$GLOBALS['TL_MODELS']['tl_portfolio_archive'] = '\\EuF\\PortfolioBundle\\Models\\PortfolioArchiveModel';
-$GLOBALS['TL_MODELS']['tl_portfolio_category'] = '\\EuF\\PortfolioBundle\\Models\\PortfolioCategoryModel';
+$GLOBALS['TL_MODELS']['tl_portfolio'] = PortfolioModel::class;
+$GLOBALS['TL_MODELS']['tl_portfolio_archive'] = PortfolioArchiveModel::class ;
+$GLOBALS['TL_MODELS']['tl_portfolio_category'] = PortfolioCategoryModel::class;
 
 /*
  * Register hooks
  */
-$GLOBALS['TL_HOOKS']['getSearchablePages'][] = ['\\EuF\\PortfolioBundle\\Classes\\Portfolio', 'getSearchablePages'];
+$GLOBALS['TL_HOOKS']['getSearchablePages'][] = [Portfolio::class, 'getSearchablePages'];
 
 /*
  * Add permissions
