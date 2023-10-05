@@ -92,7 +92,7 @@ class Portfolio extends Frontend
                     }
 
                     // Generate the URL
-                    $arrProcessed[$objArchive->jumpTo] = $objParent->getAbsoluteUrl(Config::get('useAutoItem') ? '/%s' : '/items/%s');
+                    $arrProcessed[$objArchive->jumpTo] = $objParent->getAbsoluteUrl('/%s');
                 }
 
                 $strUrl = $arrProcessed[$objArchive->jumpTo];
@@ -173,7 +173,7 @@ class Portfolio extends Frontend
             if (!$objPage instanceof PageModel) {
                 self::$arrUrlCache[$strCacheKey] = preg_replace('/&(amp;)?/i', '&amp;', Environment::get('request'));
             } else {
-                $params = (Config::get('useAutoItem') ? '/' : '/items/').($objItem->alias ?: $objItem->id);
+                $params = '/'.($objItem->alias ?: $objItem->id);
                 self::$arrUrlCache[$strCacheKey] = preg_replace('/&(amp;)?/i', '&amp;', $blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
             }
         }
