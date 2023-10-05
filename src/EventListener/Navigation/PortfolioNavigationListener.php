@@ -16,6 +16,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\PageModel;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
+use Terminal42\ChangeLanguage\Event\ChangelanguageNavigationEvent;
 use Terminal42\ChangeLanguage\EventListener\Navigation\AbstractNavigationListener;
 
 /**
@@ -25,7 +26,7 @@ class PortfolioNavigationListener extends AbstractNavigationListener
 {
     protected function getUrlKey(): string
     {
-        return 'items';
+        return 'auto_item';
     }
 
     protected function findCurrent(): ?PortfolioModel

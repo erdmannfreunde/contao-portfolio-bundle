@@ -43,12 +43,8 @@ class ModulePortfolioReader extends ModulePortfolio
             return $objTemplate->parse();
         }
 
-        if (!isset($_GET['items']) && isset($_GET['auto_item']) && Config::get('useAutoItem')) {
-            Input::setGet('items', Input::get('auto_item'));
-        }
-
         // Do not index or cache the page if no portfolio item has been specified
-        if (!Input::get('items')) {
+        if (!Input::get('auto_item')) {
             global $objPage;
             $objPage->noSearch = 1;
             $objPage->cache = 0;
@@ -75,7 +71,7 @@ class ModulePortfolioReader extends ModulePortfolio
             $this->Template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
         }
 
-        $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('items'), $this->portfolio_archives);
+        $objItem = PortfolioModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $this->portfolio_archives);
 
         if (null === $objItem) {
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
