@@ -23,7 +23,7 @@ function animatePortfolioItems(filters, portfolioItems, duration) {
 
             if (filterCategory == 'all') {
                 portfolioItems.forEach((item) => {
-                    item.classList.remove('is-animated');
+                    item.classList.remove('portfolio-visible');
 
                     fadeIn(item, animationDuration);
                 });
@@ -67,7 +67,8 @@ function animatePortfolioItems(filters, portfolioItems, duration) {
             
             animation.onfinish = () => {
                 el.style.display = 'none';
-                el.classList.remove('is-animated');
+                el.classList.remove('portfolio-visible');
+                el.classList.add('portfolio-hidden');
                 resolve();
             }
         })
@@ -86,7 +87,8 @@ function animatePortfolioItems(filters, portfolioItems, duration) {
             
 
             animation.onfinish = () => {
-                el.classList.add('is-animated');
+                el.classList.add('portfolio-visible');
+                el.classList.remove('portfolio-hidden');
                 resolve();
             }
         });
