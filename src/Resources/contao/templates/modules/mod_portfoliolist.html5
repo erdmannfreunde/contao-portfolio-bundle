@@ -3,16 +3,16 @@
 <?php $this->block('content'); ?>
   <?php if ($this->categories):?>
   <nav class="portfolio__filter block">
-  	<ul class="level_1">
+    <ul class="level_1">
       <?php if ($this->portfolio_filter_reset): ?>
-        <li><button class="active" data-category="all"><?= $this->portfolio_filter_reset ?></button></li>
+        <li><button class="filter active" data-category="all"><?= $this->portfolio_filter_reset ?></button></li>
       <?php endif; ?>
-		<?php foreach ($this->categories as $category): ?>
-  		<li><button data-category="<?= $category->alias; ?>"><?= $category->title; ?></button></li>
-		<?php endforeach; ?>
+    <?php foreach ($this->categories as $category): ?>
+      <li><button class="filter" data-category="<?= $category->alias; ?>"><?= $category->title; ?></button></li>
+    <?php endforeach; ?>
     </ul>
   </nav>
-	<?php endif; ?>
+  <?php endif; ?>
 
     <?php if (empty($this->items)): ?>
         <p class="empty"><?= $this->empty; ?></p>

@@ -1,5 +1,5 @@
 
-<div class="layout_latest block<?= $this->class; ?>" data-category="<?= $this->categories ?>">
+<div class="layout_latest portfolio block<?= $this->class; ?>" data-category="<?= $this->categories ?>">
   <div class="inside">
     <?php if ($this->hasText) : ?>
       <h2><?= $this->linkHeadline; ?></h2>

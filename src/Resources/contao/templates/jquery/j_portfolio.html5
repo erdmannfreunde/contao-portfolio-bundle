@@ -4,7 +4,7 @@
   'use strict';
 
   var $filters = $('.portfolio__filter [data-category]'),
-      $items = $('.projects__items .layout_short');
+      $items = $('.portfolio__items .portfolio');
 
   $filters.on('click', function(e) {
     e.preventDefault();

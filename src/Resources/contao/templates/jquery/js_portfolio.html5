@@ -1,0 +1,11 @@
+<!-- js_portfolio -->
+<script src="bundles/eufportfolio/js/portfolio-filter-animation.js"></script>
+<script>
+  const filters = document.querySelectorAll('.portfolio__filter .filter');
+  const portfolioItems = document.querySelectorAll('.portfolio__items .portfolio');
+  const duration = 500;
+
+  animatePortfolioItems(filters, portfolioItems, duration);
+
+</script>
+

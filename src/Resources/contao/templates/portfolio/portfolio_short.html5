@@ -1,5 +1,5 @@
 
-<div class="layout_short block<?= $this->class; ?>" data-category="<?= $this->categories ?>">
+<div class="layout_short portfolio block<?= $this->class; ?>" data-category="<?= $this->categories ?>">
   <div class="inside">
     <?php if (strlen($this->text)) : ?>
       <?= $this->linkHeadline; ?>

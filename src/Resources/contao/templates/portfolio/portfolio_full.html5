@@ -1,5 +1,5 @@
 
-<div class="layout_full block<?= $this->class; ?>" itemscope itemtype="http://schema.org/Article">
+<div class="layout_full portfolio block<?= $this->class; ?>" itemscope itemtype="http://schema.org/Article">
    
   <h1 itemprop="name"><?= $this->headline; ?></h1>
   <p class="portfolio__client">
