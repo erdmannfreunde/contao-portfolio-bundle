@@ -78,9 +78,7 @@ class PortfolioModel extends Model
             $arrColumns[] = "$t.featured=''";
         }
 
-        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
-
-        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+        if (!static::isPreviewMode($arrOptions)) {
             $time = Date::floorToMinute();
             $arrColumns[] = "$t.published='1' AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'$time')";
         }
