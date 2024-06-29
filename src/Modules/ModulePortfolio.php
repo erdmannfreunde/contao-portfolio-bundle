@@ -147,13 +147,15 @@ abstract class ModulePortfolio extends Module
                 // Do not override the field now that we have a model registry (see #6303)
                 $arrArticle = $objItem->row();
 
+                $imgSize = $objItem->size ?: null;
+
                 // Override the default image size
                 if ('' !== $this->imgSize) {
                     $size = StringUtil::deserialize($this->imgSize);
 
                     if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                         $arrArticle['size'] = $this->imgSize;
-                        $size = $this->imgSize;
+                        $imgSize = $this->imgSize;
                     }
                 }
 
@@ -161,7 +163,7 @@ abstract class ModulePortfolio extends Module
                     ->get('contao.image.studio')
                     ->createFigureBuilder()
                     ->from($objModel)
-                    ->setSize($size)
+                    ->setSize($imgSize)
                     ->setOverwriteMetadata($objItem->getOverwriteMetadata())
                     ->enableLightbox((bool) $objItem->fullsize)
                     ->buildIfResourceExists();
