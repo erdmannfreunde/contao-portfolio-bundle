@@ -10,18 +10,18 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
-use Contao\DC_Table;
 use Contao\Backend;
-use Contao\Database;
-use Contao\StringUtil;
 use Contao\BackendUser;
+use Contao\Database;
 use Contao\DataContainer;
+use Contao\DC_Table;
+use Contao\StringUtil;
 
 $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
     'config' => [
         'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
-
+        'backlink' => 'do=portfolio',
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -29,18 +29,18 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
                 'alias' => 'index',
             ],
         ],
-        'backlink' => 'do=portfolio',
     ],
 
+    // Listeneinstellungen
     'list' => [
         'sorting' => [
-            'mode' => 1,
-            'flag' => 1,
-            'panelLayout' => 'sort,filter;search,limit',
-            'fields' => ['title'],
+            'mode' => DataContainer::MODE_TREE,
+            'rootPaste' => true,
+            'panelLayout' => 'filter,search',
         ],
         'label' => [
             'fields' => ['title'],
+            'format' => '%s',
         ],
         'global_operations' => [
             'toggleNodes' => [
@@ -55,34 +55,10 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
-        'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.svg',
-            ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['copy'],
-                'href' => 'act=paste&amp;mode=copy',
-                'icon' => 'copy.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
-        ],
     ],
 
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published,sorting',
     ],
 
     'fields' => [
@@ -120,6 +96,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
         'published' => [
             'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['published'],
             'exclude' => true,
+            'toggle' => true,
             'inputType' => 'checkbox',
             'sql' => ['type' => 'boolean', 'default' => false],
         ],

@@ -66,23 +66,29 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function compile(): void
     {
-        // Add the "reset categories" link
-        if ($this->portfolio_filter_reset) {
-            $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
-        }
-
-        $objCategories = PortfolioCategoryModel::findAll([
-            'column' => 'published',
-            'value' => 1,
-            'order' => 'sorting ASC',
-        ]);
-
-        if (null !== $objCategories && $this->portfolio_filter) {
-            $this->Template->categories = $objCategories;
-        }
-
+        $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $limit = null;
         $offset = (int) $this->skipFirst;
+
+        if ($this->portfolio_filter) {
+            $objItems = PortfolioModel::findPublishedByPids($arrPids, $blnFeatured = null, $limit, $offset);
+            $categoryList = StringUtil::deserialize($objItems->categories);
+
+            if (!empty($categoryList)) {
+                $categoryIDs = implode(',', array_map('intval', $categoryList));
+
+                $arrColumns = ['id IN ('.$categoryIDs.')', 'published=1'];
+                $arrOptions['order'] = 'pid ASC, sorting ASC';
+                $categories = PortfolioCategoryModel::findBy($arrColumns, null, $arrOptions);
+
+                $this->Template->categories = $categories;
+
+                // Add the "reset categories" link
+                if ($this->portfolio_filter_reset) {
+                    $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
+                }
+            }
+        }
 
         // Maximum number of items
         if ($this->numberOfItems > 0) {
@@ -114,7 +120,6 @@ class ModulePortfolioList extends ModulePortfolio
             $arrValues[] = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
-        $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $arrColumns[] = 'tl_portfolio.pid IN('.implode(',', array_map('\intval', $arrPids)).')';
 
         $arrCategoryIds = [];
