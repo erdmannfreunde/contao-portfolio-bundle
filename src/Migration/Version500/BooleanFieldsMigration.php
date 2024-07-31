@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Contao Portfolio Bundle for Contao Open Source CMS.
+ * @copyright  Copyright (c) Erdmann & Freunde
+ * @author     Erdmann & Freunde <https://erdmann-freunde.de>
+ * @license    MIT
+ * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
+ */
+
 namespace EuF\PortfolioBundle\Migration\Version500;
 
-use Doctrine\DBAL\Connection;
-use Contao\CoreBundle\Migration\MigrationResult;
 use Contao\CoreBundle\Migration\AbstractMigration;
+use Contao\CoreBundle\Migration\MigrationResult;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\StringType;
 
 class BooleanFieldsMigration extends AbstractMigration
@@ -36,7 +46,7 @@ class BooleanFieldsMigration extends AbstractMigration
             foreach ($columns as $currentColumn) {
                 $currentColumnName = $currentColumn->getName();
 
-                if (true === in_array($currentColumnName, $this->columns, true)) {
+                if (true === \in_array($currentColumnName, $this->columns, true)) {
                     if ($currentColumn->getType() instanceof StringType) {
                         return true;
                     }
@@ -57,12 +67,13 @@ class BooleanFieldsMigration extends AbstractMigration
             foreach ($columns as $currentColumn) {
                 $currentColumnName = $currentColumn->getName();
 
-                if (true === in_array($currentColumnName, $this->columns, true)) {
+                if (true === \in_array($currentColumnName, $this->columns, true)) {
                     if ($currentColumn->getType() instanceof StringType) {
                         $this->connection
                             ->executeQuery(
-                                'ALTER TABLE ' . $table . ' CHANGE ' . $currentColumnName . ' ' . $currentColumnName . ' TINYINT(1) NOT NULL DEFAULT 0'
-                            );
+                                'ALTER TABLE '.$table.' CHANGE '.$currentColumnName.' '.$currentColumnName.' TINYINT(1) NOT NULL DEFAULT 0'
+                            )
+                        ;
                     }
                 }
             }

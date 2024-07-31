@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Classes;
 
 use Contao\ArticleModel;
-use Contao\Config;
 use Contao\Environment;
 use Contao\Frontend;
 use Contao\PageModel;

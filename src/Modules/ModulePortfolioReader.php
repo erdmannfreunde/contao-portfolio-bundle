@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Modules;
 
 use Contao\BackendTemplate;
-use Contao\Config;
 use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;

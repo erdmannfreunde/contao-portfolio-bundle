@@ -12,12 +12,11 @@ declare(strict_types=1);
 
 namespace EuF\PortfolioBundle\Models;
 
+use Contao\CoreBundle\File\ModelMetadataTrait;
 use Contao\Date;
 use Contao\Model;
-use Contao\System;
-use Contao\StringUtil;
 use Contao\Model\Collection;
-use Contao\CoreBundle\File\ModelMetadataTrait;
+use Contao\StringUtil;
 
 class PortfolioModel extends Model
 {
@@ -111,7 +110,7 @@ class PortfolioModel extends Model
      */
     public static function countPublishedByPids(array $arrPids, bool $blnFeatured = null, array $arrCategories = [], array $arrOptions = []): int
     {
-        if (empty($arrPids) || !is_array($arrPids)) {
+        if (empty($arrPids) || !\is_array($arrPids)) {
             return 0;
         }
 

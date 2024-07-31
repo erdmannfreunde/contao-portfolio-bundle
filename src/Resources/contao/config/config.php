@@ -11,10 +11,10 @@ declare(strict_types=1);
  */
 
 use EuF\PortfolioBundle\Classes\Portfolio;
-use EuF\PortfolioBundle\Models\PortfolioModel;
-use EuF\PortfolioBundle\Modules\ModulePortfolioList;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use EuF\PortfolioBundle\Models\PortfolioModel;
+use EuF\PortfolioBundle\Modules\ModulePortfolioList;
 use EuF\PortfolioBundle\Modules\ModulePortfolioReader;
 
 $GLOBALS['BE_MOD']['content']['portfolio'] = [
@@ -30,7 +30,7 @@ $GLOBALS['FE_MOD']['portfolio'] = [
 ];
 
 $GLOBALS['TL_MODELS']['tl_portfolio'] = PortfolioModel::class;
-$GLOBALS['TL_MODELS']['tl_portfolio_archive'] = PortfolioArchiveModel::class ;
+$GLOBALS['TL_MODELS']['tl_portfolio_archive'] = PortfolioArchiveModel::class;
 $GLOBALS['TL_MODELS']['tl_portfolio_category'] = PortfolioCategoryModel::class;
 
 /*
