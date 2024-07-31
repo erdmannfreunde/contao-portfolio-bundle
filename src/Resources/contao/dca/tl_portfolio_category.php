@@ -10,6 +10,7 @@ declare(strict_types=1);
  * @link       http://github.com/erdmannfreunde/contao-portfolio-bundle
  */
 
+use Contao\DataContainer;
 use Contao\StringUtil;
 
 /*
@@ -34,13 +35,13 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode' => 1,
-            'flag' => 1,
-            'panelLayout' => 'sort,filter;search,limit',
-            'fields' => ['title'],
+            'mode' => DataContainer::MODE_TREE,
+            'rootPaste' => true,
+            'panelLayout' => 'filter,search',
         ],
         'label' => [
             'fields' => ['title'],
+            'format' => '%s',
         ],
         'global_operations' => [
             'toggleNodes' => [
@@ -67,11 +68,22 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
                 'icon' => 'copy.gif',
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
             ],
+            'cut' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['cut'],
+                'href' => 'act=paste&amp;mode=cut',
+                'icon' => 'cut.gif',
+                'attributes' => 'onclick="Backend.getScrollOffset()"',
+            ],
             'delete' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
+            ],
+            'toggle' => [
+                'href' => 'act=toggle&amp;field=published',
+                'icon' => 'visible.svg',
+                'showInHeader' => true,
             ],
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['show'],
@@ -83,7 +95,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published,sorting',
     ],
 
     // Fields
@@ -95,6 +107,8 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'sorting' => [
+            'sorting' => true,
+            'flag' => 1, // Sortiert nach aufsteigenden Werten
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'tstamp' => [
@@ -122,6 +136,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_category'] = [
         'published' => [
             'label' => &$GLOBALS['TL_LANG']['tl_portfolio_category']['published'],
             'exclude' => true,
+            'toggle' => true,
             'inputType' => 'checkbox',
             'sql' => "char(1) NOT NULL default ''",
         ],

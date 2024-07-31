@@ -65,36 +65,37 @@ class ModulePortfolioList extends ModulePortfolio
      */
     protected function compile(): void
     {
-        // Add the "reset categories" link
-        if ($this->portfolio_filter_reset) {
-            $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
-        }
-
-        $objCategories = PortfolioCategoryModel::findAll([
-            'column' => 'published',
-            'value' => 1,
-            'order' => 'sorting ASC',
-        ]);
-
-        if (null !== $objCategories && $this->portfolio_filter) {
-            $this->Template->categories = $objCategories;
-        }
-
+        $arrPids = StringUtil::deserialize($this->portfolio_archives, true);
         $limit = null;
         $offset = (int) $this->skipFirst;
+        $categoryList = [];
+
+        // Handle featured portfolio-items
+        $blnFeatured = \in_array($this->portfolio_featured, ['featured', 'unfeatured'], true) ? ('featured' === $this->portfolio_featured) : null;
+
+        if ($this->portfolio_filter) {
+            $objItems = PortfolioModel::findPublishedByPids($arrPids, $blnFeatured, $limit, $offset);
+
+            foreach ($objItems as $objItem) {
+                $categoryList = array_merge($categoryList, StringUtil::deserialize($objItem->categories, true));
+            }
+
+            if (!empty($categoryList)) {
+                $categoryIDs = implode(',', array_map('intval', array_unique($categoryList)));
+                $arrColumns = ['id IN ('.$categoryIDs.')', 'published=1'];
+                $arrOptions = ['order' => 'pid ASC,sorting ASC'];
+                $this->Template->categories = PortfolioCategoryModel::findBy($arrColumns, null, $arrOptions);
+
+                // Add the "reset categories" link
+                if ($this->portfolio_filter_reset) {
+                    $this->Template->portfolio_filter_reset = $GLOBALS['TL_LANG']['MSC']['filter_reset'];
+                }
+            }
+        }
 
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $limit = $this->numberOfItems;
-        }
-
-        // Handle featured portfolio-items
-        if ('featured' === $this->portfolio_featured) {
-            $blnFeatured = true;
-        } elseif ('unfeatured' === $this->portfolio_featured) {
-            $blnFeatured = false;
-        } else {
-            $blnFeatured = null;
         }
 
         $arrColumns = ['tl_portfolio.published=?'];
@@ -113,7 +114,6 @@ class ModulePortfolioList extends ModulePortfolio
             $arrValues[] = 'featured' === $this->portfolio_featured ? '1' : '';
         }
 
-        $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $arrColumns[] = 'tl_portfolio.pid IN('.implode(',', array_map('\intval', $arrPids)).')';
 
         $arrCategoryIds = [];

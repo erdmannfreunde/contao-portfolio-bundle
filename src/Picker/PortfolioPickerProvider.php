@@ -50,7 +50,7 @@ class PortfolioPickerProvider extends AbstractInsertTagPickerProvider implements
         return $this->isMatchingInsertTag($config);
     }
 
-    public function getDcaTable(): string
+    public function getDcaTable(PickerConfig $config = null): string
     {
         return 'tl_portfolio';
     }

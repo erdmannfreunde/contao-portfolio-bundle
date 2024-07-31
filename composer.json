@@ -2,24 +2,24 @@
   "name": "erdmannfreunde/portfoliobundle",
   "type": "contao-bundle",
   "description": "Beschreibung",
-  "license":"LGPL-3.0-or-later",
+  "license": "LGPL-3.0-or-later",
   "authors": [
-        {
-          "name": "Florian Ludwig",
-          "homepage": "https://github.com/feam-codes"
-        },
-        {
-            "name": "Stephan Gehle",
-            "homepage": "https://github.com/SGehle"
-        },
-        {
-          "name": "Dennis Erdmann",
-          "homepage": "https://erdmann-freunde.de"
-        }
+    {
+      "name": "Florian Ludwig",
+      "homepage": "https://github.com/feam-codes"
+    },
+    {
+      "name": "Stephan Gehle",
+      "homepage": "https://github.com/SGehle"
+    },
+    {
+      "name": "Dennis Erdmann",
+      "homepage": "https://erdmann-freunde.de"
+    }
   ],
   "require": {
     "php": ">=7.4",
-    "contao/core-bundle": "~4.9"
+    "contao/core-bundle": "~4.13"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.0"
@@ -28,15 +28,15 @@
     "psr-4": {
       "EuF\\PortfolioBundle\\": "src/"
     },
-	"classmap": [
-		"src/Resources/contao/"
-	],
-	"exclude-from-classmap": [
-		"src/Resources/contao/config/",
-		"src/Resources/contao/dca/",
-		"src/Resources/contao/languages/",
-		"src/Resources/contao/templates/"
-	]
+    "classmap": [
+      "src/Resources/contao/"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/config/",
+      "src/Resources/contao/dca/",
+      "src/Resources/contao/languages/",
+      "src/Resources/contao/templates/"
+    ]
   },
   "extra": {
     "contao-manager-plugin": "EuF\\PortfolioBundle\\ContaoManager\\Plugin"
@@ -44,7 +44,8 @@
   "config": {
     "allow-plugins": {
       "contao-components/installer": true,
-      "contao/manager-plugin": true
+      "contao/manager-plugin": true,
+      "php-http/discovery": true
     }
   },
   "scripts": {
