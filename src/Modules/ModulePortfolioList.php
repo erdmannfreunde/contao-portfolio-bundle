@@ -69,10 +69,17 @@ class ModulePortfolioList extends ModulePortfolio
         $arrPids = StringUtil::deserialize($this->portfolio_archives);
         $limit = null;
         $offset = (int) $this->skipFirst;
+        $categoryList = [];
+
+        // Handle featured portfolio-items
+        $blnFeatured = \in_array($this->portfolio_featured, ['featured', 'unfeatured'], true) ? ('featured' === $this->portfolio_featured) : null;
 
         if ($this->portfolio_filter) {
-            $objItems = PortfolioModel::findPublishedByPids($arrPids, $blnFeatured = null, $limit, $offset);
-            $categoryList = StringUtil::deserialize($objItems->categories);
+            $objItems = PortfolioModel::findPublishedByPids($arrPids, $blnFeatured, $limit, $offset);
+            
+            foreach ($objItems as $objItem) {
+                $categoryList = array_merge($categoryList, StringUtil::deserialize($objItem->categories, true));
+            }
 
             if (!empty($categoryList)) {
                 $categoryIDs = implode(',', array_map('intval', $categoryList));
