@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_portfolio_archive'] = [
         'enableVersioning' => true,
         'markAsCopy' => 'title',
         'onload_callback' => [
-            ['tl_portfolio_archive', 'checkPermission'],
+            ['tl_portfolio_archive', 'adjustDca'],
         ],
         'oncreate_callback' => [
             ['tl_portfolio_archive', 'adjustPermissions'],
@@ -171,79 +171,28 @@ class tl_portfolio_archive extends Backend
     }
 
     /**
-     * Check permissions to edit table tl_portfolio_archive.
+     * Set the root IDs.
      */
-    public function checkPermission(): void
+    public function adjustDca()
     {
-        if ($this->User->isAdmin) {
+        $user = BackendUser::getInstance();
+
+        if ($user->isAdmin)
+        {
             return;
         }
 
         // Set root IDs
-        if (empty($this->User->portfolio) || !is_array($this->User->portfolio)) {
-            $root = [0];
-        } else {
-            $root = $this->User->portfolio;
+        if (empty($user->news) || !is_array($user->news))
+        {
+            $root = array(0);
+        }
+        else
+        {
+            $root = $user->news;
         }
 
-        $GLOBALS['TL_DCA']['tl_portfolio_archive']['list']['sorting']['root'] = $root;
-
-        // Check permissions to add archives
-        if (!$this->User->hasAccess('create', 'portfoliop')) {
-            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['closed'] = true;
-            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCreatable'] = true;
-            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notCopyable'] = true;
-        }
-
-        // Check permissions to delete calendars
-        if (!$this->User->hasAccess('delete', 'portfoliop')) {
-            $GLOBALS['TL_DCA']['tl_portfolio_archive']['config']['notDeletable'] = true;
-        }
-
-        /** @var SessionInterface $objSession */
-        $objSession = System::getContainer()->get('session');
-
-        // Check current action
-        switch (Input::get('act')) {
-            case 'select':
-                // Allow
-                break;
-
-            case 'create':
-                if (!$this->User->hasAccess('create', 'portfoliop')) {
-                    throw new AccessDeniedException('Not enough permissions to create portfolio archives.');
-                }
-                break;
-
-            case 'edit':
-            case 'copy':
-            case 'delete':
-            case 'show':
-                if (!in_array(Input::get('id'), $root, true) || ('delete' === Input::get('act') && !$this->User->hasAccess('delete', 'portfoliop'))) {
-                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' portfolio archive ID '.Input::get('id').'.');
-                }
-                break;
-
-            case 'editAll':
-            case 'deleteAll':
-            case 'overrideAll':
-            case 'copyAll':
-                $session = $objSession->all();
-
-                if ('deleteAll' === Input::get('act') && !$this->User->hasAccess('delete', 'portfoliop')) {
-                    $session['CURRENT']['IDS'] = [];
-                } else {
-                    $session['CURRENT']['IDS'] = array_intersect((array) $session['CURRENT']['IDS'], $root);
-                }
-                $objSession->replace($session);
-                break;
-
-            default:
-                if (Input::get('act')) {
-                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' portfolio archives.');
-                }
-                break;
-        }
+        $GLOBALS['TL_DCA']['tl_news_archive']['list']['sorting']['root'] = $root;
     }
 
     /**
