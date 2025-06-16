@@ -23,6 +23,7 @@ use Contao\System;
 use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioCategoryModel;
+use EuF\PortfolioBundle\Models\PortfolioModel;
 
 abstract class ModulePortfolio extends Module
 {
@@ -42,7 +43,7 @@ abstract class ModulePortfolio extends Module
         if (null !== $objArchive) {
             while ($objArchive->next()) {
                 if ($objArchive->protected) {
-                    if (!FE_USER_LOGGED_IN || !\is_array($this->User->groups)) {
+                    if (!System::getContainer()->get('contao.security.token_checker')->hasFrontendUser() || !\is_array($this->User->groups)) {
                         continue;
                     }
 
@@ -99,11 +100,13 @@ abstract class ModulePortfolio extends Module
             $objTemplate->text = true;
         } // Compile the portfolio text
         else {
-            $objElement = ContentModel::findPublishedByPidAndTable($objItem->id, 'tl_portfolio');
+            if (str_starts_with($this->getModel()->portfolio_template, 'portfolio_full')) {
+                $objElement = ContentModel::findPublishedByPidAndTable($objItem->id, 'tl_portfolio');
 
-            if (null !== $objElement) {
-                while ($objElement->next()) {
-                    $objTemplate->text .= self::getContentElement($objElement->current());
+                if (null !== $objElement) {
+                    while ($objElement->next()) {
+                        $objTemplate->text .= self::getContentElement($objElement->current());
+                    }
                 }
             }
 
