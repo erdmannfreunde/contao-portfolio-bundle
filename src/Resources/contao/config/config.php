@@ -34,11 +34,6 @@ $GLOBALS['TL_MODELS']['tl_portfolio_archive'] = PortfolioArchiveModel::class;
 $GLOBALS['TL_MODELS']['tl_portfolio_category'] = PortfolioCategoryModel::class;
 
 /*
- * Register hooks
- */
-$GLOBALS['TL_HOOKS']['getSearchablePages'][] = [Portfolio::class, 'getSearchablePages'];
-
-/*
  * Add permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'portfolio';
