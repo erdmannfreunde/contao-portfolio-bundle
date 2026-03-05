@@ -18,6 +18,7 @@ use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Environment;
 use Contao\Input;
 use Contao\Model\Collection;
+use Contao\Module;
 use Contao\Pagination;
 use Contao\StringUtil;
 use Contao\System;
@@ -54,6 +55,11 @@ class ModulePortfolioList extends ModulePortfolio
             $objTemplate->href = StringUtil::specialcharsUrl(System::getContainer()->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]));
 
             return $objTemplate->parse();
+        }
+
+        // Show the portfolio reader if an item has been selected
+        if ($this->portfolio_readerModule > 0 && null !== Input::get('auto_item')) {
+            return $this->getFrontendModule($this->portfolio_readerModule, $this->strColumn);
         }
 
         return parent::generate();
