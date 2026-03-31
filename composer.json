@@ -26,7 +26,11 @@
     "contao/core-bundle": "^5.1"
   },
   "require-dev": {
-    "contao/manager-bundle": "^5.1"
+    "contao/manager-bundle": "^5.1",
+    "terminal42/contao-changelanguage": "^3.8"
+  },
+  "suggest": {
+    "terminal42/contao-changelanguage": "Enables multilingual portfolio archives"
   },
   "autoload": {
     "psr-4": {

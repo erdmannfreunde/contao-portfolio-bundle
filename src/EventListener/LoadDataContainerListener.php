@@ -24,11 +24,13 @@ use Terminal42\ChangeLanguage\EventListener\DataContainer\ParentTableListener;
  */
 class LoadDataContainerListener
 {
-    private ParameterBagInterface $params;
-
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->params = $params;
+    public function __construct(
+        private readonly ParameterBagInterface $params,
+        private readonly MissingLanguageIconListener $missingLanguageIconListener,
+        private readonly PortfolioChildTableListener $portfolioChildTableListener,
+        private readonly ?ParentTableListener $parentTableListener = null,
+        private readonly ?ParentChildViewListener $parentChildViewListener = null,
+    ) {
     }
 
     public function __invoke(string $table): void
@@ -38,19 +40,13 @@ class LoadDataContainerListener
         if (isset($bundles['Terminal42ChangeLanguageBundle'])) {
             switch ($table) {
                 case 'tl_portfolio_archive':
-                    $listener = new ParentTableListener($table);
-                    $listener->register();
+                    $this->parentTableListener?->register($table);
                     break;
 
                 case 'tl_portfolio':
-                    $listener = new MissingLanguageIconListener();
-                    $listener->register($table);
-
-                    $listener = new PortfolioChildTableListener($table);
-                    $listener->register();
-
-                    $listener = new ParentChildViewListener($table);
-                    $listener->register();
+                    $this->missingLanguageIconListener->register($table);
+                    $this->portfolioChildTableListener->register($table);
+                    $this->parentChildViewListener?->register($table);
                     break;
             }
         }
