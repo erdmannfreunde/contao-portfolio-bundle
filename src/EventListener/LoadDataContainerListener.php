@@ -15,7 +15,6 @@ namespace EuF\PortfolioBundle\EventListener;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use EuF\PortfolioBundle\EventListener\DataContainer\MissingLanguageIconListener;
 use EuF\PortfolioBundle\EventListener\DataContainer\PortfolioChildTableListener;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Terminal42\ChangeLanguage\EventListener\BackendView\ParentChildViewListener;
 use Terminal42\ChangeLanguage\EventListener\DataContainer\ParentTableListener;
 
@@ -25,30 +24,25 @@ use Terminal42\ChangeLanguage\EventListener\DataContainer\ParentTableListener;
 class LoadDataContainerListener
 {
     public function __construct(
-        private readonly ParameterBagInterface $params,
         private readonly MissingLanguageIconListener $missingLanguageIconListener,
         private readonly PortfolioChildTableListener $portfolioChildTableListener,
-        private readonly ?ParentTableListener $parentTableListener = null,
-        private readonly ?ParentChildViewListener $parentChildViewListener = null,
+        private readonly ParentTableListener $parentTableListener,
+        private readonly ParentChildViewListener $parentChildViewListener,
     ) {
     }
 
     public function __invoke(string $table): void
     {
-        $bundles = $this->params->get('kernel.bundles');
+        switch ($table) {
+            case 'tl_portfolio_archive':
+                $this->parentTableListener->register($table);
+                break;
 
-        if (isset($bundles['Terminal42ChangeLanguageBundle'])) {
-            switch ($table) {
-                case 'tl_portfolio_archive':
-                    $this->parentTableListener?->register($table);
-                    break;
-
-                case 'tl_portfolio':
-                    $this->missingLanguageIconListener->register($table);
-                    $this->portfolioChildTableListener->register($table);
-                    $this->parentChildViewListener?->register($table);
-                    break;
-            }
+            case 'tl_portfolio':
+                $this->missingLanguageIconListener->register($table);
+                $this->portfolioChildTableListener->register($table);
+                $this->parentChildViewListener->register($table);
+                break;
         }
     }
 }
