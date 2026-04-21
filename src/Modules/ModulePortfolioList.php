@@ -83,11 +83,12 @@ class ModulePortfolioList extends ModulePortfolio
         if ($this->portfolio_filter) {
             $objItems = PortfolioModel::findPublishedByPids($arrPids, $blnFeatured, $limit, $offset);
             
-            foreach ($objItems as $objItem) {
-                $categoryList = array_merge($categoryList, StringUtil::deserialize($objItem->categories, true));
-            }
-
             if (!empty($categoryList)) {
+
+                foreach ($objItems as $objItem) {
+                    $categoryList = array_merge($categoryList, StringUtil::deserialize($objItem->categories, true));
+                }
+                
                 $categoryIDs = implode(',', array_map('intval', $categoryList));
 
                 $arrColumns = ['id IN ('.$categoryIDs.')', 'published=1'];
