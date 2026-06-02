@@ -1,5 +1,6 @@
 /.idea
 /vendor
+/var
 /composer.lock
 /tools/*/vendor
 /tools/ecs/composer.lock
