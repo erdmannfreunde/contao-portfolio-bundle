@@ -7,6 +7,7 @@ use Contao\CoreBundle\Event\SitemapEvent;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\Database;
 use Contao\PageModel;
+use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioArchiveModel;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -82,6 +83,11 @@ class SitemapListener
                     if (null !== $objArticle) {
                         while ($objArticle->next()) {
                             if ('noindex,nofollow' === $objArticle->robots) {
+                                continue;
+                            }
+
+                            // Skip items whose detail page has no content elements
+                            if (!Portfolio::hasContent($objArticle->current())) {
                                 continue;
                             }
 

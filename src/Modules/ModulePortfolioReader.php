@@ -21,6 +21,7 @@ use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use EuF\PortfolioBundle\Classes\Portfolio;
 use EuF\PortfolioBundle\Models\PortfolioModel;
 
 class ModulePortfolioReader extends ModulePortfolio
@@ -97,7 +98,11 @@ class ModulePortfolioReader extends ModulePortfolio
                 $htmlHeadBag->setMetaDescription($htmlDecoder->htmlToPlainText($objItem->teaser));
             }
 
-            if ($objItem->robots) {
+            // Detail pages without content elements must not be indexed,
+            // a teaser alone does not make them a page of their own
+            if (!Portfolio::hasContent($objItem)) {
+                $htmlHeadBag->setMetaRobots('noindex,follow');
+            } elseif ($objItem->robots) {
                 $htmlHeadBag->setMetaRobots($objItem->robots);
             }
         }

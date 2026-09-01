@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace EuF\PortfolioBundle\Classes;
 
 use Contao\ArticleModel;
+use Contao\ContentModel;
 use Contao\Environment;
 use Contao\Frontend;
 use Contao\PageModel;
@@ -93,5 +94,16 @@ class Portfolio extends Frontend
         }
 
         return self::$arrUrlCache[$strCacheKey];
+    }
+
+    /**
+     * Check whether the detail page of a portfolio item has any content.
+     *
+     * Only content elements count, a teaser alone does not: it is list view
+     * copy, not a page of its own (see hasText in portfolio_short).
+     */
+    public static function hasContent(PortfolioModel $objItem): bool
+    {
+        return ContentModel::countPublishedByPidAndTable((int) $objItem->id, 'tl_portfolio') > 0;
     }
 }
