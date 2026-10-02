@@ -33,6 +33,10 @@ class Portfolio extends Frontend
     /**
      * Generate a URL and return it as string.
      *
+     * Items without their own source link to the redirect page of the
+     * archive. $intJumpTo overrides that page, e.g. with the redirect page of
+     * the list module.
+     *
      * @param bool $blnAddArchive
      * @param bool $blnAbsolute
      *
@@ -40,9 +44,9 @@ class Portfolio extends Frontend
      *
      * @return string
      */
-    public static function generatePortfolioUrl(PortfolioModel $objItem, $blnAddArchive = false, $blnAbsolute = false): ?string
+    public static function generatePortfolioUrl(PortfolioModel $objItem, $blnAddArchive = false, $blnAbsolute = false, int $intJumpTo = 0): ?string
     {
-        $strCacheKey = 'id_'.$objItem->id.($blnAbsolute ? '_absolute' : '');
+        $strCacheKey = 'id_'.$objItem->id.($intJumpTo > 0 ? '_'.$intJumpTo : '').($blnAbsolute ? '_absolute' : '');
 
         // Load the URL from cache
         if (isset(self::$arrUrlCache[$strCacheKey])) {
@@ -83,7 +87,7 @@ class Portfolio extends Frontend
 
         // Link to the default page
         if (null === self::$arrUrlCache[$strCacheKey]) {
-            $objPage = PageModel::findByPk($objItem->getRelated('pid')->jumpTo);
+            $objPage = PageModel::findByPk($intJumpTo > 0 ? $intJumpTo : $objItem->getRelated('pid')->jumpTo);
 
             if (!$objPage instanceof PageModel) {
                 self::$arrUrlCache[$strCacheKey] = preg_replace('/&(amp;)?/i', '&amp;', Environment::get('request'));

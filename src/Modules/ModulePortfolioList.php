@@ -66,6 +66,15 @@ class ModulePortfolioList extends ModulePortfolio
     }
 
     /**
+     * The redirect page of the module takes precedence over the one of the
+     * archive, e.g. to link to a reader page in another page tree.
+     */
+    protected function getJumpTo(): int
+    {
+        return (int) $this->jumpTo;
+    }
+
+    /**
      * Generate the module.
      *
      * @throws \Exception

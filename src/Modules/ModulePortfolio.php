@@ -62,6 +62,14 @@ abstract class ModulePortfolio extends Module
     }
 
     /**
+     * Page the items link to. 0 uses the redirect page of the archive.
+     */
+    protected function getJumpTo(): int
+    {
+        return 0;
+    }
+
+    /**
      * Parse an item and return it as string.
      *
      * @param PortfolioModel $objItem
@@ -82,7 +90,7 @@ abstract class ModulePortfolio extends Module
         $objTemplate->headline = $objItem->headline;
         $objTemplate->linkHeadline = $this->generateLink($objItem->headline, $objItem, $blnAddArchive);
         $objTemplate->more = $this->generateLink($GLOBALS['TL_LANG']['MSC']['more'], $objItem, $blnAddArchive, true);
-        $objTemplate->link = Portfolio::generatePortfolioUrl($objItem, $blnAddArchive);
+        $objTemplate->link = Portfolio::generatePortfolioUrl($objItem, $blnAddArchive, false, $this->getJumpTo());
         $objTemplate->count = $intCount; // see #5708
         $objTemplate->text = '';
         $objTemplate->hasText = false;
@@ -248,7 +256,7 @@ abstract class ModulePortfolio extends Module
         if ('external' !== $objItem->source) {
             return sprintf(
                 '<a href="%s" title="%s">%s%s</a>',
-                Portfolio::generatePortfolioUrl($objItem, $blnAddArchive),
+                Portfolio::generatePortfolioUrl($objItem, $blnAddArchive, false, $this->getJumpTo()),
                 StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $objItem->headline), true),
                 $strLink,
                 ($blnIsReadMore ? ' <span class="invisible">'.$objItem->headline.'</span>' : '')
