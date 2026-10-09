@@ -1,0 +1,11 @@
+{% extends '@Contao/block_searchable.html.twig' %}
+
+{% block content %}
+
+    {{ items|raw }}
+
+    <!-- indexer::stop -->
+    <p class="back"><a href="{{ referer }}" title="{{ back }}">{{ back }}</a></p>
+    <!-- indexer::continue -->
+
+{% endblock %}

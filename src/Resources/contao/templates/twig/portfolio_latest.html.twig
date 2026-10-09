@@ -1,0 +1,23 @@
+{% set hasDetails = hasText and hasText.invoke() %}
+
+<div class="layout_latest portfolio block{{ class }}" data-category="{{ categories|default }}">
+    <div class="inside">
+        {% if hasDetails %}
+            <h2>{{ linkHeadline|sanitize_html('contao')|insert_tag_raw }}</h2>
+        {% else %}
+            <h2>{{ headline|insert_tag_raw }}</h2>
+        {% endif %}
+
+        {% if addImage %}
+            {{ include('@Contao/image.html.twig') }}
+        {% endif %}
+
+        {% if hasTeaser %}
+            <div class="teaser">{{ teaser|sanitize_html('contao')|csp_inline_styles|insert_tag_raw }}</div>
+        {% endif %}
+
+        {% if hasDetails %}
+            {{ more|sanitize_html('contao')|insert_tag_raw }}
+        {% endif %}
+    </div>
+</div>

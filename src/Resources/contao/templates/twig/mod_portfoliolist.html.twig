@@ -1,0 +1,27 @@
+{% extends '@Contao/block_unsearchable.html.twig' %}
+
+{% block content %}
+
+    {% if categories|default %}
+        <nav class="portfolio__filter block">
+            <ul class="level_1">
+                {% if portfolio_filter_reset|default %}
+                    <li><button class="filter active" data-category="all">{{ portfolio_filter_reset }}</button></li>
+                {% endif %}
+                {% for category in categories %}
+                    <li><button class="filter" data-category="{{ category.alias }}">{{ category.title }}</button></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    {% endif %}
+
+    {% if not items|default %}
+        <p class="empty">{{ empty|default }}</p>
+    {% else %}
+        <div class="projects__items portfolio__items">
+            {{ items|join|raw }}
+            {{ pagination|default|raw }}
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+<!-- jquery portfolio -->
+<script{{ attrs().setIfExists('nonce', csp_nonce('script-src')) }}>
+    (function($) {
+        'use strict';
+
+        var $filters = $('.portfolio__filter [data-category]'),
+            $items = $('.portfolio__items .portfolio');
+
+        $filters.on('click', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+
+            $filters.removeClass('active');
+            $this.addClass('active');
+
+            var $filterCategory = $this.attr('data-category');
+
+            if ($filterCategory == 'all') {
+                $items.removeClass('is-animated')
+                    .fadeOut().promise().done(function() {
+                        $items.addClass('is-animated').fadeIn();
+                    });
+            } else {
+                $items.removeClass('is-animated')
+                    .fadeOut().promise().done(function() {
+
+                        $items.each(function() {
+                            var categories = $(this).data('category').split(',');
+
+                            if (categories.indexOf($filterCategory) != -1) {
+                                $(this).addClass('is-animated').fadeIn();
+                            }
+                        });
+
+                    });
+            }
+        });
+    })(jQuery);
+</script>

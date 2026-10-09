@@ -1,0 +1,13 @@
+<div class="layout_short portfolio block{{ class }}" data-category="{{ categories|default }}">
+    <div class="inside">
+        {% if hasText and hasText.invoke() %}
+            {{ linkHeadline|sanitize_html('contao')|insert_tag_raw }}
+        {% else %}
+            <span>{{ headline|insert_tag_raw }}</span>
+        {% endif %}
+
+        {% if addImage %}
+            {{ include('@Contao/image.html.twig') }}
+        {% endif %}
+    </div>
+</div>
